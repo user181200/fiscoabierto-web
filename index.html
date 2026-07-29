@@ -78,7 +78,33 @@
         }
         .nav-links a:hover { color: var(--color-accent); }
 
-        /* LANGUAGE TOGGLE */
+        /* LANGUAGE SWITCH (nav) */
+        .lang-switch {
+            display: inline-flex;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            overflow: hidden;
+            background: var(--color-bg);
+            flex-shrink: 0;
+        }
+        .lang-btn {
+            appearance: none;
+            -webkit-appearance: none;
+            background: none;
+            border: none;
+            font-family: inherit;
+            font-size: 0.85rem;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+            color: var(--color-text-secondary);
+            padding: 8px 15px;
+            cursor: pointer;
+            transition: background-color 0.2s, color 0.2s;
+        }
+        .lang-btn + .lang-btn { border-left: 1px solid var(--color-border); }
+        .lang-btn:hover { color: var(--color-accent); }
+        .lang-btn.active { background: var(--color-accent); color: #FFFFFF; }
+        .lang-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
         /* HERO */
         .hero {
             position: relative;
@@ -548,34 +574,32 @@
             border-top: 1px solid var(--color-border);
             text-align: center;
         }
-        .disclaimer {
-            background: var(--color-bg);
-            border: 1px solid var(--color-border);
-            border-radius: var(--radius);
-            padding: 20px;
-            margin-bottom: 24px;
-            font-size: 0.82rem;
+        .legal-note {
+            max-width: 600px;
+            margin: 0 auto;
+            padding-left: 18px;
+            border-left: 2px solid var(--color-accent);
+            text-align: left;
+        }
+        .legal-note-label {
+            display: block;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--color-accent);
+            margin-bottom: 7px;
+        }
+        .legal-note p {
+            font-size: 0.83rem;
             color: var(--color-text-secondary);
-            line-height: 1.6;
+            line-height: 1.65;
         }
         .footer-copy {
             font-size: 0.8rem;
             color: var(--color-text-secondary);
+            margin-top: 28px;
         }
-        .footer-lang {
-            background: none;
-            border: 1px solid var(--color-border);
-            border-radius: 20px;
-            padding: 4px 12px;
-            font-size: 0.75rem;
-            color: var(--color-text-secondary);
-            cursor: pointer;
-            margin-top: 8px;
-            transition: border-color 0.2s;
-        }
-        .footer-lang:hover { border-color: var(--color-accent); }
-        .footer-lang .lang-opt { opacity: 0.5; transition: opacity 0.2s; }
-        .footer-lang .lang-opt.active { opacity: 1; color: var(--color-accent); font-weight: 600; }
 
         /* STATS */
         .stats-section { background: var(--color-text); color: white; padding: 60px 0; }
@@ -712,8 +736,10 @@
             .hero { padding: 60px 0 40px; }
             .platform-grid { grid-template-columns: repeat(2, 1fr); }
             .newsletter-form { flex-direction: column; }
-            .nav-links { gap: 16px; }
+            nav .container { flex-wrap: wrap; row-gap: 12px; }
+            .nav-links { gap: 16px; order: 3; flex-basis: 100%; justify-content: center; }
             .nav-links a { font-size: 0.82rem; }
+            .lang-btn { padding: 7px 13px; font-size: 0.82rem; }
             section { padding: 40px 0; }
             .stat-number { font-size: 1.8rem; filter: none !important; opacity: 0; }
             .stat-number.counting { opacity: 1 !important; }
@@ -740,6 +766,10 @@
             <a href="#diagnostico" data-i18n="nav.diagnostic">Diagnóstico</a>
             <a href="#faq" data-i18n="nav.faq">FAQ</a>
             <a href="#newsletter" data-i18n="nav.newsletter">Newsletter</a>
+        </div>
+        <div class="lang-switch" role="group" aria-label="Idioma / Language">
+            <button type="button" class="lang-btn" data-lang="es" lang="es" aria-pressed="true">ES</button>
+            <button type="button" class="lang-btn" data-lang="en" lang="en" aria-pressed="false">EN</button>
         </div>
     </div>
 </nav>
@@ -1063,13 +1093,11 @@
 <!-- FOOTER -->
 <footer>
     <div class="container">
-        <div class="disclaimer" data-i18n="footer.disclaimer">
-            Fisco Abierto es una herramienta informativa. No constituye asesoría fiscal, legal ni contable. Consulta a un profesional antes de tomar decisiones sobre tu situación fiscal.
+        <div class="legal-note">
+            <span class="legal-note-label" data-i18n="footer.legalLabel">Aviso legal</span>
+            <p data-i18n="footer.disclaimer">Fisco Abierto es una herramienta informativa. No constituye asesoría fiscal, legal ni contable. Consulta a un profesional antes de tomar decisiones sobre tu situación fiscal.</p>
         </div>
         <p class="footer-copy" data-i18n="footer.copy">&copy; 2026 Fisco Abierto. Hecho en México.</p>
-        <button class="footer-lang" id="langToggle" type="button">
-            <span class="lang-opt" data-lang="es">ES</span> · <span class="lang-opt" data-lang="en">EN</span>
-        </button>
     </div>
 </footer>
 
@@ -1166,6 +1194,7 @@ const translations = {
         'faq.a6': 'No hay truco. Fisco Abierto es un proyecto de utilidad pública, no un negocio. No vendemos cursos, no ofrecemos "asesoría premium", no monetizamos tus datos (no los tenemos). El proyecto existe como portafolio profesional y porque creemos que la información fiscal básica debería ser accesible para todos.',
         'newsletter.title': 'Newsletter quincenal',
         'newsletter.description': 'Lo que cambió en el SAT, explicado para personas normales. Cada dos semanas, gratis.',
+        'footer.legalLabel': 'Aviso legal',
         'footer.disclaimer': 'Fisco Abierto es una herramienta informativa. No constituye asesoría fiscal, legal ni contable. Consulta a un profesional antes de tomar decisiones sobre tu situación fiscal.',
         'footer.copy': '© 2026 Fisco Abierto. Hecho en México.',
     },
@@ -1257,8 +1286,9 @@ const translations = {
         'faq.a6': 'No catch. Fisco Abierto is a public utility project, not a business. We don\'t sell courses, don\'t offer "premium advice," don\'t monetize your data (we don\'t have any). The project exists as a professional portfolio and because we believe basic tax information should be accessible to everyone.',
         'newsletter.title': 'Biweekly newsletter',
         'newsletter.description': 'What changed at Mexico\'s tax authority, explained for normal people. Every two weeks, free.',
+        'footer.legalLabel': 'Legal notice',
         'footer.disclaimer': 'Fisco Abierto is an informational tool about Mexican tax law. It does not constitute tax, legal, or accounting advice. Consult a professional before making decisions about your tax situation.',
-        'footer.copy': '© 2026 Fisco Abierto. Made in Mexico. 🇲🇽',
+        'footer.copy': '© 2026 Fisco Abierto. Made in Mexico.',
     }
 };
 
@@ -1321,37 +1351,36 @@ function setLanguage(lang) {
     }
 }
 
-// Update footer toggle highlight
+// Resalta el idioma activo en el switch del nav
 function updateLangToggle() {
-    document.querySelectorAll('.footer-lang .lang-opt').forEach(function(opt) {
-        opt.classList.remove('active');
-        if (opt.dataset.lang === currentLanguage) opt.classList.add('active');
+    document.querySelectorAll('.lang-switch .lang-btn').forEach(function(btn) {
+        var isActive = btn.dataset.lang === currentLanguage;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
     });
 }
 
-// Footer language toggle
-document.getElementById('langToggle').addEventListener('click', function() {
-    var newLang = currentLanguage === 'es' ? 'en' : 'es';
-    setLanguage(newLang);
-    updateLangToggle();
+// Cada boton fija su idioma. No alterna: el usuario ve cual esta activo y elige.
+document.querySelectorAll('.lang-switch .lang-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        setLanguage(btn.dataset.lang);
+        updateLangToggle();
+    });
 });
 
-// Activate English via URL parameter ?lang=en, otherwise default Spanish
-(function() {
-    var params = new URLSearchParams(window.location.search);
-    if (params.get('lang') === 'en') {
-        setLanguage('en');
+// El idioma inicial se resuelve en un solo lugar, para que el switch nunca
+// muestre un idioma distinto al que esta renderizado.
+// Precedencia: ?lang= (intencion explicita) > idioma del navegador > espanol.
+(function resolveInitialLanguage() {
+    var requested = new URLSearchParams(window.location.search).get('lang');
+    if (requested === 'es' || requested === 'en') {
+        setLanguage(requested);
+    } else {
+        var browserLang = navigator.language || navigator.userLanguage || 'es';
+        setLanguage(browserLang.toLowerCase().indexOf('en') === 0 ? 'en' : 'es');
     }
     updateLangToggle();
 })();
-
-// Auto-detect browser language on load
-window.addEventListener('DOMContentLoaded', () => {
-    const browserLang = navigator.language || navigator.userLanguage;
-    if (browserLang.startsWith('en')) {
-        setLanguage('en');
-    }
-});
 
 // ==================== ESTADO ====================
 const state = {
