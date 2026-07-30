@@ -574,31 +574,24 @@
             border-top: 1px solid var(--color-border);
             text-align: center;
         }
-        .legal-note {
-            max-width: 600px;
+        .footer-fine {
+            max-width: 64ch;
             margin: 0 auto;
-            padding-left: 18px;
-            border-left: 2px solid var(--color-accent);
-            text-align: left;
-        }
-        .legal-note-label {
-            display: block;
-            font-size: 0.7rem;
-            font-weight: 700;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: var(--color-accent);
-            margin-bottom: 7px;
-        }
-        .legal-note p {
-            font-size: 0.83rem;
+            font-size: 0.78rem;
             color: var(--color-text-secondary);
-            line-height: 1.65;
+            line-height: 1.7;
         }
         .footer-copy {
-            font-size: 0.8rem;
-            color: var(--color-text-secondary);
-            margin-top: 28px;
+            margin-top: 18px;
+            font-size: 0.74rem;
+            color: #A8A29E;
+            line-height: 1.8;
+        }
+        .footer-copy .sep { margin: 0 8px; opacity: 0.6; }
+        .footer-mark { white-space: nowrap; }
+        @media (max-width: 600px) {
+            .footer-copy .sep { display: none; }
+            .footer-mark { display: block; }
         }
 
         /* STATS */
@@ -1426,11 +1419,10 @@
 <!-- FOOTER -->
 <footer>
     <div class="container">
-        <div class="legal-note">
-            <span class="legal-note-label" data-i18n="footer.legalLabel">Aviso legal</span>
-            <p data-i18n="footer.disclaimer">Fisco Abierto es una herramienta informativa. No constituye asesoría fiscal, legal ni contable. Consulta a un profesional antes de tomar decisiones sobre tu situación fiscal.</p>
-        </div>
-        <p class="footer-copy" data-i18n="footer.copy">&copy; 2026 Fisco Abierto. Hecho en México.</p>
+        <p class="footer-fine" data-i18n="footer.disclaimer">Fisco Abierto es una herramienta informativa. No constituye asesoría fiscal, legal ni contable. Consulta a un profesional antes de tomar decisiones sobre tu situación fiscal.</p>
+        <p class="footer-copy">
+            <span data-i18n="footer.copy">&copy; MMXXVI Fisco Abierto<sup>&trade;</sup>. Hecho en México.</span><span class="sep">&middot;</span><span class="footer-mark" data-i18n="footer.mark">Marca en trámite ante el IMPI, expediente 3592372</span>
+        </p>
     </div>
 </footer>
 
@@ -1557,9 +1549,9 @@ const translations = {
         'faq.a6': 'No hay truco. Fisco Abierto es un proyecto de utilidad pública, no un negocio. No vendemos cursos, no ofrecemos "asesoría premium", no monetizamos tus datos (no los tenemos). El proyecto existe como portafolio profesional y porque creemos que la información fiscal básica debería ser accesible para todos.',
         'newsletter.title': 'Newsletter',
         'newsletter.description': 'Lo que cambió en el SAT, explicado para personas normales. Gratis.',
-        'footer.legalLabel': 'Aviso legal',
         'footer.disclaimer': 'Fisco Abierto es una herramienta informativa. No constituye asesoría fiscal, legal ni contable. Consulta a un profesional antes de tomar decisiones sobre tu situación fiscal.',
-        'footer.copy': '© 2026 Fisco Abierto. Hecho en México.',
+        'footer.copy': '© MMXXVI Fisco Abierto™. Hecho en México.',
+        'footer.mark': 'Marca en trámite ante el IMPI, expediente 3592372',
     },
     en: {
         'nav.diagnostic': 'Diagnostic',
@@ -1679,9 +1671,9 @@ const translations = {
         'faq.a6': 'No catch. Fisco Abierto is a public utility project, not a business. We don\'t sell courses, don\'t offer "premium advice," don\'t monetize your data (we don\'t have any). The project exists as a professional portfolio and because we believe basic tax information should be accessible to everyone.',
         'newsletter.title': 'Newsletter',
         'newsletter.description': 'What changed at Mexico\'s tax authority, explained for normal people. Free.',
-        'footer.legalLabel': 'Legal notice',
         'footer.disclaimer': 'Fisco Abierto is an informational tool about Mexican tax law. It does not constitute tax, legal, or accounting advice. Consult a professional before making decisions about your tax situation.',
-        'footer.copy': '© 2026 Fisco Abierto. Made in Mexico.',
+        'footer.copy': '© MMXXVI Fisco Abierto™. Made in Mexico.',
+        'footer.mark': 'Trademark application pending before IMPI, file 3592372',
     }
 };
 
