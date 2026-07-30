@@ -255,7 +255,11 @@
             background: linear-gradient(160deg, #0a0f0f 0%, #0d2926 50%, #0F766E 100%);
             border: none;
             position: relative;
+            /* clip y no hidden: hidden sigue aceptando scroll programatico
+               (scrollIntoView lo desplazaba por dentro y el estado quedaba
+               corrido tras reiniciar); clip no es contenedor de scroll. */
             overflow: hidden;
+            overflow: clip;
         }
         #diagnostico::before {
             content: '';
@@ -274,30 +278,39 @@
         #diagnostico h2 { color: #FFFFFF; }
         #diagnostico .section-subtitle { color: rgba(255,255,255,0.6); }
 
-        /* Progress bar */
+        /* Progreso segmentado: un tramo por paso */
         .diag-progress {
-            width: 100%;
-            height: 3px;
-            background: rgba(255,255,255,0.1);
-            border-radius: 3px;
+            display: flex;
+            gap: 6px;
             margin-bottom: 32px;
+        }
+        .diag-seg {
+            flex: 1;
+            height: 4px;
+            border-radius: 4px;
+            background: rgba(255,255,255,0.12);
             overflow: hidden;
+            position: relative;
         }
-        .diag-progress-fill {
-            height: 100%;
+        .diag-seg::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 4px;
             background: linear-gradient(90deg, #5EEAD4, #0F766E);
-            border-radius: 3px;
-            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-            width: 33%;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.45s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        .diag-seg.done::after { transform: scaleX(1); }
 
         /* Glass card for wizard */
         #diag-wizard {
+            /* Sin backdrop-filter: al alternar display en el flujo del wizard,
+               Chrome dejaba bandas sin repintar (snapshot viejo del backdrop).
+               Sobre un gradiente suave el blur no aportaba nada visible;
+               el tinte rgba + borde dan el mismo efecto de vidrio. */
             background: rgba(255,255,255,0.05);
-            /* 12px en vez de 20px: visualmente casi igual sobre este fondo,
-               pero el compositor trabaja bastante menos al hacer scroll. */
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 20px;
             padding: 36px 32px;
@@ -384,6 +397,16 @@
             border-color: #5EEAD4;
             background: rgba(94,234,212,0.15);
             color: #5EEAD4;
+            position: relative;
+            padding-right: 48px;
+        }
+        .income-btn.selected::after {
+            content: '\2713';
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-weight: 700;
         }
         .threshold-tag {
             display: block;
@@ -477,8 +500,6 @@
             border-radius: 12px;
             margin-bottom: 24px;
             text-align: center;
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
         }
         .risk-banner.risk-alto {
             background: rgba(220, 38, 38, 0.12);
@@ -503,6 +524,88 @@
         .risk-label {
             font-size: 0.9rem;
             color: rgba(255,255,255,0.5);
+        }
+        /* Medidor de exposicion: 3 zonas, el nivel llena hasta su tramo */
+        .risk-meter {
+            margin: 12px auto 2px;
+            max-width: 340px;
+            height: 6px;
+            border-radius: 6px;
+            background: rgba(255,255,255,0.12);
+            overflow: hidden;
+        }
+        .risk-meter-fill {
+            height: 100%;
+            width: 0;
+            border-radius: 6px;
+            transition: width 0.9s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .risk-banner.risk-bajo .risk-meter-fill { background: #86EFAC; }
+        .risk-banner.risk-medio .risk-meter-fill { background: #FCD34D; }
+        .risk-banner.risk-alto .risk-meter-fill { background: #FCA5A5; }
+
+        /* Paso 3: revelado progresivo de la segunda pregunta */
+        .q-label {
+            font-size: 0.92rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #FFFFFF;
+        }
+        .q-block { margin-bottom: 28px; }
+        .q-block:last-of-type { margin-bottom: 0; }
+        #qFactura {
+            transition: opacity 0.45s ease, transform 0.45s ease, height 0.45s ease;
+        }
+        #qFactura.q-hidden {
+            opacity: 0;
+            transform: translateY(10px);
+            height: 0;
+            overflow: hidden;
+            margin: 0;
+            pointer-events: none;
+        }
+
+        /* Contador de seleccion (paso 1) */
+        .sel-count {
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: #5EEAD4;
+            background: rgba(94,234,212,0.1);
+            border: 1px solid rgba(94,234,212,0.25);
+            border-radius: 999px;
+            padding: 4px 12px;
+        }
+
+        /* Direccion de la transicion entre pasos */
+        #diag-wizard[data-dir="back"] .diag-step.active { animation-name: fadeSlideBack; }
+        @keyframes fadeSlideBack {
+            from { opacity: 0; transform: translateY(-12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Revelado escalonado de los resultados */
+        .results-panel.active .profile-summary,
+        .results-panel.active .result-section {
+            animation: fadeSlideIn 0.5s ease-out backwards;
+        }
+        .results-panel.active .profile-summary { animation-delay: 0.12s; }
+        .results-panel.active .result-section:nth-of-type(3) { animation-delay: 0.24s; }
+        .results-panel.active .result-section:nth-of-type(4) { animation-delay: 0.36s; }
+        .results-panel.active .result-section:nth-of-type(5) { animation-delay: 0.48s; }
+
+        /* Teclado visible */
+        .platform-btn:focus-visible, .income-btn:focus-visible,
+        .btn-next:focus-visible, .btn-prev:focus-visible, .btn-results:focus-visible {
+            outline: 2px solid #5EEAD4;
+            outline-offset: 2px;
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .diag-step.active,
+            .results-panel.active .profile-summary,
+            .results-panel.active .result-section { animation: none; }
+            .risk-meter-fill, .diag-seg::after, #qFactura { transition: none; }
         }
 
         .result-section {
@@ -773,6 +876,13 @@
             box-decoration-break: clone;
             -webkit-box-decoration-break: clone;
         }
+        /* Enfasis alterno para titulos: cifra en mono acento, sin fondo.
+           Un solo mark-hl por pagina (tabulador); el mapa usa este. */
+        .num-hl {
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            color: var(--color-accent);
+            letter-spacing: -0.01em;
+        }
         .eyebrow-chip {
             display: inline-block;
             background: var(--color-bg);
@@ -1011,6 +1121,9 @@
             .calc-diff-value { font-size: 1.15rem; }
             .map-panel { padding: 14px 15px; }
             .map-panel-figure { font-size: 1.5rem; }
+            .diag-nav { gap: 10px; }
+            .step-indicator { white-space: nowrap; }
+            .btn-next, .btn-prev, .btn-results { padding: 12px 20px; }
         }
     </style>
 </head>
@@ -1144,7 +1257,7 @@
 <!-- MAPA: INFORMALIDAD POR ESTADO -->
 <section class="map-section">
     <div class="container">
-        <h2 class="blk-title reveal"><span data-i18n="map.titleA">Si rentas por Airbnb, tu estado te cobra un impuesto aparte del SAT.</span> <span class="mark-hl" data-i18n="map.titleMark">Va del 2% al 6%.</span></h2>
+        <h2 class="blk-title reveal"><span data-i18n="map.titleA">Si rentas por Airbnb, tu estado te cobra un impuesto aparte del SAT.</span> <span class="num-hl" data-i18n="map.titleMark">Va del 2% al 6%.</span></h2>
         <p class="blk-lead reveal reveal-delay-2" data-i18n="map.lead">El impuesto sobre hospedaje es estatal, no federal, y cada congreso fija su propia tasa. En 27 de las 32 entidades la plataforma está obligada a retenerlo o enterarlo, así que probablemente ya lo estás pagando sin saberlo. Y en varios estados la tasa para departamentos y casas es más alta que la de los hoteles. Toca tu estado.</p>
 
         <svg class="mxmap reveal reveal-delay-3" viewBox="0 0 793 498" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Mapa de México: impuesto estatal sobre hospedaje por entidad federativa">
@@ -1241,7 +1354,7 @@
             <p class="section-subtitle" data-i18n="diag.intro">Selecciona tus plataformas e ingresos aproximados. No pedimos datos personales (ni nombre, ni RFC, ni correo). Todo se procesa en tu navegador.</p>
         </div>
 
-        <div class="diag-progress"><div class="diag-progress-fill" id="diag-progress-fill"></div></div>
+        <div class="diag-progress" aria-hidden="true"><span class="diag-seg done" data-seg="1"></span><span class="diag-seg" data-seg="2"></span><span class="diag-seg" data-seg="3"></span></div>
 
         <div id="diag-wizard">
             <!-- PASO 1: Plataformas -->
@@ -1283,10 +1396,11 @@
                         <span class="p-emoji">🪙</span> Crypto (Binance, Bitso)
                     </button>
                     <button class="platform-btn" data-platform="otro" data-category="otro">
-                        <span class="p-emoji">➕</span> Otra plataforma
+                        <span class="p-emoji">➕</span> <span data-i18n="diag.step1.other">Otra plataforma</span>
                     </button>
                 </div>
                 <div class="diag-nav">
+                    <span class="sel-count" id="selCount" hidden></span>
                     <span class="step-indicator" data-i18n="diag.step1.indicator">Paso 1 de 3</span>
                     <button class="btn-next" id="btn-step1" disabled data-i18n="diag.next">Siguiente</button>
                 </div>
@@ -1315,21 +1429,25 @@
                 <p class="diag-question" data-i18n="diag.step3.question">Casi listo. Dos preguntas finales para afinar tu diagnóstico.</p>
                 <p class="diag-hint" data-i18n="diag.step3.hint">No hay respuesta incorrecta. Si no sabes, hay opción para eso.</p>
 
-                <p style="font-size:0.92rem; font-weight:600; margin-bottom:10px; color:#FFFFFF;" data-i18n="diag.step3.fiscal">Tu situación ante el SAT:</p>
-                <div class="income-options" style="margin-bottom:28px;">
+                <div class="q-block" id="qFiscal">
+                <p class="q-label" data-i18n="diag.step3.fiscal">Tu situación ante el SAT:</p>
+                <div class="income-options">
                     <button class="income-btn" data-fiscal="ninguna" data-i18n="diag.step3.fiscal1">No estoy dado de alta en el SAT</button>
                     <button class="income-btn" data-fiscal="alta_sin_declarar" data-i18n="diag.step3.fiscal2">Estoy dado de alta pero no he declarado</button>
                     <button class="income-btn" data-fiscal="declaro_parcial" data-i18n="diag.step3.fiscal3">Declaro pero no sé si incluyo todo</button>
                     <button class="income-btn" data-fiscal="al_corriente" data-i18n="diag.step3.fiscal4">Estoy al corriente con mis declaraciones</button>
                     <button class="income-btn" data-fiscal="no_se" data-i18n="diag.step3.fiscal5">No sé / No estoy seguro</button>
                 </div>
+                </div>
 
-                <p style="font-size:0.92rem; font-weight:600; margin-bottom:10px; color:#FFFFFF;" data-i18n="diag.step3.invoices">¿Emites facturas (CFDI)?</p>
+                <div class="q-block q-hidden" id="qFactura">
+                <p class="q-label" data-i18n="diag.step3.invoices">¿Emites facturas (CFDI)?</p>
                 <div class="income-options">
                     <button class="income-btn" data-factura="si_todas" data-i18n="diag.step3.invoice1">Sí, facturo todos mis ingresos</button>
                     <button class="income-btn" data-factura="algunas" data-i18n="diag.step3.invoice2">Solo facturo algunos</button>
                     <button class="income-btn" data-factura="no" data-i18n="diag.step3.invoice3">No emito facturas</button>
                     <button class="income-btn" data-factura="no_se" data-i18n="diag.step3.invoice4">No sé qué es un CFDI</button>
+                </div>
                 </div>
 
                 <div class="diag-nav">
@@ -1344,7 +1462,8 @@
         <div class="results-panel" id="results">
             <div class="risk-banner" id="risk-banner">
                 <div class="risk-level" id="risk-level"></div>
-                <div class="risk-label">Nivel de exposición ante el SAT</div>
+                <div class="risk-label" data-i18n="results.riskLabel">Nivel de exposición ante el SAT</div>
+                <div class="risk-meter" aria-hidden="true"><div class="risk-meter-fill" id="risk-meter-fill"></div></div>
             </div>
             <div class="profile-summary" id="profile-summary"></div>
 
@@ -1562,6 +1681,8 @@ const translations = {
         'diag.next': 'Siguiente',
         'diag.prev': 'Atrás',
         'diag.results': 'Ver mi diagnóstico',
+        'diag.step1.other': 'Otra plataforma',
+        'results.riskLabel': 'Nivel de exposición ante el SAT',
         'results.visibility': 'Lo que el SAT puede ver sobre tus operaciones',
         'results.obligations': 'Obligaciones que probablemente tienes (y quizá no conoces)',
         'results.actions': 'Pasos que puedes tomar',
@@ -1681,6 +1802,8 @@ const translations = {
         'diag.next': 'Next',
         'diag.prev': 'Back',
         'diag.results': 'See my diagnostic',
+        'diag.step1.other': 'Another platform',
+        'results.riskLabel': 'Exposure level with the tax authority (SAT)',
         'results.visibility': 'What the tax authority can see about your operations',
         'results.obligations': 'Obligations you probably have (and maybe don\'t know)',
         'results.actions': 'Steps you can take',
@@ -1970,6 +2093,10 @@ document.querySelectorAll('.platform-btn').forEach(btn => {
             btn.classList.add('selected');
         }
         document.getElementById('btn-step1').disabled = state.platforms.size === 0;
+        // Contador visual: solo numeral + check, funciona en ES y EN
+        const chip = document.getElementById('selCount');
+        chip.hidden = state.platforms.size === 0;
+        chip.textContent = state.platforms.size + ' \u2713';
     });
 });
 
@@ -1990,6 +2117,19 @@ document.querySelectorAll('.income-btn[data-fiscal]').forEach(btn => {
         btn.classList.add('selected');
         state.fiscal = btn.dataset.fiscal;
         checkStep3Complete();
+        // Revelado progresivo: la segunda pregunta aparece al responder la primera
+        const qf = document.getElementById('qFactura');
+        if (qf.classList.contains('q-hidden')) {
+            qf.style.height = '0px';
+            qf.classList.remove('q-hidden');
+            qf.style.height = qf.scrollHeight + 'px';
+            qf.addEventListener('transitionend', function fin(e) {
+                if (e.propertyName !== 'height') return;
+                qf.style.height = 'auto';
+                qf.removeEventListener('transitionend', fin);
+            });
+            setTimeout(() => qf.scrollIntoView({ behavior: 'smooth', block: 'nearest' }), 120);
+        }
     });
 });
 
@@ -2012,16 +2152,18 @@ document.getElementById('btn-step1').addEventListener('click', () => goStep(2));
 document.getElementById('btn-step2').addEventListener('click', () => goStep(3));
 document.getElementById('btn-results').addEventListener('click', showResults);
 
+let currentStep = 1;
 function goStep(n) {
+    const wizard = document.getElementById('diag-wizard');
+    wizard.dataset.dir = n < currentStep ? 'back' : 'fwd';
+    currentStep = n;
     document.querySelectorAll('.diag-step').forEach(s => s.classList.remove('active'));
     document.querySelector(`.diag-step[data-step="${n}"]`).classList.add('active');
     document.getElementById('results').classList.remove('active');
-    // Update progress bar
-    const progressFill = document.getElementById('diag-progress-fill');
-    if (progressFill) {
-        const widths = { 1: '33%', 2: '66%', 3: '100%' };
-        progressFill.style.width = widths[n] || '33%';
-    }
+    // Progreso segmentado: se llenan los tramos ya completados o en curso
+    document.querySelectorAll('.diag-seg').forEach(seg => {
+        seg.classList.toggle('done', Number(seg.dataset.seg) <= n);
+    });
 }
 
 function restartDiag() {
@@ -2036,21 +2178,27 @@ function restartDiag() {
     document.getElementById('results').classList.remove('active');
     document.getElementById('diag-wizard').style.display = 'block';
     const progressBar = document.querySelector('.diag-progress');
-    if (progressBar) progressBar.style.display = 'block';
-    const progressFill = document.getElementById('diag-progress-fill');
-    if (progressFill) progressFill.style.width = '33%';
+    if (progressBar) progressBar.style.display = 'flex';
+    const chip = document.getElementById('selCount');
+    chip.hidden = true;
+    const qf = document.getElementById('qFactura');
+    qf.classList.add('q-hidden');
+    qf.style.height = '';
+    currentStep = 1;
     goStep(1);
+    // El reanclado corre un frame despues: el layout ya colapso el panel de
+    // resultados y el scroll queda medido contra la geometria final.
+    requestAnimationFrame(() => {
+        const sec = document.getElementById('diagnostico');
+        sec.scrollTop = 0; // por si un navegador viejo (sin overflow:clip) guardo offset interno
+        window.scrollTo({ top: sec.getBoundingClientRect().top + window.scrollY - 70, behavior: 'auto' });
+    });
 }
 
 // ==================== LÓGICA DE DIAGNÓSTICO ====================
-function showResults() {
-    document.getElementById('diag-wizard').style.display = 'none';
-    const progressBar = document.querySelector('.diag-progress');
-    if (progressBar) progressBar.style.display = 'none';
-    const results = document.getElementById('results');
-    results.classList.add('active');
-
-    // Profile summary
+function renderResults() {
+    // Todo el contenido dinamico del panel, en el idioma actual. Idempotente:
+    // se llama al terminar el examen y al cambiar de idioma con el panel abierto.
     renderProfileSummary();
 
     const risk = calculateRisk();
@@ -2063,12 +2211,36 @@ function showResults() {
         : { alto: 'EXPOSICION ALTA', medio: 'EXPOSICION MEDIA', bajo: 'EXPOSICION BAJA' };
     riskLevel.textContent = labels[risk.level];
 
+    // Medidor: bajo 33%, medio 66%, alto 100%. El width se asigna tras el
+    // primer frame para que la transicion corra al entrar el panel.
+    const meterFill = document.getElementById('risk-meter-fill');
+    meterFill.style.width = '0';
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+        meterFill.style.width = { bajo: '33%', medio: '66%', alto: '100%' }[risk.level];
+    }));
+
     renderList('sat-visibility-list', risk.visibility);
     renderList('obligations-list', risk.obligations);
     renderList('actions-list', risk.actions);
-
-    results.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
+
+function showResults() {
+    document.getElementById('diag-wizard').style.display = 'none';
+    const progressBar = document.querySelector('.diag-progress');
+    if (progressBar) progressBar.style.display = 'none';
+    const results = document.getElementById('results');
+    results.classList.add('active');
+    renderResults();
+    window.scrollTo({ top: results.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+}
+
+// El diagnostico se arma en JS, asi que el barrido de data-i18n no lo alcanza
+// (mismo caso que el tabulador y el mapa: se re-renderiza al cambiar idioma).
+document.querySelectorAll('.lang-switch .lang-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+        if (document.getElementById('results').classList.contains('active')) renderResults();
+    });
+});
 
 function renderProfileSummary() {
     const container = document.getElementById('profile-summary');
