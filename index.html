@@ -150,7 +150,7 @@
             text-decoration: none;
             font-weight: 700;
             font-size: 1rem;
-            transition: all 0.3s;
+            transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
         .hero-cta:hover {
@@ -176,16 +176,17 @@
         /* SCROLL REVEAL */
         .reveal {
             opacity: 0;
-            transform: translateY(24px);
-            filter: blur(10px);
-            /* Opacidad y desplazamiento van con ease-out, para que el bloque
-               aparezca pronto. El desenfoque va con ease-in-out a propósito:
-               con una curva ease-out el enfoque se resuelve en los primeros
-               500 ms y el resto de la transición no se ve, aunque dure más.
-               Medido: a la mitad del tiempo el desenfoque va a la mitad. */
-            transition: opacity 1.2s cubic-bezier(0.22, 0.61, 0.36, 1),
-                        transform 1.2s cubic-bezier(0.22, 0.61, 0.36, 1),
-                        filter 1.3s cubic-bezier(0.42, 0, 0.58, 1);
+            transform: translateY(16px);
+            filter: blur(6px);
+            /* Antes: 1.2s con blur(10px) y curva ease-in-out en el filtro.
+               Se sentía lento porque el enfoque duraba TODA la transición.
+               Ahora todo va con ease-out y dura ~0.5s: el desenfoque se nota
+               al entrar pero se resuelve rápido. Blur de 6px en vez de 10px
+               porque animar blur repinta cada frame — radio menor = menos
+               trabajo de GPU = scroll más fluido. */
+            transition: opacity 0.5s cubic-bezier(0.22, 0.61, 0.36, 1),
+                        transform 0.5s cubic-bezier(0.22, 0.61, 0.36, 1),
+                        filter 0.45s cubic-bezier(0.22, 0.61, 0.36, 1);
         }
         .reveal.visible {
             opacity: 1;
@@ -208,9 +209,11 @@
                 transform: none;
             }
         }
-        .reveal-delay-1 { transition-delay: 0.18s; }
-        .reveal-delay-2 { transition-delay: 0.36s; }
-        .reveal-delay-3 { transition-delay: 0.54s; }
+        /* Escalonado más corto: con 0.54s de delay el tercer elemento
+           terminaba casi 2s después de entrar en pantalla. */
+        .reveal-delay-1 { transition-delay: 0.08s; }
+        .reveal-delay-2 { transition-delay: 0.16s; }
+        .reveal-delay-3 { transition-delay: 0.24s; }
 
         /* AUDIENCIA */
 
@@ -233,7 +236,7 @@
             font-weight: 500;
             color: var(--color-text);
             white-space: nowrap;
-            transition: all 0.3s ease;
+            transition: border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
         }
         .audience-pill:hover {
             border-color: var(--color-accent);
@@ -291,8 +294,10 @@
         /* Glass card for wizard */
         #diag-wizard {
             background: rgba(255,255,255,0.05);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+            /* 12px en vez de 20px: visualmente casi igual sobre este fondo,
+               pero el compositor trabaja bastante menos al hacer scroll. */
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: 20px;
             padding: 36px 32px;
@@ -636,9 +641,11 @@
             font-weight: 700;
             color: #5EEAD4;
             line-height: 1.2;
-            filter: blur(8px);
+            /* Blur más chico y transición más corta: animar blur sobre texto
+               que cambia cada frame (el count-up) es lo más caro de la página. */
+            filter: blur(5px);
             opacity: 0.4;
-            transition: filter 0.8s ease-out, opacity 0.8s ease-out;
+            transition: filter 0.4s ease-out, opacity 0.4s ease-out;
         }
         .stat-number.counting {
             filter: blur(0px);
@@ -2380,7 +2387,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         var prefix = el.getAttribute('data-prefix') || '';
         var suffix = el.getAttribute('data-suffix') || '';
         var decimals = parseInt(el.getAttribute('data-decimals')) || 0;
-        var duration = 2000;
+        var duration = 1200; // antes 2000ms — con easeOutExpo el 90% del valor aparece pronto igual, pero el número "vivo" deja de repintarse antes
         var start = null;
 
         function step(timestamp) {
@@ -2414,7 +2421,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
                         counter.textContent = counter.getAttribute('data-prefix') + '0';
                         counter.classList.add('counting');
                         animateCounter(counter);
-                    }, i * 150);
+                    }, i * 100);
                 });
                 statsObserver.disconnect();
             }
@@ -2433,10 +2440,21 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         entries.forEach(function(entry) {
             if (entry.isIntersecting) {
                 entry.target.classList.add('visible');
+                // Al terminar el enfoque, quitamos el filtro por completo:
+                // blur(0) sigue contando como filtro para el navegador y
+                // mantiene capas activas que ya no aportan nada visual.
+                entry.target.addEventListener('transitionend', function te(e) {
+                    if (e.propertyName === 'filter') {
+                        e.currentTarget.style.filter = 'none';
+                        e.currentTarget.removeEventListener('transitionend', te);
+                    }
+                });
                 observer.unobserve(entry.target);
             }
         });
-    }, { threshold: 0.15, rootMargin: '0px 0px -40px 0px' });
+    // Umbral más bajo y margen menor: el reveal arranca apenas asoma el
+    // elemento, así el contenido no va "detrás" del scroll.
+    }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
     reveals.forEach(function(el) { observer.observe(el); });
 })();
 </script>
