@@ -588,6 +588,8 @@
             line-height: 1.8;
         }
         .footer-copy .sep { margin: 0 8px; opacity: 0.6; }
+        .footer-copy a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+        .footer-copy a:hover { color: var(--color-accent); }
         .footer-mark { white-space: nowrap; }
         @media (max-width: 600px) {
             .footer-copy .sep { display: none; }
@@ -765,13 +767,13 @@
             max-width: 62ch;
         }
         .blk-foot {
-            margin-top: 26px;
-            padding-top: 16px;
+            margin-top: 24px;
+            padding-top: 14px;
             border-top: 1px solid var(--color-border);
             font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-            font-size: 0.7rem;
-            color: var(--color-text-secondary);
-            line-height: 1.75;
+            font-size: 0.66rem;
+            color: #A8A29E;
+            line-height: 1.7;
         }
 
         /* --- Calculadora de la retencion --- */
@@ -1091,7 +1093,7 @@
         <div class="calc-verdict" id="calcVerdict"></div>
         <p class="calc-caveat" data-i18n="calc.caveat">La tasa la fija la Ley de Ingresos año con año. Si la de 2027 no repite el 2.5%, vuelve a 1% el 1 de enero.</p>
 
-        <p class="blk-foot" data-i18n="calc.foot">Art. 113-A, párrafo tercero, fracción III LISR (1%) · Art. 25, fracción VI de la LIF 2026, DOF 07-nov-2025 (2.5%) · Umbral del Art. 113-B LISR, que se mide sobre el ejercicio inmediato anterior · Cálculo sobre ingresos brutos sin IVA, como lo indica el propio 113-A</p>
+        <p class="blk-foot" data-i18n="calc.foot">Art. 113-A, párrafo tercero, fracción III LISR (1%) · Art. 25, fracción VI de la LIF 2026, DOF 07-nov-2025 (2.5%) · Umbral del Art. 113-B LISR, medido sobre el ejercicio anterior · Sobre ingresos brutos sin IVA</p>
     </div>
 </section>
 
@@ -1149,7 +1151,7 @@
 
         <div class="map-panel" id="mapPanel" aria-live="polite"></div>
 
-        <p class="blk-foot" data-i18n="map.foot">Tasas leídas una por una en el texto vigente de la ley de hacienda, código fiscal o ley de ingresos de cada entidad, consultadas el 30 de julio de 2026 · Cuando el estado diferencia la tasa, se muestra la que aplica a departamentos y casas rentados a través de una plataforma, que es el caso de Airbnb, y el detalle de las otras tasas aparece al tocar el estado · Estas tasas se mueven en las leyes de ingresos estatales cada diciembre: si estás leyendo esto después de enero, confírmalo · Baja California Sur y Guerrero quedaron con confirmación parcial y lo dice su ficha · Geometría del mapa: svg-maps de Victor Cazanave, CC BY 4.0</p>
+        <p class="blk-foot" data-i18n="map.foot">Leídas en el texto vigente de la ley de cada entidad el 30 de julio de 2026. Cambian con las leyes de ingresos estatales cada diciembre.</p>
     </div>
 </section>
 
@@ -1421,7 +1423,7 @@
     <div class="container">
         <p class="footer-fine" data-i18n="footer.disclaimer">Fisco Abierto es una herramienta informativa. No constituye asesoría fiscal, legal ni contable. Consulta a un profesional antes de tomar decisiones sobre tu situación fiscal.</p>
         <p class="footer-copy">
-            <span data-i18n="footer.copy">&copy; MMXXVI Fisco Abierto<sup>&trade;</sup>. Hecho en México.</span><span class="sep">&middot;</span><span class="footer-mark" data-i18n="footer.mark">Marca en trámite ante el IMPI, expediente 3592372</span>
+            <span data-i18n="footer.copy">&copy; MMXXVI Fisco Abierto<sup>&trade;</sup>. Hecho en México.</span><span class="sep">&middot;</span><span class="footer-mark" data-i18n="footer.mark">Marca en trámite ante el IMPI, expediente 3592372</span><span class="sep">&middot;</span><span class="footer-mark"><span data-i18n="footer.creditPre">Mapa:</span> <a href="https://github.com/VictorCazanave/svg-maps" target="_blank" rel="noopener noreferrer">svg-maps</a> <span data-i18n="footer.creditMid">de</span> V. Cazanave, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a></span>
         </p>
     </div>
 </footer>
@@ -1460,7 +1462,7 @@ const translations = {
         'calc.rowNow': 'En 2026, retención de {rate}',
         'calc.rowDiff': 'Lo que te retienen de más cada año',
         'calc.caveat': 'La tasa la fija la Ley de Ingresos año con año. Si la de 2027 no repite el 2.5%, vuelve a 1% el 1 de enero.',
-        'calc.foot': 'Art. 113-A, párrafo tercero, fracción III LISR (1%) · Art. 25, fracción VI de la LIF 2026, DOF 07-nov-2025 (2.5%) · Umbral del Art. 113-B LISR, que se mide sobre el ejercicio inmediato anterior · Cálculo sobre ingresos brutos sin IVA, como lo indica el propio 113-A',
+        'calc.foot': 'Art. 113-A, párrafo tercero, fracción III LISR (1%) · Art. 25, fracción VI de la LIF 2026, DOF 07-nov-2025 (2.5%) · Umbral del Art. 113-B LISR, medido sobre el ejercicio anterior · Sobre ingresos brutos sin IVA',
         'calc.rateUp': 'Tu tasa subió de 1% a 2.5% en 2026: son {diff} más al año.',
         'calc.rateSame': 'Tu tasa no cambió en 2026. La Ley de Ingresos solo sustituyó la fracción III del 113-A, que es venta de bienes y prestación de servicios. A ti te aplica la fracción {frac}, que sigue en {rate}.',
         'calc.thFinal': 'Y con lo que te pagan no rebasas los $300,000 al año, así que puedes optar por que la retención sea tu pago definitivo de ISR. Si ejerces esa opción, lo retenido no se recupera en abril: es tu impuesto.',
@@ -1470,7 +1472,7 @@ const translations = {
         'map.titleMark': 'Va del 2% al 6%.',
         'map.lead': 'El impuesto sobre hospedaje es estatal, no federal, y cada congreso fija su propia tasa. En 27 de las 32 entidades la plataforma está obligada a retenerlo o enterarlo, así que probablemente ya lo estás pagando sin saberlo. Y en varios estados la tasa para departamentos y casas es más alta que la de los hoteles. Toca tu estado.',
         'map.l1': '2% a 2.5%', 'map.l2': '3% a 3.75%', 'map.l3': '4%', 'map.l4': '4.5% a 5%', 'map.l5': '6%',
-        'map.foot': 'Tasas leídas una por una en el texto vigente de la ley de hacienda, código fiscal o ley de ingresos de cada entidad, consultadas el 30 de julio de 2026 · Cuando el estado diferencia la tasa, se muestra la que aplica a departamentos y casas rentados a través de una plataforma, que es el caso de Airbnb, y el detalle de las otras tasas aparece al tocar el estado · Estas tasas se mueven en las leyes de ingresos estatales cada diciembre: si estás leyendo esto después de enero, confírmalo · Baja California Sur y Guerrero quedaron con confirmación parcial y lo dice su ficha · Geometría del mapa: svg-maps de Victor Cazanave, CC BY 4.0',
+        'map.foot': 'Leídas en el texto vigente de la ley de cada entidad el 30 de julio de 2026. Cambian con las leyes de ingresos estatales cada diciembre.',
         'map.panelNatName': 'Las 32 entidades cobran impuesto sobre hospedaje',
         'map.panelNatText': 'Ninguna se salva, pero la tasa cambia mucho según dónde esté el inmueble. Toca tu estado para ver la tuya, quién la retiene y el artículo que la fija.',
         'map.basis': 'Fundamento: {f}.',
@@ -1552,6 +1554,8 @@ const translations = {
         'footer.disclaimer': 'Fisco Abierto es una herramienta informativa. No constituye asesoría fiscal, legal ni contable. Consulta a un profesional antes de tomar decisiones sobre tu situación fiscal.',
         'footer.copy': '© MMXXVI Fisco Abierto™. Hecho en México.',
         'footer.mark': 'Marca en trámite ante el IMPI, expediente 3592372',
+        'footer.creditPre': 'Mapa:',
+        'footer.creditMid': 'de',
     },
     en: {
         'nav.diagnostic': 'Diagnostic',
@@ -1582,7 +1586,7 @@ const translations = {
         'calc.rowNow': 'In 2026, {rate} withholding',
         'calc.rowDiff': 'Extra withheld from you each year',
         'calc.caveat': 'The rate is set by the Revenue Law year by year. If the 2027 one does not repeat the 2.5%, it goes back to 1% on January 1.',
-        'calc.foot': 'Income Tax Law art. 113-A, third paragraph, section III (1%) · 2026 Revenue Law art. 25, section VI, published 07-Nov-2025 (2.5%) · Income Tax Law art. 113-B threshold, measured on the preceding tax year · Calculated on gross income before VAT, as article 113-A itself provides',
+        'calc.foot': 'Income Tax Law art. 113-A, third paragraph, section III (1%) · 2026 Revenue Law art. 25, section VI, published 07-Nov-2025 (2.5%) · Income Tax Law art. 113-B threshold, measured on the preceding tax year · On gross income before VAT',
         'calc.rateUp': 'Your rate went from 1% to 2.5% in 2026: that is {diff} more per year.',
         'calc.rateSame': 'Your rate did not change in 2026. The Revenue Law only replaced section III of article 113-A, which covers selling goods and providing services. You fall under section {frac}, still at {rate}.',
         'calc.thFinal': 'And at what you get paid you stay under 300,000 pesos a year, so you can elect to have the withholding be your final income tax payment. If you make that election, what is withheld is not recovered in April: it is your tax.',
@@ -1592,7 +1596,7 @@ const translations = {
         'map.titleMark': 'It ranges from 2% to 6%.',
         'map.lead': 'The lodging tax is set by each state, not by the federal government, and every state congress picks its own rate. In 27 of the 32 states the platform is required to withhold or remit it, so you are probably already paying it without knowing. And in several states the rate for apartments and houses is higher than the hotel rate. Tap your state.',
         'map.l1': '2% to 2.5%', 'map.l2': '3% to 3.75%', 'map.l3': '4%', 'map.l4': '4.5% to 5%', 'map.l5': '6%',
-        'map.foot': 'Each rate was read in the text in force of the state\'s tax code, revenue law or public finance law, consulted on 30 July 2026 · Where a state sets more than one rate, the one shown is the rate that applies to apartments and houses rented through a platform, which is the Airbnb case; the other rates appear when you tap the state · These rates move in the state revenue laws every December: if you are reading this after January, confirm it · Baja California Sur and Guerrero are only partially confirmed and their cards say so · Map geometry: svg-maps by Victor Cazanave, CC BY 4.0',
+        'map.foot': 'Read in the text in force of each state\'s own tax law on 30 July 2026. They change with the state revenue laws every December.',
         'map.panelNatName': 'All 32 states levy a lodging tax',
         'map.panelNatText': 'None of them skips it, but the rate varies a lot depending on where the property is. Tap your state to see your rate, who withholds it, and the article that sets it.',
         'map.basis': 'Legal basis: {f}.',
@@ -1674,6 +1678,8 @@ const translations = {
         'footer.disclaimer': 'Fisco Abierto is an informational tool about Mexican tax law. It does not constitute tax, legal, or accounting advice. Consult a professional before making decisions about your tax situation.',
         'footer.copy': '© MMXXVI Fisco Abierto™. Made in Mexico.',
         'footer.mark': 'Trademark application pending before IMPI, file 3592372',
+        'footer.creditPre': 'Map:',
+        'footer.creditMid': 'by',
     }
 };
 
