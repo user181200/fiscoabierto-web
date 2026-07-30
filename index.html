@@ -177,11 +177,31 @@
         .reveal {
             opacity: 0;
             transform: translateY(24px);
-            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1), transform 0.7s cubic-bezier(0.4, 0, 0.2, 1);
+            filter: blur(7px);
+            transition: opacity 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+                        transform 0.7s cubic-bezier(0.4, 0, 0.2, 1),
+                        filter 0.9s cubic-bezier(0.4, 0, 0.2, 1);
         }
         .reveal.visible {
             opacity: 1;
             transform: translateY(0);
+            filter: blur(0);
+        }
+
+        /* El desenfoque en texto largo se siente pesado en teléfono, igual que
+           pasó con las cifras. Ahí solo entra la opacidad. */
+        @media (max-width: 600px) {
+            .reveal { filter: none; }
+        }
+
+        /* Quien pidió menos movimiento no debería recibir nada de esto. */
+        @media (prefers-reduced-motion: reduce) {
+            .reveal, .reveal.visible, .stat-number, .stat-number.counting {
+                transition: none;
+                filter: none;
+                opacity: 1;
+                transform: none;
+            }
         }
         .reveal-delay-1 { transition-delay: 0.1s; }
         .reveal-delay-2 { transition-delay: 0.2s; }
@@ -918,7 +938,15 @@
         .mx-st.b4 { fill: #14B8A6; }
         .mx-st.b5 { fill: #0F766E; }
         .mx-st:hover, .mx-st:focus { filter: brightness(0.88); outline: none; }
-        .mx-st.is-active { stroke: var(--color-text); stroke-width: 1.6; }
+        /* Confirmación parcial: la incertidumbre se ve en el mapa, no solo
+           se lee en la ficha. Va antes de is-active para que el resaltado
+           de selección gane por orden de fuente. */
+        .mx-st.is-partial {
+            stroke: #57534E;
+            stroke-width: 1.1;
+            stroke-dasharray: 3 2.5;
+        }
+        .mx-st.is-active { stroke: var(--color-text); stroke-width: 1.6; stroke-dasharray: none; }
         .map-legend {
             display: flex;
             flex-wrap: wrap;
@@ -929,6 +957,7 @@
         }
         .map-legend span { display: inline-flex; align-items: center; gap: 6px; }
         .map-legend i { width: 12px; height: 12px; border-radius: 3px; flex-shrink: 0; }
+        .map-legend i.sw-partial { background: none; border: 1px dashed #57534E; }
         .map-panel {
             margin-top: 18px;
             background: var(--color-surface);
@@ -1053,9 +1082,9 @@
 <!-- CUANTO TE RETIENEN, EN PESOS -->
 <section class="calc-section">
     <div class="container">
-        <span class="eyebrow-chip" data-i18n="calc.eyebrow">El dato que más cambia</span>
-        <h2 class="blk-title"><span data-i18n="calc.titleA">La retención que te toca depende de lo que haces.</span> <span class="mark-hl" data-i18n="calc.titleMark">Y solo una subió en 2026.</span></h2>
-        <p class="blk-lead" data-i18n="calc.lead">El 113-A de la Ley del ISR tiene tres tasas distintas según lo que hagas, y la Ley de Ingresos de 2026 solo cambió una de las tres. Elige tu actividad y mueve la barra.</p>
+        <span class="eyebrow-chip reveal" data-i18n="calc.eyebrow">El dato que más cambia</span>
+        <h2 class="blk-title reveal reveal-delay-1"><span data-i18n="calc.titleA">La retención que te toca depende de lo que haces.</span> <span class="mark-hl" data-i18n="calc.titleMark">Y solo una subió en 2026.</span></h2>
+        <p class="blk-lead reveal reveal-delay-2" data-i18n="calc.lead">El 113-A de la Ley del ISR tiene tres tasas distintas según lo que hagas, y la Ley de Ingresos de 2026 solo cambió una de las tres. Elige tu actividad y mueve la barra.</p>
 
         <div class="calc-activity" role="group" aria-label="Tipo de actividad">
             <button type="button" class="act-btn active" data-act="venta" data-i18n="calc.actVenta">Venta de bienes o servicios</button>
@@ -1100,11 +1129,11 @@
 <!-- MAPA: INFORMALIDAD POR ESTADO -->
 <section class="map-section">
     <div class="container">
-        <span class="eyebrow-chip" data-i18n="map.eyebrow">El impuesto que nadie te menciona</span>
-        <h2 class="blk-title"><span data-i18n="map.titleA">Si rentas por Airbnb, tu estado te cobra un impuesto aparte del SAT.</span> <span class="mark-hl" data-i18n="map.titleMark">Va del 2% al 6%.</span></h2>
-        <p class="blk-lead" data-i18n="map.lead">El impuesto sobre hospedaje es estatal, no federal, y cada congreso fija su propia tasa. En 27 de las 32 entidades la plataforma está obligada a retenerlo o enterarlo, así que probablemente ya lo estás pagando sin saberlo. Y en varios estados la tasa para departamentos y casas es más alta que la de los hoteles. Toca tu estado.</p>
+        <span class="eyebrow-chip reveal" data-i18n="map.eyebrow">El impuesto que nadie te menciona</span>
+        <h2 class="blk-title reveal reveal-delay-1"><span data-i18n="map.titleA">Si rentas por Airbnb, tu estado te cobra un impuesto aparte del SAT.</span> <span class="mark-hl" data-i18n="map.titleMark">Va del 2% al 6%.</span></h2>
+        <p class="blk-lead reveal reveal-delay-2" data-i18n="map.lead">El impuesto sobre hospedaje es estatal, no federal, y cada congreso fija su propia tasa. En 27 de las 32 entidades la plataforma está obligada a retenerlo o enterarlo, así que probablemente ya lo estás pagando sin saberlo. Y en varios estados la tasa para departamentos y casas es más alta que la de los hoteles. Toca tu estado.</p>
 
-        <svg class="mxmap" viewBox="0 0 793 498" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Mapa de México: impuesto estatal sobre hospedaje por entidad federativa">
+        <svg class="mxmap reveal reveal-delay-3" viewBox="0 0 793 498" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Mapa de México: impuesto estatal sobre hospedaje por entidad federativa">
             <g id="mxStates">
                 <path class="mx-st b2" data-st="agu" tabindex="0" role="button" aria-label="Aguascalientes: 3%" d="m 390.52786,309.79244 -2.34,-2.26 -0.07,-1.21 1.24,-2.87 3.33,-4.59 0.93,-3.24 1.07,-0.73 1.79,-0.38 3.47,-1.97 1.21,-0.92 0.39,-1.26 0.73,-0.17 0.77,1.39 1.33,1.34 4.44,2.63 0.59,2.44 1.14,2.04 0,0 0.26,0.59 -0.24,1.6 1.96,2.14 -4.28,1.97 -2.55,3.55 -0.72,0.5 -3.02,1.04 -1.26,0.06 -2.17,-1.02 -1.74,-1.41 -4.21,-0.38 z"/>
                 <path class="mx-st b4" data-st="bcn" tabindex="0" role="button" aria-label="Baja California: 5%" d="m 106.48786,137.85244 -0.65,0 0,0 -0.76,0.12 0.13,0.44 -0.82,0.41 -0.68,0.01 -0.75,0.86 -0.29,-0.74 0.19,-0.78 3.08,-3.76 0.62,-0.15 0.06,0.97 -0.8,0.76 -0.02,0.52 0.69,1.34 z m -27.349998,-11.99 0.56,0.45 0.75,2.86 -0.25,1.02 0.38,2.42 -0.68,0.9 0.04,2.09 -0.62,-0.19 -0.54,0.33 -0.65,-0.31 -0.6,-1.42 -0.58,-0.18 -1,0.6 -0.37,-0.15 0.07,-0.78 2.73,-3.03 0.15,-0.68 -0.58,-1.61 0.51,-1.89 0.68,-0.43 z m 58.139998,-8.56 0.82,0.18 2.68,2.27 -0.54,0.47 -0.6,-0.96 -1.69,-0.95 -0.67,-1.01 z m 8.46,-1.5 0.34,0.64 -0.27,1.02 -1.16,0.04 -0.35,-1.56 1.44,-0.14 z m -142.8599978,-13.07 -0.64,1.32 0.15,1.03 1.31,1.2 0.23,2.9 -0.67,2.08 -0.75,0.23 -0.56,-1.47 0.21,-0.92 -0.56,-0.37 -0.07,-1.6 -1.24000002,-1.24 0.35,-1 -0.29,-0.96 0.74000002,-0.62 0.8,0.04 0.99,-0.62 z M 120.65786,92.442438 l -0.02,0.48 1.1,-0.48 0.02,0.32 0.93,0.26 1.27,1.64 0.77,0.39 1.06,2.21 -0.59,0.86 0.12,1.17 1.84,0.830002 2.9,-0.180002 0.34,0.300002 -0.17,4.33 0.62,1.71 1.2,0.37 -0.34,1.9 -2.96,-2.09 -1.72,-2.42 -2.56,-1.82 -0.96,-1.88 -1.37,-0.26 -0.24,-1.090002 -2.04,-2.47 -0.16,-0.86 0.77,-1.87 -0.21,-0.98 0.4,-0.37 z m -21.549998,-12.53 0.64,0.81 -0.45,0.14 -0.34,-0.36 0.15,-0.59 z m -9.92,-73.05 -0.85,0.51 -0.47,-0.4 -1.34,0.01 -0.6,2.05 -0.47,0.48 -0.05,1.34 -1.81,2.43 1.4,1.99 -0.62,1.83 0.29,1.14 -0.42,2.67 0.24,0.98 -0.6,0.98 0.96,0.95 0.92,0.13 3.82,2.76 0,0 -0.47,1.74 0.92,4 -1.12,1.46 -0.74,2.41 -0.08,3.53 -0.85,3.16 0.3,0.65 -0.25,2.22 0.62,2.21 1.37,1.26 -0.52,0.66 -0.02,0.65 2.84,1.84 0.59,3.53 -0.08,5.21 1.72,4.04 0.02,2.21 -0.35,1.3 0.21,0.82 -0.52,1.95 0.37,0.33 -0.65,2.16 1,2.06 0.62,0.38 1.73,4 1.23,0.61 0.3,0.9 0.96,0.15 0.64,0.89 -0.02,1.82 0.45,0.94 0.819998,0.32 0.44,0.72 1.17,0.12 0.34,-0.86 1.81,0.78 1.21,1.54 0.31,-0.06 0.96,1.18 0.94,0.48 0.68,1.13 1.62,0.83 2.09,2.34 1.52,0.83 0.11,0.61 1.44,0.69 1.98,2.47 1.44,1.170002 0.3,0.88 -0.73,0.85 0.01,0.48 2.08,2.55 0.79,1.64 -0.58,1.16 0.45,1.64 -0.33,0.25 0.81,1.69 0.82,0.1 0.53,-0.7 -0.41,-0.38 0.42,-0.62 0.48,0.27 0.47,-0.36 0.41,0.8 0.6,-0.12 -0.04,0.41 0.45,0.12 0.12,2.09 0.39,0.95 1.1,-0.03 1.31,-1.04 1.08,0.62 1.43,4.51 0.77,0.82 0.59,3.53 2.58,1.46 2.44,-0.59 0.48,0.36 0.07,0.73 0.81,-0.15 0.11,0.6 -0.36,0.48 0.25,0.66 -0.59,2.6 1.97,2.8 -0.47,2.03 0.62,1.45 -0.39,1.24 0.93,0.57 0.27,0.99 -0.3,2.49 0,0 -0.64,-1.71 -0.87,-0.26 0,0 -31.69,-0.11 0.23,-0.53 -0.35,-0.49 -0.05,-1.32 0.86,1.21 0.79,-1.39 -1.61,-0.41 -0.35,-1.72 1.52,-2.99 -0.42,-0.96 -0.88,0.53 -0.51,-0.49 1.28,-2.91 0.65,-3.16 -1.27,-2.19 -1.56,-0.63 -0.07,-2.03 -0.44,-0.43 -2.2,-0.1 0.01,-0.81 -0.45,-0.52 -1.54,-0.86 0.12,-0.59 -0.46,-1.17 -0.879998,-0.47 -0.56,-1.87 -0.46,-0.07 -0.23,-0.6 -0.96,-0.73 -0.97,-0.07 -0.17,0.33 -0.52,-1.09 -0.68,-0.44 -0.23,0.3 -0.54,-2.72 -0.64,-1.05 -1.06,-0.47 -0.64,0.34 -0.8,-0.98 -0.25,-1.35 -1.16,-0.55 -0.12,-0.37 -0.45,0.03 -3.43,-4.210002 -2.91,-1.5 -3.06,-0.4 -1.55,-2.51 -2.41,-1.18 -0.76,-0.03 -2,-1.92 -1.19,0.25 -2,-2.17 -0.89,-0.1 -1.88,-1.56 0.25,-2.52 -0.33,-1.5 -1.14,-1.62 -1.57,-0.58 0.62,-3.57 -0.54,-1.2 0.02,-4.19 -1.46,-2.55 -2.06,-1.24 0.19,-1.4 -0.82,-0.77 -0.23,0.4 0.5,0.94 -0.5,0.35 -0.46,-0.7 -0.53,0 0.58,1.34 -0.31,0.1 -1.06,-2.05 0.57,-5.32 -0.63,-3.55 -0.53,-1.05 -0.6,-0.08 -1.44,-1.26 -0.53,0.01 -2.3,-3.02 -1.55,0.2 -0.25,-0.46 0.74,-5.28 -1.38,-2.71 -2.09,-2.2 -1.85,-3.14 -1.29,-0.96 -0.68,0.08 -0.18,-1 -1.27,-0.92 -0.27,-0.72 -0.41,0.08 -0.12,-0.58 1.02,-0.52 -0.44,-0.9 0.47,-1.24 -1.17,-1.61 -0.33,0.14 -0.85,-1 0.45,-0.1 1.6,0.89 1.05,-0.96 0.19,-2.58 -0.4,-0.61 -1.26,-0.27 -0.57,-0.77 -1.15,-0.2 -0.41,-1.83 -0.48,-0.4 -1.23,0 -1.23,-1.18 -0.12,-3.02 -0.81,-2.83 -0.47,-0.75 -2.1,-0.71 -0.48,-0.56 -2.14,-5.9 0.04,-1.34 60.19,-5.54 -1.58,2.83 -0.67,0.19 0.5,1.79 -0.35,0.24 -0.3,1.52 z"/>
@@ -1147,11 +1176,12 @@
             <span><i style="background:#5EEAD4"></i><span data-i18n="map.l3">4%</span></span>
             <span><i style="background:#14B8A6"></i><span data-i18n="map.l4">4.5% a 5%</span></span>
             <span><i style="background:#0F766E"></i><span data-i18n="map.l5">6%</span></span>
+            <span><i class="sw-partial"></i><span data-i18n="map.lPartial">confirmación parcial</span></span>
         </div>
 
         <div class="map-panel" id="mapPanel" aria-live="polite"></div>
 
-        <p class="blk-foot" data-i18n="map.foot">Leídas en el texto vigente de la ley de cada entidad el 30 de julio de 2026. Cambian con las leyes de ingresos estatales cada diciembre.</p>
+        <p class="blk-foot" data-i18n="map.foot">Leídas en la ley de cada entidad el 30 de julio de 2026. Cambian cada diciembre.</p>
     </div>
 </section>
 
@@ -1472,7 +1502,8 @@ const translations = {
         'map.titleMark': 'Va del 2% al 6%.',
         'map.lead': 'El impuesto sobre hospedaje es estatal, no federal, y cada congreso fija su propia tasa. En 27 de las 32 entidades la plataforma está obligada a retenerlo o enterarlo, así que probablemente ya lo estás pagando sin saberlo. Y en varios estados la tasa para departamentos y casas es más alta que la de los hoteles. Toca tu estado.',
         'map.l1': '2% a 2.5%', 'map.l2': '3% a 3.75%', 'map.l3': '4%', 'map.l4': '4.5% a 5%', 'map.l5': '6%',
-        'map.foot': 'Leídas en el texto vigente de la ley de cada entidad el 30 de julio de 2026. Cambian con las leyes de ingresos estatales cada diciembre.',
+        'map.lPartial': 'confirmación parcial',
+        'map.foot': 'Leídas en la ley de cada entidad el 30 de julio de 2026. Cambian cada diciembre.',
         'map.panelNatName': 'Las 32 entidades cobran impuesto sobre hospedaje',
         'map.panelNatText': 'Ninguna se salva, pero la tasa cambia mucho según dónde esté el inmueble. Toca tu estado para ver la tuya, quién la retiene y el artículo que la fija.',
         'map.basis': 'Fundamento: {f}.',
@@ -1596,7 +1627,8 @@ const translations = {
         'map.titleMark': 'It ranges from 2% to 6%.',
         'map.lead': 'The lodging tax is set by each state, not by the federal government, and every state congress picks its own rate. In 27 of the 32 states the platform is required to withhold or remit it, so you are probably already paying it without knowing. And in several states the rate for apartments and houses is higher than the hotel rate. Tap your state.',
         'map.l1': '2% to 2.5%', 'map.l2': '3% to 3.75%', 'map.l3': '4%', 'map.l4': '4.5% to 5%', 'map.l5': '6%',
-        'map.foot': 'Read in the text in force of each state\'s own tax law on 30 July 2026. They change with the state revenue laws every December.',
+        'map.lPartial': 'partially confirmed',
+        'map.foot': 'Read in each state\'s own law on 30 July 2026. They change every December.',
         'map.panelNatName': 'All 32 states levy a lodging tax',
         'map.panelNatText': 'None of them skips it, but the rate varies a lot depending on where the property is. Tap your state to see your rate, who withholds it, and the article that sets it.',
         'map.basis': 'Legal basis: {f}.',
@@ -1900,7 +1932,7 @@ document.querySelectorAll('.lang-switch .lang-btn').forEach(function(btn) {
     group.querySelectorAll('.mx-st').forEach(function(el) {
         var d = ST[el.getAttribute('data-st')];
         if (d) {
-            el.setAttribute('class', 'mx-st b' + d.b);
+            el.setAttribute('class', 'mx-st b' + d.b + (d.r === 'nv' ? ' is-partial' : ''));
             el.setAttribute('aria-label', d.n + ': ' + fmtPct(d.t));
         }
     });
