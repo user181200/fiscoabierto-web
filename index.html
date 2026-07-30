@@ -177,7 +177,7 @@
         .reveal {
             opacity: 0;
             transform: translateY(24px);
-            filter: blur(14px);
+            filter: blur(10px);
             /* Opacidad y desplazamiento van con ease-out, para que el bloque
                aparezca pronto. El desenfoque va con ease-in-out a propósito:
                con una curva ease-out el enfoque se resuelve en los primeros
@@ -185,7 +185,7 @@
                Medido: a la mitad del tiempo el desenfoque va a la mitad. */
             transition: opacity 1.2s cubic-bezier(0.22, 0.61, 0.36, 1),
                         transform 1.2s cubic-bezier(0.22, 0.61, 0.36, 1),
-                        filter 1.8s cubic-bezier(0.42, 0, 0.58, 1);
+                        filter 1.3s cubic-bezier(0.42, 0, 0.58, 1);
         }
         .reveal.visible {
             opacity: 1;
@@ -1137,8 +1137,7 @@
 <!-- MAPA: INFORMALIDAD POR ESTADO -->
 <section class="map-section">
     <div class="container">
-        <span class="eyebrow-chip reveal" data-i18n="map.eyebrow">El impuesto que nadie te menciona</span>
-        <h2 class="blk-title reveal reveal-delay-1"><span data-i18n="map.titleA">Si rentas por Airbnb, tu estado te cobra un impuesto aparte del SAT.</span> <span class="mark-hl" data-i18n="map.titleMark">Va del 2% al 6%.</span></h2>
+        <h2 class="blk-title reveal"><span data-i18n="map.titleA">Si rentas por Airbnb, tu estado te cobra un impuesto aparte del SAT.</span> <span class="mark-hl" data-i18n="map.titleMark">Va del 2% al 6%.</span></h2>
         <p class="blk-lead reveal reveal-delay-2" data-i18n="map.lead">El impuesto sobre hospedaje es estatal, no federal, y cada congreso fija su propia tasa. En 27 de las 32 entidades la plataforma está obligada a retenerlo o enterarlo, así que probablemente ya lo estás pagando sin saberlo. Y en varios estados la tasa para departamentos y casas es más alta que la de los hoteles. Toca tu estado.</p>
 
         <svg class="mxmap reveal reveal-delay-3" viewBox="0 0 793 498" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Mapa de México: impuesto estatal sobre hospedaje por entidad federativa">
@@ -1222,14 +1221,6 @@
             <div class="trust-card">
                 <h3 data-i18n="trust.card2.title">Por qué es gratis</h3>
                 <p data-i18n="trust.card2.text">Porque la información fiscal básica no debería costar dinero. No hay plan premium, no hay upsell, no hay trampa. Solo información pública, bien explicada.</p>
-            </div>
-            <div class="trust-card">
-                <h3 data-i18n="trust.card3.title">Tus datos están a salvo</h3>
-                <p data-i18n="trust.card3.text">No pedimos nombre, RFC, correo ni ningún dato personal. Todo se procesa en tu navegador. No enviamos nada a ningún servidor. Puedes verificarlo en el código fuente.</p>
-            </div>
-            <div class="trust-card">
-                <h3 data-i18n="trust.card4.title">Informar, no asesorar</h3>
-                <p data-i18n="trust.card4.text">Traducimos la ley para que cualquier persona la entienda. Pero no sustituimos a un contador ni a un abogado. Cuando la situación lo amerite, te lo vamos a decir.</p>
             </div>
         </div>
     </div>
@@ -1505,7 +1496,6 @@ const translations = {
         'calc.rateSame': 'Tu tasa no cambió en 2026. La Ley de Ingresos solo sustituyó la fracción III del 113-A, que es venta de bienes y prestación de servicios. A ti te aplica la fracción {frac}, que sigue en {rate}.',
         'calc.thFinal': 'Y con lo que te pagan no rebasas los $300,000 al año, así que puedes optar por que la retención sea tu pago definitivo de ISR. Si ejerces esa opción, lo retenido no se recupera en abril: es tu impuesto.',
         'calc.thAdvance': 'Y con lo que te pagan rebasas los $300,000 al año, así que la retención es un anticipo que acreditas en tu declaración anual: te pega al flujo de efectivo, no al impuesto final.',
-        'map.eyebrow': 'El impuesto que nadie te menciona',
         'map.titleA': 'Si rentas por Airbnb, tu estado te cobra un impuesto aparte del SAT.',
         'map.titleMark': 'Va del 2% al 6%.',
         'map.lead': 'El impuesto sobre hospedaje es estatal, no federal, y cada congreso fija su propia tasa. En 27 de las 32 entidades la plataforma está obligada a retenerlo o enterarlo, así que probablemente ya lo estás pagando sin saberlo. Y en varios estados la tasa para departamentos y casas es más alta que la de los hoteles. Toca tu estado.',
@@ -1534,10 +1524,6 @@ const translations = {
         'trust.card1.text': 'Un proyecto independiente, hecho desde el derecho fiscal mexicano. No es una empresa, no es un despacho, no vende nada. Existe porque la información fiscal básica debería ser accesible para todos.',
         'trust.card2.title': 'Por qué es gratis',
         'trust.card2.text': 'Porque la información fiscal básica no debería costar dinero. No hay plan premium, no hay upsell, no hay trampa. Solo información pública, bien explicada.',
-        'trust.card3.title': 'Tus datos están a salvo',
-        'trust.card3.text': 'No pedimos nombre, RFC, correo ni ningún dato personal. Todo se procesa en tu navegador. No enviamos nada a ningún servidor. Puedes verificarlo en el código fuente.',
-        'trust.card4.title': 'Informar, no asesorar',
-        'trust.card4.text': 'Traducimos la ley para que cualquier persona la entienda. Pero no sustituimos a un contador ni a un abogado. Cuando la situación lo amerite, te lo vamos a decir.',
         'diag.title': 'Diagnóstico fiscal express',
         'diag.intro': 'Selecciona tus plataformas e ingresos aproximados. No pedimos datos personales (ni nombre, ni RFC, ni correo). Todo se procesa en tu navegador.',
         'diag.step1.question': '¿En qué plataformas generas ingresos?',
@@ -1629,7 +1615,6 @@ const translations = {
         'calc.rateSame': 'Your rate did not change in 2026. The Revenue Law only replaced section III of article 113-A, which covers selling goods and providing services. You fall under section {frac}, still at {rate}.',
         'calc.thFinal': 'And at what you get paid you stay under 300,000 pesos a year, so you can elect to have the withholding be your final income tax payment. If you make that election, what is withheld is not recovered in April: it is your tax.',
         'calc.thAdvance': 'And at what you get paid you go over 300,000 pesos a year, so the withholding is an advance you credit in your annual return: it hits your cash flow, not your final tax bill.',
-        'map.eyebrow': 'The tax nobody mentions',
         'map.titleA': 'If you rent on Airbnb, your state charges a tax on top of the federal one.',
         'map.titleMark': 'It ranges from 2% to 6%.',
         'map.lead': 'The lodging tax is set by each state, not by the federal government, and every state congress picks its own rate. In 27 of the 32 states the platform is required to withhold or remit it, so you are probably already paying it without knowing. And in several states the rate for apartments and houses is higher than the hotel rate. Tap your state.',
@@ -1658,10 +1643,6 @@ const translations = {
         'trust.card1.text': 'An independent project built from within Mexican tax law. Not a company, not a law firm, doesn\'t sell anything. It exists because basic tax information in Mexico should be accessible to everyone.',
         'trust.card2.title': 'Why it\'s free',
         'trust.card2.text': 'Because basic tax information shouldn\'t cost money. No premium plans, no upsells, no tricks. Just public information, clearly explained.',
-        'trust.card3.title': 'Your data is safe',
-        'trust.card3.text': 'We don\'t ask for your name, tax ID, email, or any personal data. Everything runs in your browser. Nothing is sent to any server. You can verify it in the source code.',
-        'trust.card4.title': 'Inform, not advise',
-        'trust.card4.text': 'We translate the law so anyone can understand it. But we don\'t replace an accountant or tax lawyer. When the situation calls for it, we\'ll tell you.',
         'diag.title': 'Quick tax diagnostic',
         'diag.intro': 'Select your platforms and approximate income. We don\'t ask for personal data (no name, tax ID, or email). Everything is processed in your browser.',
         'diag.step1.question': 'Which platforms do you earn income on?',
