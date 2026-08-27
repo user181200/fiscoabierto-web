@@ -7,7 +7,7 @@
     <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <meta name="description" content="Herramienta gratuita para entender tus obligaciones fiscales si generas ingresos en plataformas digitales en México. Mercado Libre, Uber, Airbnb, freelance y más.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,500;8..60,700&display=swap" rel="stylesheet">
     <style>
         :root {
             --color-bg: #FAFAF9;
@@ -25,6 +25,7 @@
             --color-safe: #16A34A;
             --color-safe-bg: #F0FDF4;
             --radius: 12px;
+            --font-serif: 'Source Serif 4', Georgia, 'Times New Roman', serif;
             --shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
             --shadow-md: 0 4px 6px rgba(0,0,0,0.05), 0 2px 4px rgba(0,0,0,0.04);
         }
@@ -53,20 +54,73 @@
             position: sticky;
             top: 0;
             z-index: 100;
+            transition: padding 0.25s ease;
         }
         nav .container {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            /* Al compactarse, la barra se expande de la columna de 720px
+               al ancho completo: el FA viaja hasta el borde izquierdo,
+               como el logo de anthropic.com. */
+            transition: max-width 0.4s ease;
         }
+        nav.shrunk .container { max-width: 1560px; }
         .logo {
             display: inline-flex;
             align-items: center;
             text-decoration: none;
         }
-        .logo svg {
-            height: 28px;
-            width: auto;
+        /* Identidad en dos piezas: el badge FA (la marca corta, siempre
+           visible) y el wordmark en dos tonos. Al scrollear, el texto se
+           colapsa con transicion — el morph de anthropic.com — y queda
+           solo el FA. Nada de switch seco: max-width + opacity animados. */
+        .logo { gap: 10px; }
+        .logo-badge { height: 32px; width: auto; flex-shrink: 0; }
+        .logo-word {
+            display: inline-flex;
+            gap: 0.18em;
+            white-space: nowrap;
+            overflow: hidden;
+            max-width: 240px;
+            opacity: 1;
+            font-size: 1.05rem;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            transition: max-width 0.35s ease, opacity 0.25s ease;
+        }
+        .logo-word-a { color: var(--color-accent); }
+        .logo-word-b { color: var(--color-text); }
+        nav.shrunk .logo-word { max-width: 0; opacity: 0; }
+        nav.shrunk { padding: 8px 0; }
+        .nav-right { display: inline-flex; align-items: center; gap: 14px; }
+        .nav-cta {
+            background: var(--color-text);
+            color: #FFFFFF;
+            text-decoration: none;
+            font-size: 0.88rem;
+            font-weight: 600;
+            padding: 9px 18px;
+            border-radius: 999px;
+            white-space: nowrap;
+            /* Dos botones de Diagnostico a la vista es uno de mas: este
+               aparece cuando el del hero ya salio de pantalla. */
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-4px);
+            transition: opacity 0.25s ease, transform 0.25s ease,
+                        visibility 0s linear 0.25s, background-color 0.2s;
+        }
+        nav.cta-on .nav-cta {
+            opacity: 1;
+            visibility: visible;
+            transform: none;
+            transition: opacity 0.25s ease, transform 0.25s ease,
+                        visibility 0s, background-color 0.2s;
+        }
+        .nav-cta:hover { background: var(--color-accent); }
+        @media (prefers-reduced-motion: reduce) {
+            nav, nav .container, .logo-word, .nav-cta { transition: none; }
         }
         .nav-links { display: flex; gap: 24px; }
         .nav-links a {
@@ -108,9 +162,12 @@
         /* HERO */
         .hero {
             position: relative;
-            padding: 100px 0 80px;
+            padding: 60px 0;
+            min-height: calc(100vh - 73px);
+            display: flex;
+            align-items: center;
             text-align: center;
-            background: linear-gradient(135deg, #0a0f0f 0%, #0d2926 40%, #0F766E 100%);
+            background: radial-gradient(ellipse at 50% -20%, rgba(15, 118, 110, 0.22), transparent 60%), #131212;
             overflow: hidden;
         }
         .hero canvas {
@@ -125,6 +182,7 @@
         .hero .container {
             position: relative;
             z-index: 2;
+            width: 100%;
         }
         .hero h1 {
             font-size: 2.4rem;
@@ -215,6 +273,20 @@
         .reveal-delay-2 { transition-delay: 0.16s; }
         .reveal-delay-3 { transition-delay: 0.24s; }
 
+        /* SCROLL-FADE (seccion de cifras) — pieza distinta al reveal:
+           el reveal es interruptor (entra una vez y se queda encendido),
+           esto es perilla continua: el JS al final del body escribe la
+           opacidad en cada frame segun la distancia del elemento al centro
+           del viewport. Por eso aqui NO hay transition de opacidad: dos
+           sistemas animando la misma propiedad son dos manos en el mismo
+           volante. Sin JS, la seccion queda perfectamente legible. */
+        html { scroll-padding-top: 90px; }
+        @media (max-width: 600px) { html { scroll-padding-top: 90px; } }
+        .scroll-fade { will-change: opacity, transform; }
+        @media (prefers-reduced-motion: reduce) {
+            .scroll-fade { opacity: 1 !important; transform: none !important; }
+        }
+
         /* AUDIENCIA */
 
         /* AUDIENCIA - Pills */
@@ -252,7 +324,7 @@
 
         /* DIAGNÓSTICO */
         #diagnostico {
-            background: linear-gradient(160deg, #0a0f0f 0%, #0d2926 50%, #0F766E 100%);
+            background: radial-gradient(ellipse at 30% 0%, rgba(15, 118, 110, 0.14), transparent 55%), #131212;
             border: none;
             position: relative;
             /* clip y no hidden: hidden sigue aceptando scroll programatico
@@ -274,15 +346,16 @@
         }
         #diagnostico .container { position: relative; z-index: 2; }
 
-        .diag-intro { margin-bottom: 32px; }
+        .diag-intro { margin-bottom: 28px; text-align: center; }
         #diagnostico h2 { color: #FFFFFF; }
-        #diagnostico .section-subtitle { color: rgba(255,255,255,0.6); }
+        #diagnostico .section-subtitle { color: rgba(255,255,255,0.6); max-width: 600px; margin-left: auto; margin-right: auto; }
 
         /* Progreso segmentado: un tramo por paso */
         .diag-progress {
             display: flex;
             gap: 6px;
-            margin-bottom: 32px;
+            max-width: 380px;
+            margin: 0 auto 40px;
         }
         .diag-seg {
             flex: 1;
@@ -304,22 +377,94 @@
         }
         .diag-seg.done::after { transform: scaleX(1); }
 
-        /* Glass card for wizard */
+        /* Sin caja: el wizard vive directo sobre el escenario oscuro.
+           La pregunta serif es la protagonista, no un formulario. */
         #diag-wizard {
-            /* Sin backdrop-filter: al alternar display en el flujo del wizard,
-               Chrome dejaba bandas sin repintar (snapshot viejo del backdrop).
-               Sobre un gradiente suave el blur no aportaba nada visible;
-               el tinte rgba + borde dan el mismo efecto de vidrio. */
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: 20px;
-            padding: 36px 32px;
+            padding: 16px 0 8px;
         }
 
-        .diag-step { display: none; }
+        .diag-step { display: none; position: relative; }
         .diag-step.active {
             display: block;
             animation: fadeSlideIn 0.4s ease-out;
+        }
+        /* WIZARD EN BANDA: en pantallas anchas cada paso usa la geometria
+           de la casa — pregunta serif a la izquierda, opciones a la
+           derecha — la misma banda que cifras y resultados. */
+        @media (min-width: 861px) {
+            .diag-step.active {
+                display: grid;
+                grid-template-columns: 5fr 7fr;
+                grid-auto-rows: min-content;
+                column-gap: 4vw;
+                align-items: start;
+            }
+            .diag-step .diag-question {
+                grid-column: 1;
+                grid-row: 1;
+                text-align: left;
+                margin: 0 0 12px;
+                max-width: none;
+            }
+            .diag-step .diag-hint {
+                grid-column: 1;
+                grid-row: 2;
+                text-align: left;
+                margin-bottom: 0;
+            }
+            .diag-step .platform-grid,
+            .diag-step .income-options,
+            .diag-step .q-block,
+            .diag-step .diag-nav { grid-column: 2; }
+            .diag-step .platform-grid { justify-content: flex-start; margin: 0 0 20px; max-width: none; }
+            .diag-step .income-options { margin: 0 0 20px; max-width: none; }
+            .diag-step .diag-nav { justify-content: flex-end; }
+        }
+        /* Entrada en cascada de las opciones: cada chip y cada fila llega
+           con su propio compas, como el revelado de los resultados. */
+        .diag-step.active .platform-btn,
+        .diag-step.active .income-btn {
+            animation: fadeSlideIn 0.35s ease-out backwards;
+        }
+        .diag-step.active .platform-btn:nth-child(1) { animation-delay: 0.03s; }
+        .diag-step.active .platform-btn:nth-child(2) { animation-delay: 0.06s; }
+        .diag-step.active .platform-btn:nth-child(3) { animation-delay: 0.09s; }
+        .diag-step.active .platform-btn:nth-child(4) { animation-delay: 0.12s; }
+        .diag-step.active .platform-btn:nth-child(5) { animation-delay: 0.15s; }
+        .diag-step.active .platform-btn:nth-child(6) { animation-delay: 0.18s; }
+        .diag-step.active .platform-btn:nth-child(7) { animation-delay: 0.21s; }
+        .diag-step.active .platform-btn:nth-child(8) { animation-delay: 0.24s; }
+        .diag-step.active .platform-btn:nth-child(9) { animation-delay: 0.27s; }
+        .diag-step.active .platform-btn:nth-child(10) { animation-delay: 0.3s; }
+        .diag-step.active .platform-btn:nth-child(11) { animation-delay: 0.33s; }
+        .diag-step.active .platform-btn:nth-child(12) { animation-delay: 0.36s; }
+        .diag-step.active .income-btn:nth-child(1) { animation-delay: 0.05s; }
+        .diag-step.active .income-btn:nth-child(2) { animation-delay: 0.1s; }
+        .diag-step.active .income-btn:nth-child(3) { animation-delay: 0.15s; }
+        .diag-step.active .income-btn:nth-child(4) { animation-delay: 0.2s; }
+        .diag-step.active .income-btn:nth-child(5) { animation-delay: 0.25s; }
+        /* Lineas vivas del paso 1: cada plataforma seleccionada se conecta
+           con la pregunta — el diagrama se dibuja mientras respondes. */
+        .diag-links {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .diag-links path {
+            fill: none;
+            stroke: rgba(94, 234, 212, 0.35);
+            stroke-width: 1.2;
+            stroke-dasharray: 1;
+            stroke-dashoffset: 1;
+            transition: stroke-dashoffset 0.45s ease;
+        }
+        .diag-links.drawn path { stroke-dashoffset: 0; }
+        .diag-question, .diag-hint, .platform-grid, .income-options, .q-block, .diag-nav {
+            position: relative;
+            z-index: 1;
         }
         @keyframes fadeSlideIn {
             from { opacity: 0; transform: translateY(12px); }
@@ -327,28 +472,35 @@
         }
 
         .diag-question {
-            font-size: 1.15rem;
-            font-weight: 600;
-            margin-bottom: 8px;
+            font-family: var(--font-serif);
+            font-size: clamp(1.5rem, 2.6vw, 2.2rem);
+            font-weight: 500;
+            line-height: 1.25;
+            margin: 0 auto 10px;
+            max-width: 720px;
+            text-align: center;
             color: #FFFFFF;
         }
         .diag-hint {
             font-size: 0.85rem;
             color: rgba(255,255,255,0.5);
-            margin-bottom: 24px;
+            margin-bottom: 26px;
+            text-align: center;
         }
 
         .platform-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(155px, 1fr));
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
             gap: 10px;
-            margin-bottom: 24px;
+            max-width: 620px;
+            margin: 0 auto 26px;
         }
         .platform-btn {
             background: rgba(255,255,255,0.06);
             border: 1.5px solid rgba(255,255,255,0.12);
-            border-radius: 12px;
-            padding: 16px 12px;
+            border-radius: 999px;
+            padding: 13px 16px;
             cursor: pointer;
             font-family: inherit;
             font-size: 0.88rem;
@@ -367,20 +519,24 @@
             background: rgba(94,234,212,0.15);
             color: #5EEAD4;
             box-shadow: 0 0 20px rgba(94,234,212,0.1);
+            transform: scale(1.03);
         }
-        .platform-btn .p-emoji { display: block; font-size: 1.4rem; margin-bottom: 6px; }
+        /* Sin emojis (canon del proyecto): chips de texto limpios. */
+        .platform-btn .p-emoji { display: none; }
 
         .income-options {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            margin-bottom: 24px;
+            gap: 0;
+            max-width: 560px;
+            margin: 0 auto 26px;
         }
         .income-btn {
-            background: rgba(255,255,255,0.06);
-            border: 1.5px solid rgba(255,255,255,0.12);
-            border-radius: 12px;
-            padding: 16px 20px;
+            background: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+            border-radius: 0;
+            padding: 15px 6px;
             cursor: pointer;
             font-family: inherit;
             font-size: 0.95rem;
@@ -390,12 +546,12 @@
             transition: all 0.2s ease;
         }
         .income-btn:hover {
-            border-color: rgba(94,234,212,0.4);
-            background: rgba(94,234,212,0.08);
+            border-color: rgba(94,234,212,0.5);
+            background: rgba(94,234,212,0.04);
         }
         .income-btn.selected {
             border-color: #5EEAD4;
-            background: rgba(94,234,212,0.15);
+            background: transparent;
             color: #5EEAD4;
             position: relative;
             padding-right: 48px;
@@ -416,25 +572,24 @@
             margin-top: 4px;
         }
         .income-btn.threshold-marker {
-            border-color: rgba(251,191,36,0.3);
-            background: rgba(251,191,36,0.06);
+            border-color: rgba(251,191,36,0.4);
+            background: transparent;
         }
         .income-btn.threshold-marker.selected {
             border-color: #5EEAD4;
-            background: rgba(94,234,212,0.15);
+            background: transparent;
         }
         .income-btn.threshold-marker.selected .threshold-tag { color: #5EEAD4; }
 
         /* PROFILE SUMMARY */
         .profile-summary {
-            background: rgba(255,255,255,0.06);
-            border: 1px solid rgba(255,255,255,0.1);
-            border-radius: var(--radius);
-            padding: 20px 24px;
-            margin-bottom: 24px;
-            font-size: 0.92rem;
-            color: rgba(255,255,255,0.65);
-            line-height: 1.7;
+            font-family: var(--font-serif);
+            max-width: 640px;
+            margin: 0 auto 30px;
+            text-align: center;
+            font-size: 1.02rem;
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.75;
         }
         .profile-summary strong {
             color: #5EEAD4;
@@ -443,13 +598,21 @@
 
         .diag-nav {
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            margin-top: 8px;
+            gap: 18px;
+            margin-top: 16px;
+        }
+        .step-indicator {
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.45);
         }
         .btn-next, .btn-prev, .btn-results {
             padding: 12px 28px;
-            border-radius: 10px;
+            border-radius: 999px;
             border: none;
             font-family: inherit;
             font-size: 0.95rem;
@@ -458,13 +621,12 @@
             transition: all 0.25s ease;
         }
         .btn-next, .btn-results {
-            background: linear-gradient(135deg, #5EEAD4 0%, #0F766E 100%);
+            background: #5EEAD4;
             color: #042f2e;
-            box-shadow: 0 4px 15px rgba(94,234,212,0.2);
         }
         .btn-next:hover, .btn-results:hover {
             transform: translateY(-1px);
-            box-shadow: 0 6px 20px rgba(94,234,212,0.3);
+            background: #86F3E3;
         }
         .btn-next:disabled, .btn-results:disabled {
             opacity: 0.3;
@@ -495,31 +657,64 @@
             animation: fadeSlideIn 0.5s ease-out;
         }
 
+        /* El veredicto no es una alerta: es una declaracion editorial.
+           El color del nivel ES la informacion; la caja sobraba. */
+        /* Cuando hay veredicto, la instruccion de "selecciona tus
+           plataformas" ya no aplica: los resultados se quedan con todo el
+           escenario y desaparece el doble centro. */
+        #diagnostico .container.diag-wrap { max-width: 1140px; }
+        #diagnostico:has(#results.active) .diag-intro,
+        #diagnostico:has(#results.active) .diag-progress { display: none; }
+        /* La pantalla final usa el patron de la casa: veredicto, perfil y
+           acciones fijos a la izquierda mientras la ficha desfila a la
+           derecha. La banda vive en un contenedor ancho propio. */
+        #diagnostico .container.results-wrap { max-width: 1140px; }
+        .results-band {
+            display: grid;
+            grid-template-columns: minmax(280px, 5fr) 7fr;
+            gap: 4vw;
+            align-items: start;
+        }
+        .results-aside { position: sticky; top: 96px; text-align: center; }
+        .results-main .result-section:first-child { border-top: none; padding-top: 0; }
+        @media (max-width: 760px) {
+            .results-band { grid-template-columns: 1fr; }
+            .results-aside { position: static; margin-bottom: 8px; }
+        }
         .risk-banner {
-            padding: 14px 20px;
-            border-radius: 12px;
-            margin-bottom: 24px;
+            padding: 8px 0 0;
+            margin-bottom: 30px;
             text-align: center;
         }
-        .risk-banner.risk-alto {
-            background: rgba(220, 38, 38, 0.12);
-            border: 1px solid rgba(220, 38, 38, 0.3);
-        }
         .risk-banner.risk-alto .risk-level { color: #FCA5A5; }
-        .risk-banner.risk-medio {
-            background: rgba(217, 119, 6, 0.12);
-            border: 1px solid rgba(217, 119, 6, 0.3);
-        }
         .risk-banner.risk-medio .risk-level { color: #FCD34D; }
-        .risk-banner.risk-bajo {
-            background: rgba(22, 163, 74, 0.12);
-            border: 1px solid rgba(22, 163, 74, 0.3);
-        }
         .risk-banner.risk-bajo .risk-level { color: #86EFAC; }
         .risk-level {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 4px;
+            font-family: var(--font-serif);
+            font-size: clamp(1.25rem, 2vw, 1.6rem);
+            font-weight: 500;
+            letter-spacing: 0.01em;
+            margin-bottom: 6px;
+        }
+        /* El mapa personal: TUS plataformas conectadas al nodo SAT — la
+           exposicion no es un adjetivo, es este dibujo. */
+        .expo-map { margin-bottom: 20px; }
+        .expo-map svg { width: 100%; height: auto; display: block; }
+        .expo-map .em-chip { fill: rgba(255, 255, 255, 0.05); stroke: rgba(255, 255, 255, 0.2); }
+        .expo-map .em-label { fill: #E7E5E4; font-family: Inter, system-ui, sans-serif; font-size: 12px; }
+        .expo-map .em-sat { fill: #5EEAD4; }
+        .expo-map .em-sat-label { fill: #042f2e; font-family: Inter, system-ui, sans-serif; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; }
+        .expo-map .em-thread {
+            fill: none;
+            stroke: rgba(94, 234, 212, 0.45);
+            stroke-width: 1.2;
+            stroke-dasharray: 1;
+            stroke-dashoffset: 1;
+            transition: stroke-dashoffset 0.6s ease;
+        }
+        .expo-map.drawn .em-thread { stroke-dashoffset: 0; }
+        @media (prefers-reduced-motion: reduce) {
+            .expo-map .em-thread { transition: none; stroke-dashoffset: 0; }
         }
         .risk-label {
             font-size: 0.9rem;
@@ -546,10 +741,12 @@
 
         /* Paso 3: revelado progresivo de la segunda pregunta */
         .q-label {
-            font-size: 0.92rem;
+            font-size: 0.78rem;
             font-weight: 600;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
             margin-bottom: 10px;
-            color: #FFFFFF;
+            color: #5EEAD4;
         }
         .q-block { margin-bottom: 28px; }
         .q-block:last-of-type { margin-bottom: 0; }
@@ -589,10 +786,10 @@
         .results-panel.active .result-section {
             animation: fadeSlideIn 0.5s ease-out backwards;
         }
-        .results-panel.active .profile-summary { animation-delay: 0.12s; }
-        .results-panel.active .result-section:nth-of-type(3) { animation-delay: 0.24s; }
-        .results-panel.active .result-section:nth-of-type(4) { animation-delay: 0.36s; }
-        .results-panel.active .result-section:nth-of-type(5) { animation-delay: 0.48s; }
+        .results-panel.active .profile-summary { animation-delay: 0.1s; }
+        .results-panel.active .result-section:nth-of-type(1) { animation-delay: 0.2s; }
+        .results-panel.active .result-section:nth-of-type(2) { animation-delay: 0.32s; }
+        .results-panel.active .result-section:nth-of-type(3) { animation-delay: 0.44s; }
 
         /* Teclado visible */
         .platform-btn:focus-visible, .income-btn:focus-visible,
@@ -603,23 +800,24 @@
 
         @media (prefers-reduced-motion: reduce) {
             .diag-step.active,
+            .diag-step.active .platform-btn,
+            .diag-step.active .income-btn,
             .results-panel.active .profile-summary,
             .results-panel.active .result-section { animation: none; }
             .risk-meter-fill, .diag-seg::after, #qFactura { transition: none; }
         }
 
         .result-section {
-            background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.08);
-            border-radius: 16px;
-            padding: 24px;
-            margin-bottom: 16px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            padding: 24px 0;
         }
         .result-section h3 {
-            font-size: 1rem;
+            font-size: 0.78rem;
             font-weight: 600;
+            letter-spacing: 0.09em;
+            text-transform: uppercase;
             margin-bottom: 12px;
-            color: #FFFFFF;
+            color: #5EEAD4;
         }
         .result-section ul {
             list-style: none;
@@ -730,91 +928,237 @@
         }
 
         /* STATS */
-        .stats-section { background: var(--color-text); color: white; padding: 60px 0; }
-        .stats-section h2 { color: white; text-align: center; margin-bottom: 8px; }
-        .stats-section .section-subtitle { color: #A8A29E; text-align: center; margin-bottom: 40px; }
-        .stats-grid {
+        .stats-section { background: var(--color-text); color: white; padding: 0; }
+        /* BANDA "UNO POR UNO": el titulo queda fijo a la izquierda mientras
+           cada dato pasa por su propia pantalla a la derecha (patron del demo
+           scroll_fade / riotters). El fundido continuo lo maneja el JS de
+           .scroll-fade al final del body; aqui solo vive la geometria. */
+        .stats-band {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
+            grid-template-columns: minmax(220px, 32%) 1fr;
+            gap: 4vw;
         }
-        .stat-card { text-align: center; }
+        .stats-aside { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; }
+        .stats-aside h2 { color: white; text-align: left; margin-bottom: 10px; }
+        .stats-aside .section-subtitle { color: #A8A29E; text-align: left; margin-bottom: 0; }
+        .stats-items { padding: 16vh 0 20vh; }
+        .stats-item {
+            min-height: 78vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            text-align: left;
+        }
+        /* El numero ya NO trae blur/opacity/transition propios: la opacidad
+           de esta seccion tiene UN solo dueno (el JS de scroll-fade). Dos
+           sistemas escribiendo la misma propiedad fue el bug que evitamos. */
         .stat-number {
-            font-size: 2.2rem;
+            font-size: clamp(3.4rem, 7.5vw, 6.5rem);
             font-weight: 700;
             color: #5EEAD4;
-            line-height: 1.2;
-            /* Blur más chico y transición más corta: animar blur sobre texto
-               que cambia cada frame (el count-up) es lo más caro de la página. */
-            filter: blur(5px);
-            opacity: 0.4;
-            transition: filter 0.4s ease-out, opacity 0.4s ease-out;
-        }
-        .stat-number.counting {
-            filter: blur(0px);
-            opacity: 1;
+            line-height: 1.05;
+            letter-spacing: -0.02em;
         }
         .stat-label {
-            font-size: 0.85rem;
-            color: #D6D3D1;
-            margin-top: 4px;
-            line-height: 1.4;
+            font-size: clamp(1.15rem, 2vw, 1.7rem);
+            color: #E7E5E4;
+            margin-top: 18px;
+            line-height: 1.45;
+            max-width: 26ch;
         }
         .stat-source {
-            font-size: 0.72rem;
+            font-size: 0.85rem;
             color: #78716C;
-            margin-top: 2px;
+            margin-top: 14px;
         }
         .stats-callout {
-            margin-top: 32px;
-            padding: 20px 24px;
+            padding: 26px 30px;
             background: rgba(255,255,255,0.06);
             border: 1px solid rgba(255,255,255,0.1);
             border-radius: var(--radius);
-            text-align: center;
-            font-size: 0.92rem;
+            text-align: left;
+            font-size: clamp(1rem, 1.6vw, 1.25rem);
+            line-height: 1.6;
             color: #E7E5E4;
+            max-width: 54ch;
         }
         .stats-callout strong { color: #FCD34D; }
+        @media (max-width: 760px) {
+            .stats-band { grid-template-columns: 1fr; gap: 0; }
+            .stats-aside { position: static; height: auto; padding-top: 48px; }
+            .stats-items { padding: 4vh 0 12vh; }
+            .stats-item { min-height: 72vh; }
+        }
 
         /* TRUST / QUIÉN ESTÁ DETRÁS */
         .trust-section {
+            background: var(--color-bg);
+            padding: 6vh 0 10vh;
+            position: relative;
+        }
+        .container.trust-wrap { max-width: 1160px; }
+        .trust-panel {
             background: #1C1917;
             color: #E7E5E4;
-            padding: 60px 0;
-            border-top: 3px solid #0F766E;
-        }
-        .trust-section h2 { color: white; }
-        .trust-section .section-subtitle { color: #A8A29E; }
-        .trust-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 0;
-        }
-        .trust-card {
-            padding: 28px 32px;
-            border-left: 2px solid rgba(94, 234, 212, 0.12);
-            transition: border-color 0.3s ease;
-        }
-        .trust-card:hover {
-            border-left-color: #5EEAD4;
-        }
-        .trust-card h3 {
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-bottom: 8px;
-            color: #5EEAD4;
+            border-radius: 28px;
+            padding: clamp(48px, 6vw, 84px) clamp(24px, 6vw, 84px);
+            position: relative;
+            transform-origin: 50% 20%;
+            will-change: transform;
+            overflow: hidden;
+            min-height: 82vh;
             display: flex;
-            align-items: center;
-            gap: 8px;
+            flex-direction: column;
+            justify-content: center;
         }
-        .trust-card p {
-            font-size: 0.86rem;
+        .trust-canvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .trust-kicker, .trust-mega, .trust-audience, .trust-statement,
+        .trust-receipts { position: relative; z-index: 1; }
+        .trust-mega {
+            font-family: var(--font-serif);
+            font-weight: 700;
+            font-size: clamp(3rem, 7.5vw, 6.4rem);
+            line-height: 1.04;
+            letter-spacing: -0.015em;
+            text-align: center;
+            margin: 0 auto 30px;
+            max-width: 980px;
+            color: #FAFAF9;
+        }
+        /* EL BORDE DE LUZ: una chispa mint recorre el marco del panel en
+           un anillo de 1.5px — notorio pero sutil. Cuando el mundo y el
+           panel se funden al mismo negro, esta luz viajera es lo unico
+           que dibuja el cuadro. */
+        @property --beam-angle {
+            syntax: '<angle>';
+            initial-value: 0deg;
+            inherits: false;
+        }
+        .trust-panel::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            padding: 1.5px;
+            background: conic-gradient(from var(--beam-angle),
+                rgba(255, 255, 255, 0.07) 0%,
+                rgba(255, 255, 255, 0.07) 82%,
+                rgba(94, 234, 212, 0.55) 90%,
+                #CCFBF1 93%,
+                rgba(94, 234, 212, 0.55) 96%,
+                rgba(255, 255, 255, 0.07) 100%);
+            -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            -webkit-mask-composite: xor;
+            mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+            mask-composite: exclude;
+            pointer-events: none;
+            z-index: 2;
+            animation: beam-spin 8s linear infinite;
+        }
+        @keyframes beam-spin { to { --beam-angle: 360deg; } }
+        @media (prefers-reduced-motion: reduce) {
+            .trust-panel::after { animation: none; }
+        }
+        .trust-kicker { text-align: center; }
+        .trust-audience { text-align: center; margin-left: auto; margin-right: auto; }
+        .trust-statement {
+            text-align: center;
+            font-size: clamp(1.15rem, 1.9vw, 1.5rem);
+            max-width: 680px;
+        }
+        .trust-receipts { text-align: center; }
+        .trust-audience {
+            font-family: var(--font-serif);
+            font-style: italic;
+            font-size: clamp(1rem, 1.6vw, 1.25rem);
             color: #A8A29E;
-            line-height: 1.65;
+            max-width: 900px;
+            margin: 0 auto 18px;
+            width: 100%;
         }
-        @media (max-width: 600px) {
-            .trust-grid { grid-template-columns: 1fr; }
+
+        .trust-kicker {
+            font-size: 0.78rem;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: #5EEAD4;
+            margin: 0 auto 26px;
+            max-width: 900px;
+            width: 100%;
+        }
+        /* El recurso premium de ESTE panel: lectura viva. El manifiesto en
+           serif grande y cada palabra se enciende con el progreso del
+           scroll — sin lineas, sin chips: puro texto respirando. */
+        .trust-statement {
+            font-family: var(--font-serif);
+            font-size: clamp(1.55rem, 3vw, 2.6rem);
+            font-weight: 500;
+            line-height: 1.5;
+            color: #FFFFFF;
+            max-width: 900px;
+            margin: 0 auto;
+            width: 100%;
+        }
+        .trust-receipts {
+            margin: 40px auto 0;
+            max-width: 900px;
+            width: 100%;
+            font-size: 0.76rem;
+            font-weight: 600;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: rgba(255, 255, 255, 0.42);
+        }
+
+        .trust-title {
+            font-family: var(--font-serif);
+            font-weight: 500;
+            font-size: clamp(2rem, 3.8vw, 3.1rem);
+            line-height: 1.15;
+            letter-spacing: -0.01em;
+            text-align: center;
+            color: #FFFFFF;
+            max-width: 640px;
+            margin: 0 auto 12px;
+        }
+        .trust-section .section-subtitle { color: #A8A29E; text-align: center; max-width: 560px; margin: 0 auto 44px; }
+        /* En vez de dos cuadros de texto: un manifiesto serif al centro
+           (el gesto de anthropic.com) y tres hechos-capsula que riman con
+           los nodos de la constelacion. Misma informacion, destilada. */
+        .trust-manifesto {
+            font-family: var(--font-serif);
+            font-size: clamp(1.1rem, 1.8vw, 1.45rem);
+            line-height: 1.65;
+            color: #D6D3D1;
+            text-align: center;
+            max-width: 620px;
+            margin: 0 auto 34px;
+        }
+        /* La serif de acento tambien en los leads editoriales del mapa
+           y del FAQ: una sola voz tipografica en todo el sitio. */
+        .map-section .blk-lead,
+        #faq .section-subtitle { font-family: var(--font-serif); font-size: 1.05rem; }
+        .trust-facts {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 10px;
+        }
+        .trust-fact {
+            font-size: 0.8rem;
+            color: #A8A29E;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(255, 255, 255, 0.04);
+            border-radius: 999px;
+            padding: 8px 16px;
         }
 
         /* FAQ */
@@ -883,17 +1227,31 @@
             color: var(--color-accent);
             letter-spacing: -0.01em;
         }
-        .eyebrow-chip {
-            display: inline-block;
-            background: var(--color-bg);
-            border: 1px solid var(--color-border);
-            border-radius: 999px;
-            padding: 5px 14px;
-            font-size: 0.72rem;
-            font-weight: 700;
-            letter-spacing: 0.09em;
-            text-transform: uppercase;
-            color: var(--color-text-secondary);
+        /* Encabezado editorial dos columnas (patron anthropic.com):
+           titulo bold a la izquierda, parrafo de acento en serif a la
+           derecha. Solo la calculadora lo usa; el mapa conserva el suyo. */
+        .blk-head {
+            display: grid;
+            grid-template-columns: 1.35fr 1fr;
+            gap: 4vw;
+            align-items: start;
+            margin-bottom: 26px;
+        }
+        .blk-head .blk-title {
+            font-size: clamp(1.9rem, 3.1vw, 2.8rem);
+            line-height: 1.1;
+            letter-spacing: -0.02em;
+            margin-bottom: 0;
+        }
+        .blk-head .blk-lead {
+            font-family: var(--font-serif);
+            font-size: 1.13rem;
+            line-height: 1.55;
+            margin-top: 6px;
+        }
+        .calc-section .container.blk-head-wrap { max-width: 1080px; }
+        @media (max-width: 760px) {
+            .blk-head { grid-template-columns: 1fr; gap: 10px; }
         }
         .blk-title {
             font-size: 1.7rem;
@@ -1055,8 +1413,13 @@
             stroke: var(--color-surface);
             stroke-width: 0.7;
             cursor: pointer;
-            transition: filter 0.12s;
+            transition: filter 0.12s, fill 0.7s ease;
         }
+        /* El mapa se pinta solo al entrar: arranca en tierra palida y cada
+           estado florece a su color EN ORDEN DE TASA (2% -> 6%), contando
+           la historia del titulo mientras se dibuja. El JS solo quita una
+           clase; los delays por estado hacen la oleada. */
+        .mxmap.unpainted .mx-st { fill: #E4E2DD; }
         .mx-st.b1 { fill: #CCFBF1; }
         .mx-st.b2 { fill: #99F6E4; }
         .mx-st.b3 { fill: #5EEAD4; }
@@ -1106,16 +1469,18 @@
         @media (max-width: 600px) {
             .hero h1 { font-size: 1.7rem; }
             .hero { padding: 60px 0 40px; }
-            .platform-grid { grid-template-columns: repeat(2, 1fr); }
             .newsletter-form { flex-direction: column; }
-            nav .container { flex-wrap: wrap; row-gap: 12px; }
-            .nav-links { gap: 16px; order: 3; flex-basis: 100%; justify-content: center; }
+            nav { padding: 9px 0; }
+            nav .container { flex-wrap: wrap; row-gap: 7px; }
+            .logo { gap: 7px; }
+            .logo-badge { height: 27px; }
+            .logo-word { font-size: 0.92rem; letter-spacing: -0.01em; max-width: 200px; }
+            .nav-right { gap: 8px; }
+            .nav-cta { padding: 6px 12px; font-size: 0.78rem; }
+            .nav-links { gap: 14px; order: 3; flex-basis: 100%; justify-content: center; }
             .nav-links a { font-size: 0.82rem; }
-            .lang-btn { padding: 7px 13px; font-size: 0.82rem; }
+            .lang-btn { padding: 5px 9px; font-size: 0.76rem; }
             section { padding: 40px 0; }
-            .stat-number { font-size: 1.8rem; filter: none !important; opacity: 0; }
-            .stat-number.counting { opacity: 1 !important; }
-            .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 16px; }
             .blk-title { font-size: 1.35rem; }
             .calc-amount { font-size: 1.6rem; }
             .calc-diff-value { font-size: 1.15rem; }
@@ -1130,26 +1495,25 @@
 <body>
 
 <!-- NAV -->
-<nav>
+<nav id="topnav">
     <div class="container">
-        <a href="#" class="logo">
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 210 36" fill="none">
-                <!-- Badge -->
+        <a href="#" class="logo" aria-label="Fisco Abierto">
+            <svg class="logo-badge" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
                 <rect x="0" y="2" width="32" height="32" rx="7" fill="#0F766E"/>
                 <text x="16" y="23.5" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="-0.5">FA</text>
-                <!-- Wordmark -->
-                <text x="40" y="24" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="700" fill="#0F766E" letter-spacing="-0.3">Fisco</text>
-                <text x="86" y="24" font-family="Inter, system-ui, sans-serif" font-size="18" font-weight="700" fill="#1C1917" letter-spacing="-0.3">Abierto</text>
             </svg>
+            <span class="logo-word"><span class="logo-word-a">Fisco</span><span class="logo-word-b">Abierto</span></span>
         </a>
         <div class="nav-links">
-            <a href="#diagnostico" data-i18n="nav.diagnostic">Diagnóstico</a>
             <a href="#faq" data-i18n="nav.faq">FAQ</a>
             <a href="#newsletter" data-i18n="nav.newsletter">Newsletter</a>
         </div>
-        <div class="lang-switch" role="group" aria-label="Idioma / Language">
-            <button type="button" class="lang-btn" data-lang="es" lang="es" aria-pressed="true">ES</button>
-            <button type="button" class="lang-btn" data-lang="en" lang="en" aria-pressed="false">EN</button>
+        <div class="nav-right">
+            <a href="#diagnostico" class="nav-cta" data-i18n="nav.diagnostic">Diagnóstico</a>
+            <div class="lang-switch" role="group" aria-label="Idioma / Language">
+                <button type="button" class="lang-btn" data-lang="es" lang="es" aria-pressed="true">ES</button>
+                <button type="button" class="lang-btn" data-lang="en" lang="en" aria-pressed="false">EN</button>
+            </div>
         </div>
     </div>
 </nav>
@@ -1167,52 +1531,63 @@
 <!-- DATOS DUROS -->
 <section class="stats-section">
     <div class="container">
-        <h2 data-i18n="stats.title">Esto no es teórico. Ya está pasando.</h2>
-        <p class="section-subtitle" data-i18n="stats.subtitle">Cifras reales sobre la fiscalización de la economía digital en México.</p>
-        <div class="stats-grid">
-            <div class="stat-card">
-                <div class="stat-number" data-count="1.66" data-prefix="" data-suffix="M" data-decimals="2">1.66M</div>
-                <div class="stat-label" data-i18n="stats.stat1">repartidores y conductores de plataformas ya están registrados ante el IMSS. Y son solo una parte de la economía digital.</div>
-                <div class="stat-source">IMSS y STPS, junio 2026</div>
+        <div class="stats-band">
+            <div class="stats-aside">
+                <div>
+                    <h2 data-i18n="stats.title">Esto no es teórico. Ya está pasando.</h2>
+                    <p class="section-subtitle" data-i18n="stats.subtitle">Cifras reales sobre la fiscalización de la economía digital en México.</p>
+                </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-number" data-count="278" data-prefix="" data-suffix="" data-decimals="0">278</div>
-                <div class="stat-label" data-i18n="stats.stat2">plataformas digitales extranjeras inscritas en el RFC y obligadas a reportar al SAT</div>
-                <div class="stat-source">DOF 22-may-2026, corte al 30-abr-2026</div>
+            <div class="stats-items">
+                <div class="stats-item">
+                    <div class="stat-number scroll-fade" data-count="1.66" data-prefix="" data-suffix="M" data-decimals="2">1.66M</div>
+                    <div class="stat-label scroll-fade" data-i18n="stats.stat1">repartidores y conductores de plataformas ya están registrados ante el IMSS. Y son solo una parte de la economía digital.</div>
+                    <div class="stat-source scroll-fade">IMSS y STPS, junio 2026</div>
+                </div>
+                <div class="stats-item">
+                    <div class="stat-number scroll-fade" data-count="278" data-prefix="" data-suffix="" data-decimals="0">278</div>
+                    <div class="stat-label scroll-fade" data-i18n="stats.stat2">plataformas digitales extranjeras inscritas en el RFC y obligadas a reportar al SAT</div>
+                    <div class="stat-source scroll-fade">DOF 22-may-2026, corte al 30-abr-2026</div>
+                </div>
+                <div class="stats-item">
+                    <div class="stat-number scroll-fade" data-count="2.5" data-prefix="" data-suffix="%" data-decimals="1">2.5%</div>
+                    <div class="stat-label scroll-fade" data-i18n="stats.stat3">es la retención de ISR por venta o servicio en plataformas durante 2026 (antes era 1%)</div>
+                    <div class="stat-source scroll-fade">LIF 2026, art. 25, fr. VI (vigencia anual)</div>
+                </div>
+                <div class="stats-item">
+                    <div class="stat-number scroll-fade" data-count="3" data-prefix="" data-suffix="" data-decimals="0">3</div>
+                    <div class="stat-label scroll-fade" data-i18n="stats.stat4">meses seguidos sin presentar sus declaraciones al SAT y una plataforma puede quedar bloqueada en México. Por eso reportan todo.</div>
+                    <div class="stat-source scroll-fade">Art. 30-B CFF y art. 18-H BIS LIVA</div>
+                </div>
+                <div class="stats-item">
+                    <div class="stat-number scroll-fade" data-count="55" data-prefix="" data-suffix="%" data-decimals="0">55%</div>
+                    <div class="stat-label scroll-fade" data-i18n="stats.stat5">de los trabajadores en México son informales. Muchos sin saberlo.</div>
+                    <div class="stat-source scroll-fade">INEGI, ENOE junio 2026</div>
+                </div>
+                <div class="stats-item">
+                    <div class="stat-number scroll-fade" data-count="20" data-prefix="" data-suffix="%" data-decimals="0">20%</div>
+                    <div class="stat-label scroll-fade" data-i18n="stats.stat6">de tus ganancias se van en retención si no tienes RFC. Se puede evitar.</div>
+                    <div class="stat-source scroll-fade">Art. 113-C, fr. IV LISR</div>
+                </div>
+                <div class="stats-item">
+                    <div class="stats-callout scroll-fade" data-i18n="stats.callout">
+                        <strong>Desde el 1° de abril de 2026</strong>, está en vigor el Art. 30-B del CFF: las plataformas digitales deben dar al SAT acceso en línea y <strong>en tiempo real</strong> a la información que permite comprobar su cumplimiento fiscal. Las reglas cambiaron. Estar informado ya no es opcional.
+                    </div>
+                </div>
             </div>
-            <div class="stat-card">
-                <div class="stat-number" data-count="2.5" data-prefix="" data-suffix="%" data-decimals="1">2.5%</div>
-                <div class="stat-label" data-i18n="stats.stat3">es la retención de ISR por venta o servicio en plataformas durante 2026 (antes era 1%)</div>
-                <div class="stat-source">LIF 2026, art. 25, fr. VI (vigencia anual)</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" data-count="3" data-prefix="" data-suffix="" data-decimals="0">3</div>
-                <div class="stat-label" data-i18n="stats.stat4">meses seguidos sin presentar sus declaraciones al SAT y una plataforma puede quedar bloqueada en México. Por eso reportan todo.</div>
-                <div class="stat-source">Art. 30-B CFF y art. 18-H BIS LIVA</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" data-count="55" data-prefix="" data-suffix="%" data-decimals="0">55%</div>
-                <div class="stat-label" data-i18n="stats.stat5">de los trabajadores en México son informales. Muchos sin saberlo.</div>
-                <div class="stat-source">INEGI, ENOE junio 2026</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-number" data-count="20" data-prefix="" data-suffix="%" data-decimals="0">20%</div>
-                <div class="stat-label" data-i18n="stats.stat6">de tus ganancias se van en retención si no tienes RFC. Se puede evitar.</div>
-                <div class="stat-source">Art. 113-C, fr. IV LISR</div>
-            </div>
-        </div>
-        <div class="stats-callout" data-i18n="stats.callout">
-            <strong>Desde el 1° de abril de 2026</strong>, está en vigor el Art. 30-B del CFF: las plataformas digitales deben dar al SAT acceso en línea y <strong>en tiempo real</strong> a la información que permite comprobar su cumplimiento fiscal. Las reglas cambiaron. Estar informado ya no es opcional.
         </div>
     </div>
 </section>
 
 <!-- CUANTO TE RETIENEN, EN PESOS -->
 <section class="calc-section">
+    <div class="container blk-head-wrap">
+        <div class="blk-head">
+            <h2 class="blk-title reveal"><span data-i18n="calc.titleA">La retención que te toca depende de lo que haces.</span> <span class="mark-hl" data-i18n="calc.titleMark">Y solo una subió en 2026.</span></h2>
+            <p class="blk-lead reveal reveal-delay-1" data-i18n="calc.lead">El 113-A de la Ley del ISR tiene tres tasas distintas según lo que hagas, y la Ley de Ingresos de 2026 solo cambió una de las tres. Elige tu actividad y mueve la barra.</p>
+        </div>
+    </div>
     <div class="container">
-        <span class="eyebrow-chip reveal" data-i18n="calc.eyebrow">El dato que más cambia</span>
-        <h2 class="blk-title reveal reveal-delay-1"><span data-i18n="calc.titleA">La retención que te toca depende de lo que haces.</span> <span class="mark-hl" data-i18n="calc.titleMark">Y solo una subió en 2026.</span></h2>
-        <p class="blk-lead reveal reveal-delay-2" data-i18n="calc.lead">El 113-A de la Ley del ISR tiene tres tasas distintas según lo que hagas, y la Ley de Ingresos de 2026 solo cambió una de las tres. Elige tu actividad y mueve la barra.</p>
 
         <div class="calc-activity" role="group" aria-label="Tipo de actividad">
             <button type="button" class="act-btn active" data-act="venta" data-i18n="calc.actVenta">Venta de bienes o servicios</button>
@@ -1242,7 +1617,7 @@
                 <div class="calc-track"><div class="calc-fill now" id="calcBarNow" style="width:100%"></div></div>
             </div>
             <div class="calc-diff">
-                <span class="calc-diff-label" data-i18n="calc.rowDiff">Lo que te retienen de más cada año</span>
+                <span class="calc-diff-label" id="calcDiffLabel">Lo que te retienen de más cada año</span>
                 <span class="calc-diff-value" id="calcDiff">+$3,600</span>
             </div>
         </div>
@@ -1312,43 +1687,23 @@
     </div>
 </section>
 
-<!-- AUDIENCIA -->
-<section id="audiencia">
-    <div class="container">
-        <h2 class="reveal" style="text-align:center;" data-i18n="audience.title">¿Para quién es esto?</h2>
-        <p class="section-subtitle reveal reveal-delay-1" style="text-align:center;" data-i18n="audience.subtitle">Si generas ingresos en cualquiera de estas plataformas, esto te interesa.</p>
-        <div class="audience-pills reveal reveal-delay-2">
-            <span class="audience-pill" data-i18n="audience.sellers"><span class="pill-emoji">🛒</span> Vendedores online <span class="pill-detail">MeLi, Amazon</span></span>
-            <span class="audience-pill" data-i18n="audience.drivers"><span class="pill-emoji">🚗</span> Conductores <span class="pill-detail">Uber, DiDi, Rappi</span></span>
-            <span class="audience-pill" data-i18n="audience.hosts"><span class="pill-emoji">🏠</span> Hosts <span class="pill-detail">Airbnb, Vrbo</span></span>
-            <span class="audience-pill" data-i18n="audience.freelancers"><span class="pill-emoji">💻</span> Freelancers <span class="pill-detail">Fiverr, Upwork</span></span>
-            <span class="audience-pill" data-i18n="audience.creators"><span class="pill-emoji">🎬</span> Creadores <span class="pill-detail">YouTube, TikTok</span></span>
-            <span class="audience-pill" data-i18n="audience.payments"><span class="pill-emoji">💸</span> Pagos internacionales <span class="pill-detail">PayPal, Wise, Crypto</span></span>
-        </div>
-    </div>
-</section>
 
 <!-- CONFIANZA -->
 <section class="trust-section" id="sobre">
-    <div class="container">
-        <h2 class="reveal" data-i18n="trust.title">¿Por qué confiar en Fisco Abierto?</h2>
-        <p class="section-subtitle reveal reveal-delay-1" data-i18n="trust.subtitle">Es justo que te lo preguntes. Aquí van las respuestas.</p>
-        <div class="trust-grid reveal reveal-delay-2">
-            <div class="trust-card">
-                <h3 data-i18n="trust.card1.title">Quién está detrás</h3>
-                <p data-i18n="trust.card1.text">Un proyecto independiente, hecho desde el derecho fiscal mexicano. No es una empresa, no es un despacho, no vende nada. Existe porque la información fiscal básica debería ser accesible para todos.</p>
-            </div>
-            <div class="trust-card">
-                <h3 data-i18n="trust.card2.title">Por qué es gratis</h3>
-                <p data-i18n="trust.card2.text">Porque la información fiscal básica no debería costar dinero. No hay plan premium, no hay upsell, no hay trampa. Solo información pública, bien explicada.</p>
-            </div>
+    <div class="container trust-wrap">
+        <div class="trust-panel">
+            <p class="trust-kicker" data-i18n="trust.title">¿Por qué confiar en Fisco Abierto?</p>
+            <p class="trust-mega" data-i18n="trust.mega">Compruébalo tú mismo.</p>
+            <p class="trust-audience" data-i18n="trust.audience">Cada dato de este sitio sale del Diario Oficial, de las leyes vigentes y de las reglas del SAT.</p>
+            <p class="trust-statement" id="trust-statement" data-i18n="trust.statement">Junto a cada cifra está el artículo que la sostiene: puedes abrir la ley y verificarla sin creerle a nadie. Cuando una regla cambia, el sitio se actualiza con su fuente. Cuando algo sigue sin confirmarse, se dice tal cual.</p>
+            <p class="trust-receipts" data-i18n="trust.receipts">Gratis y sin registro · Cada cifra con su artículo · Lo no confirmado, señalado</p>
         </div>
     </div>
 </section>
 
 <!-- DIAGNÓSTICO -->
 <section id="diagnostico">
-    <div class="container">
+    <div class="container diag-wrap">
         <div class="diag-intro">
             <h2 data-i18n="diag.title">Diagnóstico fiscal express</h2>
             <p class="section-subtitle" data-i18n="diag.intro">Selecciona tus plataformas e ingresos aproximados. No pedimos datos personales (ni nombre, ni RFC, ni correo). Todo se procesa en tu navegador.</p>
@@ -1459,32 +1814,36 @@
         </div>
 
         <!-- RESULTADOS -->
+    </div>
+    <div class="container results-wrap">
         <div class="results-panel" id="results">
-            <div class="risk-banner" id="risk-banner">
-                <div class="risk-level" id="risk-level"></div>
-                <div class="risk-label" data-i18n="results.riskLabel">Nivel de exposición ante el SAT</div>
-                <div class="risk-meter" aria-hidden="true"><div class="risk-meter-fill" id="risk-meter-fill"></div></div>
+            <div class="results-band">
+                <div class="results-aside">
+                    <div class="expo-map" id="expo-map" aria-hidden="true"></div>
+                    <div class="risk-banner" id="risk-banner">
+                        <div class="risk-level" id="risk-level"></div>
+                        <div class="risk-label" data-i18n="results.riskLabel">Nivel de exposición ante el SAT</div>
+                        <div class="risk-meter" aria-hidden="true"><div class="risk-meter-fill" id="risk-meter-fill"></div></div>
+                    </div>
+                    <div class="profile-summary" id="profile-summary"></div>
+                    <p style="text-align:center; font-size:0.88rem; color:rgba(255,255,255,0.5); margin-top:24px;"><span data-i18n="results.cta">¿Quieres estar al dia con los cambios del SAT?</span> <a href="#newsletter" style="color:#5EEAD4; font-weight:600; text-decoration:none;" data-i18n="results.newsletter">Suscribete al newsletter</a></p>
+                    <button class="btn-restart" onclick="restartDiag()" data-i18n="results.restart">Hacer otro diagnóstico</button>
+                </div>
+                <div class="results-main">
+                    <div class="result-section" id="sat-visibility">
+                        <h3 data-i18n="results.visibility">Lo que el SAT puede ver sobre tus operaciones</h3>
+                        <ul id="sat-visibility-list"></ul>
+                    </div>
+                    <div class="result-section" id="obligations">
+                        <h3 data-i18n="results.obligations">Obligaciones que probablemente tienes (y quizá no conoces)</h3>
+                        <ul id="obligations-list"></ul>
+                    </div>
+                    <div class="result-section" id="actions">
+                        <h3 data-i18n="results.actions">Pasos que puedes tomar</h3>
+                        <ul id="actions-list"></ul>
+                    </div>
+                </div>
             </div>
-            <div class="profile-summary" id="profile-summary"></div>
-
-            <div class="result-section" id="sat-visibility">
-                <h3 data-i18n="results.visibility">Lo que el SAT puede ver sobre tus operaciones</h3>
-                <ul id="sat-visibility-list"></ul>
-            </div>
-
-            <div class="result-section" id="obligations">
-                <h3 data-i18n="results.obligations">Obligaciones que probablemente tienes (y quizá no conoces)</h3>
-                <ul id="obligations-list"></ul>
-            </div>
-
-            <div class="result-section" id="actions">
-                <h3 data-i18n="results.actions">Pasos que puedes tomar</h3>
-                <ul id="actions-list"></ul>
-            </div>
-
-            <p style="text-align:center; font-size:0.88rem; color:rgba(255,255,255,0.5); margin-top:24px;"><span data-i18n="results.cta">¿Quieres estar al dia con los cambios del SAT?</span> <a href="#newsletter" style="color:#5EEAD4; font-weight:600; text-decoration:none;" data-i18n="results.newsletter">Suscribete al newsletter</a></p>
-
-            <button class="btn-restart" onclick="restartDiag()" data-i18n="results.restart">Hacer otro diagnóstico</button>
         </div>
     </div>
 </section>
@@ -1605,7 +1964,6 @@ const translations = {
         'stats.stat5': 'de los trabajadores en México son informales. Muchos sin saberlo.',
         'stats.stat6': 'de tus ganancias se van en retención si no tienes RFC. Se puede evitar.',
         'stats.callout': '<strong>Desde el 1° de abril de 2026</strong>, está en vigor el Art. 30-B del CFF: las plataformas digitales deben dar al SAT acceso en línea y <strong>en tiempo real</strong> a la información que permite comprobar su cumplimiento fiscal. Las reglas cambiaron. Estar informado ya no es opcional.',
-        'calc.eyebrow': 'El dato que más cambia',
         'calc.titleA': 'La retención que te toca depende de lo que haces.',
         'calc.titleMark': 'Y solo una subió en 2026.',
         'calc.lead': 'El 113-A de la Ley del ISR tiene tres tasas distintas según lo que hagas, y la Ley de Ingresos de 2026 solo cambió una de las tres. Elige tu actividad y mueve la barra.',
@@ -1616,10 +1974,13 @@ const translations = {
         'calc.rowPast': 'Hasta 2025, retención de {rate}',
         'calc.rowNow': 'En 2026, retención de {rate}',
         'calc.rowDiff': 'Lo que te retienen de más cada año',
+        'calc.rowConRfc': 'Con RFC, retención de {rate}',
+        'calc.rowSinRfc': 'Sin RFC, retención de 20%',
+        'calc.rowDiffRfc': 'Lo que pierdes cada año si no das tu RFC',
         'calc.caveat': 'La tasa la fija la Ley de Ingresos año con año. Si la de 2027 no repite el 2.5%, vuelve a 1% el 1 de enero.',
-        'calc.foot': 'Art. 113-A, párrafo tercero, fracción III LISR (1%) · Art. 25, fracción VI de la LIF 2026, DOF 07-nov-2025 (2.5%) · Umbral del Art. 113-B LISR, medido sobre el ejercicio anterior · Sobre ingresos brutos sin IVA',
+        'calc.foot': 'Art. 113-A, párrafo tercero, fracción III LISR (1%) · Art. 25, fracción VI de la LIF 2026, DOF 07-nov-2025 (2.5%) · Art. 113-C, fracción IV LISR (20% sin RFC) · Umbral del Art. 113-B LISR, medido sobre el ejercicio anterior · Sobre ingresos brutos sin IVA',
         'calc.rateUp': 'Tu tasa subió de 1% a 2.5% en 2026: son {diff} más al año.',
-        'calc.rateSame': 'Tu tasa no cambió en 2026. La Ley de Ingresos solo sustituyó la fracción III del 113-A, que es venta de bienes y prestación de servicios. A ti te aplica la fracción {frac}, que sigue en {rate}.',
+        'calc.rateSame': 'Tu tasa no cambió en 2026: la Ley de Ingresos solo sustituyó la fracción III del 113-A y a ti te aplica la fracción {frac}, que sigue en {rate}. El dato que sí te pega es otro: si la plataforma no tiene tu RFC, te retiene el 20% (Art. 113-C, fracción IV LISR). Dar tu RFC te ahorra {diff} al año.',
         'calc.thFinal': 'Y con lo que te pagan no rebasas los $300,000 al año, así que puedes optar por que la retención sea tu pago definitivo de ISR. Si ejerces esa opción, lo retenido no se recupera en abril: es tu impuesto.',
         'calc.thAdvance': 'Y con lo que te pagan rebasas los $300,000 al año, así que la retención es un anticipo que acreditas en tu declaración anual: te pega al flujo de efectivo, no al impuesto final.',
         'map.titleA': 'Si rentas por Airbnb, tu estado te cobra un impuesto aparte del SAT.',
@@ -1638,18 +1999,26 @@ const translations = {
         'map.ret_nv': 'No pudimos confirmar si la plataforma está obligada a retenerlo. No asumas que ya está pagado.',
         'audience.title': '¿Para quién es esto?',
         'audience.subtitle': 'Si generas ingresos en cualquiera de estas plataformas, esto te interesa.',
-        'audience.sellers': 'Vendedores online',
-        'audience.drivers': 'Conductores',
-        'audience.hosts': 'Hosts',
-        'audience.freelancers': 'Freelancers',
-        'audience.creators': 'Creadores',
-        'audience.payments': 'Pagos internacionales',
+        'audience.sellers': 'Vendes online',
+        'audience.drivers': 'Manejas o repartes',
+        'audience.hosts': 'Rentas tu espacio',
+        'audience.freelancers': 'Trabajas freelance',
+        'audience.creators': 'Creas contenido',
+        'audience.payments': 'Cobras del extranjero',
         'trust.title': '¿Por qué confiar en Fisco Abierto?',
         'trust.subtitle': 'Es justo que te lo preguntes. Aquí van las respuestas.',
         'trust.card1.title': 'Quién está detrás',
         'trust.card1.text': 'Un proyecto independiente, hecho desde el derecho fiscal mexicano. No es una empresa, no es un despacho, no vende nada. Existe porque la información fiscal básica debería ser accesible para todos.',
         'trust.card2.title': 'Por qué es gratis',
         'trust.card2.text': 'Porque la información fiscal básica no debería costar dinero. No hay plan premium, no hay upsell, no hay trampa. Solo información pública, bien explicada.',
+        'trust.manifesto': 'Un proyecto independiente hecho desde el derecho fiscal mexicano. No es una empresa ni un despacho: no vende nada, no hay plan premium y no pide tus datos. Solo información pública, bien explicada y con su fuente citada.',
+        'trust.fact1': 'Sin fines de lucro',
+        'trust.fact2': 'Sin registro ni datos personales',
+        'trust.fact3': 'Cada cifra con su artículo',
+        'trust.mega': 'Compruébalo tú mismo.',
+        'trust.audience': 'Cada dato de este sitio sale del Diario Oficial, de las leyes vigentes y de las reglas del SAT.',
+        'trust.statement': 'Junto a cada cifra está el artículo que la sostiene: puedes abrir la ley y verificarla sin creerle a nadie. Cuando una regla cambia, el sitio se actualiza con su fuente. Cuando algo sigue sin confirmarse, se dice tal cual.',
+        'trust.receipts': 'Gratis y sin registro · Cada cifra con su artículo · Lo no confirmado, señalado',
         'diag.title': 'Diagnóstico fiscal express',
         'diag.intro': 'Selecciona tus plataformas e ingresos aproximados. No pedimos datos personales (ni nombre, ni RFC, ni correo). Todo se procesa en tu navegador.',
         'diag.step1.question': '¿En qué plataformas generas ingresos?',
@@ -1726,7 +2095,6 @@ const translations = {
         'stats.stat5': 'of Mexican workers are informally employed. Many without knowing it.',
         'stats.stat6': 'of your earnings go to withholding tax if you lack a tax ID (RFC). It can be avoided.',
         'stats.callout': '<strong>Since April 1, 2026</strong>, Article 30-B of Mexico\'s Federal Tax Code (CFF) is in effect: digital platforms must give the tax authority online, <strong>real-time access</strong> to the information needed to verify their tax compliance. The rules changed. Staying informed is no longer optional.',
-        'calc.eyebrow': 'The figure that moves most',
         'calc.titleA': 'The withholding that applies to you depends on what you do.',
         'calc.titleMark': 'And only one of them went up in 2026.',
         'calc.lead': 'Article 113-A of the Income Tax Law has three different rates depending on what you do, and the 2026 Revenue Law only changed one of the three. Pick your activity and move the slider.',
@@ -1737,10 +2105,13 @@ const translations = {
         'calc.rowPast': 'Through 2025, {rate} withholding',
         'calc.rowNow': 'In 2026, {rate} withholding',
         'calc.rowDiff': 'Extra withheld from you each year',
+        'calc.rowConRfc': 'With an RFC on file, {rate} withholding',
+        'calc.rowSinRfc': 'Without an RFC, 20% withholding',
+        'calc.rowDiffRfc': 'What you lose each year without an RFC',
         'calc.caveat': 'The rate is set by the Revenue Law year by year. If the 2027 one does not repeat the 2.5%, it goes back to 1% on January 1.',
-        'calc.foot': 'Income Tax Law art. 113-A, third paragraph, section III (1%) · 2026 Revenue Law art. 25, section VI, published 07-Nov-2025 (2.5%) · Income Tax Law art. 113-B threshold, measured on the preceding tax year · On gross income before VAT',
+        'calc.foot': 'Income Tax Law art. 113-A, third paragraph, section III (1%) · 2026 Revenue Law art. 25, section VI, published 07-Nov-2025 (2.5%) · Income Tax Law art. 113-C, section IV (20% without an RFC) · Income Tax Law art. 113-B threshold, measured on the preceding tax year · On gross income before VAT',
         'calc.rateUp': 'Your rate went from 1% to 2.5% in 2026: that is {diff} more per year.',
-        'calc.rateSame': 'Your rate did not change in 2026. The Revenue Law only replaced section III of article 113-A, which covers selling goods and providing services. You fall under section {frac}, still at {rate}.',
+        'calc.rateSame': 'Your rate did not change in 2026: the Revenue Law only replaced section III of article 113-A, and you fall under section {frac}, still at {rate}. The figure that does hit you is different: if the platform does not have your RFC (tax ID), it withholds 20% (Income Tax Law art. 113-C, section IV). Providing your RFC saves you {diff} a year.',
         'calc.thFinal': 'And at what you get paid you stay under 300,000 pesos a year, so you can elect to have the withholding be your final income tax payment. If you make that election, what is withheld is not recovered in April: it is your tax.',
         'calc.thAdvance': 'And at what you get paid you go over 300,000 pesos a year, so the withholding is an advance you credit in your annual return: it hits your cash flow, not your final tax bill.',
         'map.titleA': 'If you rent on Airbnb, your state charges a tax on top of the federal one.',
@@ -1759,18 +2130,26 @@ const translations = {
         'map.ret_nv': 'We could not confirm whether the platform is required to withhold it. Do not assume it is already paid.',
         'audience.title': 'Who is this for?',
         'audience.subtitle': 'If you earn income on any of these platforms while living in Mexico, this matters to you.',
-        'audience.sellers': 'Online sellers',
-        'audience.drivers': 'Drivers',
-        'audience.hosts': 'Hosts',
-        'audience.freelancers': 'Freelancers',
-        'audience.creators': 'Content creators',
-        'audience.payments': 'International payments',
+        'audience.sellers': 'You sell online',
+        'audience.drivers': 'You drive or deliver',
+        'audience.hosts': 'You rent your place',
+        'audience.freelancers': 'You freelance',
+        'audience.creators': 'You create content',
+        'audience.payments': 'You get paid from abroad',
         'trust.title': 'Why trust Fisco Abierto?',
         'trust.subtitle': "It's fair to ask. Here are the answers.",
         'trust.card1.title': 'Who\'s behind it',
         'trust.card1.text': 'An independent project built from within Mexican tax law. Not a company, not a law firm, doesn\'t sell anything. It exists because basic tax information in Mexico should be accessible to everyone.',
         'trust.card2.title': 'Why it\'s free',
         'trust.card2.text': 'Because basic tax information shouldn\'t cost money. No premium plans, no upsells, no tricks. Just public information, clearly explained.',
+        'trust.manifesto': 'An independent project built from within Mexican tax law. Not a company, not a firm: it sells nothing, has no premium plan, and asks for none of your data. Just public information, clearly explained, with its source cited.',
+        'trust.fact1': 'Non-profit',
+        'trust.fact2': 'No signup, no personal data',
+        'trust.fact3': 'Every figure with its legal source',
+        'trust.mega': 'Check it yourself.',
+        'trust.audience': 'Every figure on this site comes from the Official Gazette, the laws in force and the SAT\'s own rules.',
+        'trust.statement': 'Next to every number is the article that backs it: you can open the law and verify it without taking anyone\'s word. When a rule changes, the site updates with its source. When something is not yet confirmed, it says so.',
+        'trust.receipts': 'Free, no signup · Every figure with its legal source · Unconfirmed items flagged',
         'diag.title': 'Quick tax diagnostic',
         'diag.intro': 'Select your platforms and approximate income. We don\'t ask for personal data (no name, tax ID, or email). Everything is processed in your browser.',
         'diag.step1.question': 'Which platforms do you earn income on?',
@@ -1950,6 +2329,8 @@ document.querySelectorAll('.lang-switch .lang-btn').forEach(function(btn) {
 
     var labelPast = document.getElementById('calcLabelPast');
     var labelNow = document.getElementById('calcLabelNow');
+    var diffLabel = document.getElementById('calcDiffLabel');
+    var SIN_RFC = 0.20; // Art. 113-C, fraccion IV LISR: sin RFC, retencion del 20%
     var actBtns = document.querySelectorAll('.act-btn');
 
     function money(n) {
@@ -1965,27 +2346,35 @@ document.querySelectorAll('.lang-switch .lang-btn').forEach(function(btn) {
         var rates = ACTS[act];
         var monthly = +range.value;
         var annual = monthly * 12;
-        var past = annual * rates.past;
-        var now = annual * rates.now;
-        var diff = now - past;
         var changed = rates.past !== rates.now;
 
+        // Dos comparaciones con la MISMA estructura: si tu tasa cambio,
+        // 2025 contra 2026. Si no cambio, compararla consigo misma da +$0
+        // y no dice nada; el dato con sustancia es con RFC contra sin RFC
+        // (20%, Art. 113-C, fr. IV LISR).
+        var rateA = changed ? rates.past : rates.now;
+        var rateB = changed ? rates.now : SIN_RFC;
+        var a = annual * rateA;
+        var b = annual * rateB;
+        var diff = b - a;
+
         amountEl.textContent = money(monthly);
-        pastEl.textContent = money(past);
-        nowEl.textContent = money(now);
+        pastEl.textContent = money(a);
+        nowEl.textContent = money(b);
         diffEl.textContent = (diff > 0 ? '+' : '') + money(diff);
-        labelPast.textContent = t('calc.rowPast').replace('{rate}', pct(rates.past));
-        labelNow.textContent = t('calc.rowNow').replace('{rate}', pct(rates.now));
+        labelPast.textContent = t(changed ? 'calc.rowPast' : 'calc.rowConRfc').replace('{rate}', pct(rateA));
+        labelNow.textContent = t(changed ? 'calc.rowNow' : 'calc.rowSinRfc').replace('{rate}', pct(rateB));
+        diffLabel.textContent = t(changed ? 'calc.rowDiff' : 'calc.rowDiffRfc');
         // Las barras se escalan contra la mayor de las dos.
-        var max = Math.max(rates.past, rates.now);
-        barPast.style.width = (rates.past / max * 100) + '%';
-        barNow.style.width = (rates.now / max * 100) + '%';
+        var max = Math.max(rateA, rateB);
+        barPast.style.width = (rateA / max * 100) + '%';
+        barNow.style.width = (rateB / max * 100) + '%';
 
         var overThreshold = annual > THRESHOLD;
         verdict.classList.toggle('is-advance', overThreshold);
         var rateLine = changed
             ? t('calc.rateUp').replace('{diff}', money(diff))
-            : t('calc.rateSame').replace('{rate}', pct(rates.now)).replace('{frac}', rates.frac);
+            : t('calc.rateSame').replace('{rate}', pct(rates.now)).replace('{frac}', rates.frac).replace('{diff}', money(diff));
         verdict.textContent = rateLine + ' ' + t(overThreshold ? 'calc.thAdvance' : 'calc.thFinal');
     }
 
@@ -2598,7 +2987,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
                 statsObserver.disconnect();
             }
         });
-    }, { threshold: 0.3 });
+    }, { threshold: 0.05 });
 
     var statsSection = document.querySelector('.stats-section');
     if (statsSection) statsObserver.observe(statsSection);
@@ -2628,6 +3017,374 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     // elemento, así el contenido no va "detrás" del scroll.
     }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
     reveals.forEach(function(el) { observer.observe(el); });
+})();
+</script>
+
+<!-- MAPA QUE SE PINTA SOLO -->
+<script>
+(function() {
+    // Contrato: entra "el mapa asomo al viewport"; sale UNA clase menos y
+    // 32 delays. El orden narrativo es la tasa: b1 (2%) primero, b5 (6%)
+    // al final — el mapa cuenta "va del 2% al 6%" mientras se pinta.
+    var svg = document.querySelector('.mxmap');
+    var group = document.getElementById('mxStates');
+    if (!svg || !group) return;
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (reduced.matches) return;
+    var paths = Array.prototype.slice.call(group.querySelectorAll('.mx-st'));
+    function bucket(p) {
+        var m = (p.className.baseVal || '').match(/\bb(\d)\b/);
+        return m ? +m[1] : 6;
+    }
+    var sorted = paths.slice().sort(function(a, b) { return bucket(a) - bucket(b); });
+    svg.classList.add('unpainted');
+    sorted.forEach(function(p, i) {
+        // primer delay = filter (hover, sin retraso); segundo = fill
+        p.style.transitionDelay = '0s, ' + (0.1 + i * 0.035).toFixed(3) + 's';
+    });
+    var io = new IntersectionObserver(function(entries) {
+        if (!entries[0].isIntersecting) return;
+        io.disconnect();
+        requestAnimationFrame(function() { svg.classList.remove('unpainted'); });
+        // pasada la oleada, fuera delays: el hover queda inmediato
+        setTimeout(function() {
+            paths.forEach(function(p) { p.style.transitionDelay = ''; });
+        }, 2600);
+    }, { threshold: 0.35 });
+    io.observe(svg);
+})();
+</script>
+
+<!-- TRUST CANVAS AMBIENTAL -->
+<script>
+(function() {
+    // Particulas mint a la deriva dentro del panel, familia del hero.
+    // Contrato: solo pinta cuando el panel esta en pantalla; con menos
+    // movimiento, no existe.
+    var panel = document.querySelector('.trust-panel');
+    if (!panel) return;
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if (reduced.matches) return;
+    var canvas = document.createElement('canvas');
+    canvas.className = 'trust-canvas';
+    canvas.setAttribute('aria-hidden', 'true');
+    panel.insertBefore(canvas, panel.firstChild);
+    var ctx = canvas.getContext('2d');
+    var dots = [], w = 0, h = 0, running = false, raf = null;
+    var N = 16, LINK = 130;
+
+    function resize() {
+        var dpr = Math.min(window.devicePixelRatio || 1, 2);
+        w = panel.clientWidth; h = panel.clientHeight;
+        canvas.width = w * dpr; canvas.height = h * dpr;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+    function seed(i) {
+        // sin Math.random por frame: semilla determinista suficiente
+        var a = Math.sin(i * 127.1) * 43758.5453;
+        return a - Math.floor(a);
+    }
+    for (var i = 0; i < N; i++) {
+        dots.push({ x: seed(i) , y: seed(i + 40), vx: (seed(i + 80) - 0.5) * 0.25, vy: (seed(i + 120) - 0.5) * 0.25 });
+    }
+    function frame() {
+        raf = null;
+        if (!running) return;
+        ctx.clearRect(0, 0, w, h);
+        for (var i = 0; i < N; i++) {
+            var d = dots[i];
+            d.px = d.x * w; d.py = d.y * h;
+            d.x += d.vx / w; d.y += d.vy / h;
+            if (d.x < 0) d.x += 1; if (d.x > 1) d.x -= 1;
+            if (d.y < 0) d.y += 1; if (d.y > 1) d.y -= 1;
+        }
+        ctx.strokeStyle = 'rgba(94, 234, 212, 0.05)';
+        ctx.lineWidth = 1;
+        for (var a = 0; a < N; a++) {
+            for (var b = a + 1; b < N; b++) {
+                var dx = dots[a].px - dots[b].px, dy = dots[a].py - dots[b].py;
+                if (dx * dx + dy * dy < LINK * LINK) {
+                    ctx.beginPath();
+                    ctx.moveTo(dots[a].px, dots[a].py);
+                    ctx.lineTo(dots[b].px, dots[b].py);
+                    ctx.stroke();
+                }
+            }
+        }
+        ctx.fillStyle = 'rgba(94, 234, 212, 0.35)';
+        for (var c = 0; c < N; c++) {
+            ctx.beginPath();
+            ctx.arc(dots[c].px, dots[c].py, 1.4, 0, 6.2832);
+            ctx.fill();
+        }
+        raf = requestAnimationFrame(frame);
+    }
+    var io = new IntersectionObserver(function(entries) {
+        running = entries[0].isIntersecting;
+        if (running) { resize(); if (!raf) raf = requestAnimationFrame(frame); }
+    }, { threshold: 0.05 });
+    io.observe(panel);
+    window.addEventListener('resize', function() { if (running) resize(); });
+})();
+</script>
+
+<!-- MAPA DE EXPOSICION (RESULTADOS) -->
+<script>
+(function() {
+    // Contrato: cuando aparecen los resultados, lee las plataformas
+    // seleccionadas del DOM y dibuja TU mapa: tus plataformas conectadas
+    // por hilos al nodo SAT, con el aro del color de tu nivel.
+    var results = document.getElementById('results');
+    var holder = document.getElementById('expo-map');
+    if (!results || !holder) return;
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var LEVEL_COLORS = { 'risk-alto': '#FCA5A5', 'risk-medio': '#FCD34D', 'risk-bajo': '#86EFAC' };
+
+    function chipLabel(btn) {
+        var clone = btn.cloneNode(true);
+        var e = clone.querySelector('.p-emoji');
+        if (e) e.remove();
+        var t = clone.textContent.replace(/\s+/g, ' ').trim();
+        return t.length > 15 ? t.slice(0, 14) + '…' : t;
+    }
+    function el(name, attrs) {
+        var n = document.createElementNS(svgNS, name);
+        for (var k in attrs) n.setAttribute(k, attrs[k]);
+        return n;
+    }
+    function build() {
+        holder.innerHTML = '';
+        holder.classList.remove('drawn');
+        var sel = Array.prototype.slice.call(document.querySelectorAll('.platform-btn.selected'));
+        if (!sel.length) return;
+        var labels = sel.slice(0, 5).map(chipLabel);
+        if (sel.length > 5) labels.push('+' + (sel.length - 5));
+        var banner = document.getElementById('risk-banner');
+        var ring = '#5EEAD4';
+        for (var cls in LEVEL_COLORS) {
+            if (banner && banner.classList.contains(cls)) ring = LEVEL_COLORS[cls];
+        }
+        var W = 400, H = 168, chipH = 26, satW = 74, satH = 32;
+        var svg = el('svg', { viewBox: '0 0 ' + W + ' ' + H, 'aria-hidden': 'true' });
+        var perRow = labels.length > 3 ? Math.ceil(labels.length / 2) : labels.length;
+        var rows = labels.length > 3 ? 2 : 1;
+        var satX = W / 2, satY = H - satH - 2;
+        labels.forEach(function(text, i) {
+            var row = Math.floor(i / perRow);
+            var inRow = Math.min(perRow, labels.length - row * perRow);
+            var col = i % perRow;
+            var cw = Math.max(9 * text.length + 20, 44);
+            var gap = (W - 16) / inRow;
+            var cx = 8 + gap * (col + 0.5);
+            var cy = 8 + row * (chipH + 14);
+            var x = cx - cw / 2;
+            svg.appendChild(el('rect', { x: x.toFixed(1), y: cy, rx: chipH / 2, width: cw.toFixed(1), height: chipH, 'class': 'em-chip' }));
+            var label = el('text', { x: cx.toFixed(1), y: cy + 17, 'text-anchor': 'middle', 'class': 'em-label' });
+            label.textContent = text;
+            svg.appendChild(label);
+            var y1 = cy + chipH;
+            var dy = Math.max(18, (satY - y1) * 0.45);
+            var thread = el('path', {
+                d: 'M ' + cx.toFixed(1) + ' ' + y1 + ' C ' + cx.toFixed(1) + ' ' + (y1 + dy).toFixed(1) +
+                   ', ' + satX + ' ' + (satY - dy).toFixed(1) + ', ' + satX + ' ' + satY,
+                pathLength: '1', 'class': 'em-thread'
+            });
+            thread.style.transitionDelay = (0.08 * i).toFixed(2) + 's';
+            svg.appendChild(thread);
+        });
+        svg.appendChild(el('rect', { x: satX - satW / 2, y: satY, rx: satH / 2, width: satW, height: satH, 'class': 'em-sat', stroke: ring, 'stroke-width': '2' }));
+        var satLabel = el('text', { x: satX, y: satY + 21, 'text-anchor': 'middle', 'class': 'em-sat-label' });
+        satLabel.textContent = 'SAT';
+        svg.appendChild(satLabel);
+        holder.appendChild(svg);
+        requestAnimationFrame(function() {
+            requestAnimationFrame(function() { holder.classList.add('drawn'); });
+        });
+    }
+    var mo = new MutationObserver(function() {
+        if (results.classList.contains('active')) { build(); }
+    });
+    mo.observe(results, { attributes: true, attributeFilter: ['class'] });
+})();
+</script>
+
+<!-- DIAG LINEAS VIVAS -->
+<script>
+(function() {
+    // Contrato: entra el conjunto de plataformas seleccionadas y la
+    // geometria del paso; salen lineas SVG de cada chip a la pregunta.
+    var step1 = document.querySelector('.diag-step[data-step="1"]');
+    if (!step1) return;
+    var grid = step1.querySelector('.platform-grid');
+    var question = step1.querySelector('.diag-question');
+    if (!grid || !question) return;
+    var svgNS = 'http://www.w3.org/2000/svg';
+    var svg = document.createElementNS(svgNS, 'svg');
+    svg.setAttribute('class', 'diag-links');
+    svg.setAttribute('aria-hidden', 'true');
+    step1.insertBefore(svg, step1.firstChild);
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+    var count = document.getElementById('selCount');
+    function draw() {
+        svg.classList.remove('drawn');
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        if (reduced.matches) return;
+        var sel = grid.querySelectorAll('.platform-btn.selected');
+        if (!sel.length || !count || count.hidden) return;
+        var sr = step1.getBoundingClientRect();
+        if (!sr.width) return;
+        svg.setAttribute('width', sr.width);
+        svg.setAttribute('height', sr.height);
+        // Hilos curvos: cada seleccion baja y se funde en el contador —
+        // tus plataformas se acumulan ahi. Curva cubica con tangentes
+        // verticales para que el haz se vea organico, no de plano cartesiano.
+        var cr = count.getBoundingClientRect();
+        var ax = cr.left + cr.width / 2 - sr.left;
+        var ay = cr.top - sr.top - 4;
+        sel.forEach(function(btn) {
+            var r = btn.getBoundingClientRect();
+            var x1 = r.left + r.width / 2 - sr.left;
+            var y1 = r.bottom - sr.top;
+            var dy = Math.max(24, Math.min(90, (ay - y1) * 0.45));
+            var p = document.createElementNS(svgNS, 'path');
+            p.setAttribute('d', 'M ' + x1.toFixed(1) + ' ' + y1.toFixed(1) +
+                ' C ' + x1.toFixed(1) + ' ' + (y1 + dy).toFixed(1) +
+                ', ' + ax.toFixed(1) + ' ' + (ay - dy).toFixed(1) +
+                ', ' + ax.toFixed(1) + ' ' + ay.toFixed(1));
+            p.setAttribute('pathLength', '1');
+            svg.appendChild(p);
+        });
+        requestAnimationFrame(function() { svg.classList.add('drawn'); });
+    }
+    grid.addEventListener('click', function() { requestAnimationFrame(draw); });
+    window.addEventListener('resize', draw);
+    if (reduced.addEventListener) reduced.addEventListener('change', draw);
+    draw();
+})();
+</script>
+
+<!-- HEADER SHRINK -->
+<script>
+(function() {
+    // Contrato: entra scrollY, sale UNA clase en el nav. Nada mas.
+    var nav = document.getElementById('topnav');
+    if (!nav) return;
+    var ticking = false;
+    function update() {
+        ticking = false;
+        nav.classList.toggle('shrunk', window.scrollY > 24);
+        // El CTA del nav entra cuando el del hero ya salio de pantalla.
+        nav.classList.toggle('cta-on', window.scrollY > window.innerHeight * 0.55);
+    }
+    window.addEventListener('scroll', function() {
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }, { passive: true });
+    update();
+})();
+</script>
+
+<!-- TRUST PANEL GROW -->
+<script>
+(function() {
+    // El panel crece al entrar (anthropic.com): scale continuo 0.93 -> 1
+    // segun cuanto ha subido en el viewport. Misma familia que el
+    // scroll-fade: sin umbrales, el scroll manda y el freno congela.
+    var panel = document.querySelector('.trust-panel');
+    if (!panel) return;
+    var section = panel.closest('section');
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var ticking = false;
+    function update() {
+        ticking = false;
+        if (reduced.matches) {
+            panel.style.transform = '';
+            panel.style.borderRadius = '';
+            section.style.backgroundColor = '';
+            return;
+        }
+        var rect = panel.getBoundingClientRect();
+        var vh = window.innerHeight;
+        var progress = 1 - Math.min(1, Math.max(0, (rect.top - vh * 0.12) / (vh * 0.55)));
+        // Encapsulacion notoria: escala amplia, esquinas que se afinan al
+        // crecer, y las lineas del diagrama se materializan con la entrada.
+        var scale = 0.86 + progress * 0.14;
+        panel.style.transform = 'scale(' + scale.toFixed(4) + ')';
+        panel.style.borderRadius = (44 - 16 * progress).toFixed(1) + 'px';
+        // El entorno se apaga hasta EXACTAMENTE el color del panel
+        // (#1C1917): al fondo del viaje, cuadro y mundo son una sola
+        // superficie sin costura. Al subir de regreso, amanece.
+        var r = Math.round(250 + (28 - 250) * progress);
+        var g = Math.round(250 + (25 - 250) * progress);
+        var b = Math.round(249 + (23 - 249) * progress);
+        section.style.backgroundColor = 'rgb(' + r + ',' + g + ',' + b + ')';
+    }
+    function onScroll() {
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    if (reduced.addEventListener) {
+        reduced.addEventListener('change', function() { onScroll(); });
+    }
+    update();
+})();
+</script>
+
+<!-- SCROLL FADE (CIFRAS) -->
+<script>
+(function() {
+    // Opacidad ligada al scroll (tecnica del demo scroll_fade, ago 2026):
+    // la opacidad es funcion CONTINUA de la distancia entre el centro del
+    // elemento y el centro del viewport. Sin umbrales ni clases: si el
+    // scroll se frena a la mitad, el fundido se queda a la mitad.
+    // Tres perillas: HOLD (radio de brillo pleno), FALL (distancia de
+    // caida) y el piso 0.07 del demo: cada dato tiene su propia pantalla,
+    // asi que el que no esta al centro casi desaparece — ese es el chiste.
+    var els = Array.prototype.slice.call(document.querySelectorAll('.scroll-fade'));
+    if (!els.length) return;
+
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var ticking = false;
+
+    function clearStyles() {
+        for (var i = 0; i < els.length; i++) {
+            els[i].style.opacity = '';
+            els[i].style.transform = '';
+        }
+    }
+
+    function update() {
+        ticking = false;
+        if (reduced.matches) return;
+        var vh = window.innerHeight;
+        var mid = vh / 2;
+        var hold = vh * 0.12;
+        var fall = vh * 0.38;
+        for (var i = 0; i < els.length; i++) {
+            var rect = els[i].getBoundingClientRect();
+            var dist = Math.abs((rect.top + rect.height / 2) - mid);
+            var t = dist <= hold ? 0 : Math.min(1, (dist - hold) / fall);
+            var opacity = 1 - t * 0.93;
+            els[i].style.opacity = opacity.toFixed(3);
+            els[i].style.transform = 'translateY(' + (t * 10).toFixed(1) + 'px)';
+        }
+    }
+
+    function onScroll() {
+        // rAF como portero: lleguen los eventos de scroll que lleguen,
+        // se calcula UNA vez por frame, sincronizado con el repintado.
+        if (!ticking) { ticking = true; requestAnimationFrame(update); }
+    }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', onScroll);
+    if (reduced.addEventListener) {
+        reduced.addEventListener('change', function() {
+            if (reduced.matches) { clearStyles(); } else { onScroll(); }
+        });
+    }
+    update();
 })();
 </script>
 
