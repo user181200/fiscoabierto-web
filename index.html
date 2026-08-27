@@ -3640,6 +3640,35 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     var RUNWAY = 620;
     function sizeStage() {
         if (railMode) {
+            var h = panel.offsetHeight + RUNWAY;
+            if (stage.style.height !== h + 'px') stage.style.height = h + 'px';
+        } else if (stage.style.height) {
+            stage.style.height = '';
+        }
+    }
+
+    function layout(force) {
+        var box = chain.getBoundingClientRect();
+        var W = box.width, H = box.height, f = form();
+        if (!W || !H) { ready = false; return; }
+        if (!force && Math.round(W) === lastW && Math.round(H) === lastH && f === lastForm) return;
+        lastW = Math.round(W); lastH = Math.round(H); lastForm = f;
+        railMode = (f === 'rail');
+        seq = railMode ? railOrder : pills;
+        // El panel puede venir escalado por el grow. El viewBox se toma del
+        // MISMO rect escalado que las coordenadas, asi la escala se cancela.
+        svg.setAttribute('viewBox', '0 0 ' + n1(W) + ' ' + n1(H));
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        threads = []; dots = []; stem = null; segs = []; railPill = []; railTrib = [];
+
+        var nb = node.getBoundingClientRect();
+        var nTop = nb.top - box.top, nBot = nb.bottom - box.top;
+        var nCx = nb.left - box.left + nb.width / 2;
+        var nCy = nTop + nb.height / 2;
+        var nL = nb.left - box.left, nR = nb.right - box.left;
+        var ob = out.getBoundingClientRect();
+
+        if (railMode) {
             // EL ARBOL. El tronco baja por la izquierda recogiendo ramas y
             // engrosando, y al final hace un barrido hacia el nodo. La causa
             // del movimiento es UNA: la punta del trazo. Cada fuente se
