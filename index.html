@@ -1185,6 +1185,37 @@
             text-transform: uppercase;
             color: #5EEAD4;
         }
+        /* La pill es el link a su fuente. La flecha va pegada al nombre y no
+           como tercer elemento, para que sobreviva al layout apilado de
+           <=1100px sin caerse a su propio renglon. */
+        a.chain-src {
+            text-decoration: none;
+            cursor: pointer;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+        a.chain-src i::after {
+            content: '\2197\FE0E';
+            margin-left: 5px;
+            font-weight: 400;
+            color: rgba(94, 234, 212, 0.45);
+            transition: color 0.2s ease;
+        }
+        a.chain-src:hover, a.chain-src:focus-visible {
+            border-color: rgba(94, 234, 212, 0.5);
+            background: rgba(94, 234, 212, 0.09);
+        }
+        a.chain-src:hover i::after, a.chain-src:focus-visible i::after { color: #5EEAD4; }
+        a.chain-src:focus-visible, a.chain-cite:focus-visible {
+            outline: 2px solid #5EEAD4;
+            outline-offset: 3px;
+        }
+        a.chain-cite {
+            text-decoration: underline;
+            text-decoration-color: rgba(94, 234, 212, 0.35);
+            text-underline-offset: 4px;
+            transition: text-decoration-color 0.2s ease;
+        }
+        a.chain-cite:hover { text-decoration-color: #5EEAD4; }
         /* Si el JS no corre, el diagrama no se queda en blanco: la clase
            chain-on la pone el propio script antes de apagar nada. */
         .trust-chain:not(.chain-on) .chain-src,
@@ -1784,9 +1815,9 @@
 
                     <div class="chain-core">
                         <div class="chain-col chain-col-l">
-                            <span class="chain-src"><b data-i18n="trust.src1">Diario Oficial</b><i data-i18n="trust.src1s">reformas y decretos</i></span>
-                            <span class="chain-src"><b data-i18n="trust.src2">Ley del ISR</b><i data-i18n="trust.src2s">tarifas y retenciones</i></span>
-                            <span class="chain-src"><b data-i18n="trust.src3">Ley del IVA</b><i data-i18n="trust.src3s">tasas y retenciones</i></span>
+                            <a class="chain-src" href="https://www.dof.gob.mx" target="_blank" rel="noopener noreferrer"><b data-i18n="trust.src1">Diario Oficial</b><i data-i18n="trust.src1s">reformas y decretos</i></a>
+                            <a class="chain-src" href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LISR.pdf" target="_blank" rel="noopener noreferrer"><b data-i18n="trust.src2">Ley del ISR</b><i data-i18n="trust.src2s">tarifas y retenciones</i></a>
+                            <a class="chain-src" href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LIVA.pdf" target="_blank" rel="noopener noreferrer"><b data-i18n="trust.src3">Ley del IVA</b><i data-i18n="trust.src3s">tasas y retenciones</i></a>
                         </div>
 
                         <div class="chain-node">
@@ -1795,16 +1826,17 @@
                         </div>
 
                         <div class="chain-col chain-col-r">
-                            <span class="chain-src"><b data-i18n="trust.src4">Código Fiscal</b><i data-i18n="trust.src4s">obligaciones y plazos</i></span>
-                            <span class="chain-src"><b data-i18n="trust.src5">Miscelánea Fiscal</b><i data-i18n="trust.src5s">reglas del año</i></span>
-                            <span class="chain-src"><b data-i18n="trust.src6">Criterios del SAT</b><i data-i18n="trust.src6s">interpretación oficial</i></span>
+                            <a class="chain-src" href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf" target="_blank" rel="noopener noreferrer"><b data-i18n="trust.src4">Código Fiscal</b><i data-i18n="trust.src4s">obligaciones y plazos</i></a>
+                            <!-- OJO: esta URL del SAT trae el anio; revisar cada enero. -->
+                            <a class="chain-src" href="https://www.sat.gob.mx/minisitio/NormatividadRMFyRGCE/normatividad_rmf_rgce2026.html" target="_blank" rel="noopener noreferrer"><b data-i18n="trust.src5">Miscelánea Fiscal</b><i data-i18n="trust.src5s">reglas del año</i></a>
+                            <a class="chain-src" href="https://www.sat.gob.mx/ordenamiento/56520/criterios-normativos" target="_blank" rel="noopener noreferrer"><b data-i18n="trust.src6">Criterios del SAT</b><i data-i18n="trust.src6s">interpretación oficial</i></a>
                         </div>
                     </div>
 
                     <div class="chain-out">
                         <span class="chain-figure">2.5%</span>
                         <span class="chain-what" data-i18n="trust.outWhat">retención de ISR si vendes en línea</span>
-                        <span class="chain-cite" data-i18n="trust.outCite">Art. 25, fr. VI, LIF 2026 · DOF 07-nov-2025</span>
+                        <a class="chain-cite" href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LIF_2026.pdf" target="_blank" rel="noopener noreferrer" data-i18n="trust.outCite">Art. 25, fr. VI, LIF 2026 · DOF 07-nov-2025</a>
                     </div>
                 </div>
             </div>
@@ -3634,6 +3666,23 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
             el = el.parentNode;
         }
     }, true);
+    // Al pasar o enfocar una fuente se enciende SU hilo: el diagrama dice
+    // de donde viene cada cosa antes de que le des clic.
+    var hi = -1;
+    function paintHi() {
+        for (var i = 0; i < threads.length; i++) {
+            threads[i].style.stroke = (i === hi) ? '#5EEAD4' : '';
+            threads[i].style.strokeWidth = (i === hi) ? '1.8' : '';
+        }
+    }
+    pills.forEach(function(o, i) {
+        function on() { hi = i; paintHi(); }
+        function off() { if (hi === i) { hi = -1; paintHi(); } }
+        o.el.addEventListener('mouseenter', on);
+        o.el.addEventListener('mouseleave', off);
+        o.el.addEventListener('focus', on);
+        o.el.addEventListener('blur', off);
+    });
     relayout();
 })();
 </script>
