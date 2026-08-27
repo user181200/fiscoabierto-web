@@ -282,6 +282,9 @@
            volante. Sin JS, la seccion queda perfectamente legible. */
         html { scroll-padding-top: 90px; }
         @media (max-width: 600px) { html { scroll-padding-top: 90px; } }
+        /* El piso del fade es variable para poder cambiarlo por tamano de
+           pantalla sin repetir el breakpoint en el JS. Ver .stats-item. */
+        :root { --fade-floor: 0.93; }
         .scroll-fade { will-change: opacity, transform; }
         @media (prefers-reduced-motion: reduce) {
             .scroll-fade { opacity: 1 !important; transform: none !important; }
@@ -948,6 +951,18 @@
             flex-direction: column;
             justify-content: center;
             text-align: left;
+        }
+        /* TELEFONO: el fade solo produce profundidad si caben DOS bloques en
+           pantalla al mismo tiempo. Medido en 390x844 con los 78vh: solo hay
+           3 elementos visibles y los 3 son de la MISMA cifra, asi que no hay
+           vecino que atenuar y se lee plano, una cifra a plena luz rodeada de
+           vacio. El culpable era el alto por cifra, no las perillas del fade:
+           subir el piso sin tocar esto no cambiaba una sola opacidad.
+           Con 46vh caben tres bloques y el vecino cae a 0.25-0.36. */
+        @media (max-width: 760px) {
+            .stats-items { padding: 8vh 0 10vh; }
+            .stats-item { min-height: 46vh; }
+            :root { --fade-floor: 0.75; }
         }
         /* El numero ya NO trae blur/opacity/transition propios: la opacidad
            de esta seccion tiene UN solo dueno (el JS de scroll-fade). Dos
@@ -3903,6 +3918,14 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     var ticking = false;
+    // El piso vive en el CSS (--fade-floor) para que el breakpoint exista en
+    // UN lugar. Se lee en el arranque y al cambiar de tamano, no por frame.
+    var floor = 0.93;
+    function readFloor() {
+        var v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fade-floor'));
+        if (!isNaN(v)) floor = v;
+    }
+    readFloor();
 
     function clearStyles() {
         for (var i = 0; i < els.length; i++) {
@@ -3922,7 +3945,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
             var rect = els[i].getBoundingClientRect();
             var dist = Math.abs((rect.top + rect.height / 2) - mid);
             var t = dist <= hold ? 0 : Math.min(1, (dist - hold) / fall);
-            var opacity = 1 - t * 0.93;
+            var opacity = 1 - t * floor;
             els[i].style.opacity = opacity.toFixed(3);
             els[i].style.transform = 'translateY(' + (t * 10).toFixed(1) + 'px)';
         }
@@ -3935,7 +3958,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     }
 
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', onScroll);
+    window.addEventListener('resize', function() { readFloor(); onScroll(); });
     if (reduced.addEventListener) {
         reduced.addEventListener('change', function() {
             if (reduced.matches) { clearStyles(); } else { onScroll(); }
