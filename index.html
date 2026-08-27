@@ -952,18 +952,6 @@
             justify-content: center;
             text-align: left;
         }
-        /* TELEFONO: el fade solo produce profundidad si caben DOS bloques en
-           pantalla al mismo tiempo. Medido en 390x844 con los 78vh: solo hay
-           3 elementos visibles y los 3 son de la MISMA cifra, asi que no hay
-           vecino que atenuar y se lee plano, una cifra a plena luz rodeada de
-           vacio. El culpable era el alto por cifra, no las perillas del fade:
-           subir el piso sin tocar esto no cambiaba una sola opacidad.
-           Con 46vh caben tres bloques y el vecino cae a 0.25-0.36. */
-        @media (max-width: 760px) {
-            .stats-items { padding: 8vh 0 10vh; }
-            .stats-item { min-height: 46vh; }
-            :root { --fade-floor: 0.75; }
-        }
         /* El numero ya NO trae blur/opacity/transition propios: la opacidad
            de esta seccion tiene UN solo dueno (el JS de scroll-fade). Dos
            sistemas escribiendo la misma propiedad fue el bug que evitamos. */
@@ -986,6 +974,7 @@
             color: #78716C;
             margin-top: 14px;
         }
+
         .stats-callout {
             padding: 26px 30px;
             background: rgba(255,255,255,0.06);
@@ -1001,8 +990,22 @@
         @media (max-width: 760px) {
             .stats-band { grid-template-columns: 1fr; gap: 0; }
             .stats-aside { position: static; height: auto; padding-top: 48px; }
-            .stats-items { padding: 4vh 0 12vh; }
-            .stats-item { min-height: 72vh; }
+            /* ESCALA PROPIA DE TELEFONO, no una reduccion de la de escritorio.
+               Medido en WebKit con perfil de iPhone 13 sobre los tres
+               referentes: los tres AGRANDAN la tipografia en movil y dejan que
+               el bloque vecino invada la pantalla (Riotters pone su titular en
+               65px sobre 390px de ancho). La profundidad no sale del fade por
+               si solo: sale de que el vecino es lo bastante grande como para
+               meterse en pantalla a media luz.
+               El tope de 26ch de la etiqueta se quita aqui: con el ancho
+               completo baja de 9 renglones a 5, el bloque cabe en 55vh y el
+               vecino alcanza a meter su CIFRA, no solo su pie. */
+            .stats-items { padding: 10vh 0 12vh; }
+            .stats-item { min-height: 55vh; }
+            .stat-number { font-size: 4.6rem; }
+            .stat-label { font-size: 1.4rem; max-width: none; }
+            .stat-source { font-size: 0.9rem; }
+            :root { --fade-floor: 0.75; }
         }
 
         /* TRUST / QUIÉN ESTÁ DETRÁS */
