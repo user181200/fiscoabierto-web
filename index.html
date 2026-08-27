@@ -997,16 +997,22 @@
             position: relative;
         }
         .container.trust-wrap { max-width: 1160px; }
+        /* La pista: la seccion mide mas que el panel y el panel se queda
+           pegado arriba. Ese sobrante es el recorrido con el que se dibuja
+           el diagrama; sin pista habria que dibujarlo en el instante en que
+           el panel cruza la pantalla. */
+        .trust-stage { position: relative; height: 205vh; }
         .trust-panel {
             background: #1C1917;
             color: #E7E5E4;
             border-radius: 28px;
-            padding: clamp(48px, 6vw, 84px) clamp(24px, 6vw, 84px);
-            position: relative;
+            padding: clamp(36px, 4.2vw, 60px) clamp(20px, 4.5vw, 56px);
+            position: sticky;
+            top: 4vh;
             transform-origin: 50% 20%;
             will-change: transform;
             overflow: hidden;
-            min-height: 82vh;
+            min-height: 86vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
@@ -1019,19 +1025,7 @@
             z-index: 0;
             pointer-events: none;
         }
-        .trust-kicker, .trust-mega, .trust-audience, .trust-statement,
-        .trust-receipts { position: relative; z-index: 1; }
-        .trust-mega {
-            font-family: var(--font-serif);
-            font-weight: 700;
-            font-size: clamp(3rem, 7.5vw, 6.4rem);
-            line-height: 1.04;
-            letter-spacing: -0.015em;
-            text-align: center;
-            margin: 0 auto 30px;
-            max-width: 980px;
-            color: #FAFAF9;
-        }
+        .trust-kicker, .trust-chain { position: relative; z-index: 1; }
         /* EL BORDE DE LUZ: una chispa mint recorre el marco del panel en
            un anillo de 1.5px — notorio pero sutil. Cuando el mundo y el
            panel se funden al mismo negro, esta luz viajera es lo unico
@@ -1066,101 +1060,191 @@
         @media (prefers-reduced-motion: reduce) {
             .trust-panel::after { animation: none; }
         }
-        .trust-kicker { text-align: center; }
-        .trust-audience { text-align: center; margin-left: auto; margin-right: auto; }
-        .trust-statement {
-            text-align: center;
-            font-size: clamp(1.15rem, 1.9vw, 1.5rem);
-            max-width: 680px;
-        }
-        .trust-receipts { text-align: center; }
-        .trust-audience {
-            font-family: var(--font-serif);
-            font-style: italic;
-            font-size: clamp(1rem, 1.6vw, 1.25rem);
-            color: #A8A29E;
-            max-width: 900px;
-            margin: 0 auto 18px;
-            width: 100%;
-        }
-
         .trust-kicker {
+            text-align: center;
             font-size: 0.78rem;
             font-weight: 600;
             letter-spacing: 0.1em;
             text-transform: uppercase;
             color: #5EEAD4;
-            margin: 0 auto 26px;
+            margin: 0 auto clamp(24px, 4vh, 40px);
             max-width: 900px;
             width: 100%;
-        }
-        /* El recurso premium de ESTE panel: lectura viva. El manifiesto en
-           serif grande y cada palabra se enciende con el progreso del
-           scroll — sin lineas, sin chips: puro texto respirando. */
-        .trust-statement {
-            font-family: var(--font-serif);
-            font-size: clamp(1.55rem, 3vw, 2.6rem);
-            font-weight: 500;
-            line-height: 1.5;
-            color: #FFFFFF;
-            max-width: 900px;
-            margin: 0 auto;
-            width: 100%;
-        }
-        .trust-receipts {
-            margin: 40px auto 0;
-            max-width: 900px;
-            width: 100%;
-            font-size: 0.76rem;
-            font-weight: 600;
-            letter-spacing: 0.12em;
-            text-transform: uppercase;
-            color: rgba(255, 255, 255, 0.42);
         }
 
-        .trust-title {
-            font-family: var(--font-serif);
-            font-weight: 500;
-            font-size: clamp(2rem, 3.8vw, 3.1rem);
-            line-height: 1.15;
-            letter-spacing: -0.01em;
-            text-align: center;
-            color: #FFFFFF;
-            max-width: 640px;
-            margin: 0 auto 12px;
+        /* LA CADENA DE VERIFICACION
+           Un diagrama en lugar de un parrafo: entran seis fuentes oficiales,
+           el sitio las lee, y sale una cifra con el articulo que la sostiene.
+           Se dibuja con el scroll y cada pieza tiene su tramo del recorrido,
+           asi que si el scroll se frena, el diagrama se queda a medio dibujar
+           — misma familia que el scroll-fade de las cifras.
+
+           Las fuentes van en dos columnas que flanquean el nodo y se alinean
+           por su borde INTERIOR: cada hilo sale hacia el centro y nunca
+           regresa, asi que ningun hilo cruza por encima de una pill. Esa es
+           la razon del layout, no la simetria. */
+        .trust-chain {
+            position: relative;
+            width: 100%;
+            max-width: 980px;
+            margin: 0 auto;
         }
-        .trust-section .section-subtitle { color: #A8A29E; text-align: center; max-width: 560px; margin: 0 auto 44px; }
-        /* En vez de dos cuadros de texto: un manifiesto serif al centro
-           (el gesto de anthropic.com) y tres hechos-capsula que riman con
-           los nodos de la constelacion. Misma informacion, destilada. */
-        .trust-manifesto {
-            font-family: var(--font-serif);
-            font-size: clamp(1.1rem, 1.8vw, 1.45rem);
-            line-height: 1.65;
-            color: #D6D3D1;
+        .chain-threads {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            overflow: visible;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .chain-threads path {
+            fill: none;
+            stroke: rgba(94, 234, 212, 0.42);
+            stroke-width: 1.25;
+            stroke-linecap: round;
+        }
+        .chain-threads circle { fill: #5EEAD4; }
+        .chain-core, .chain-out { position: relative; z-index: 1; }
+
+        .chain-core {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+            grid-template-areas: "l n r";
+            align-items: center;
+            gap: 0 clamp(20px, 3vw, 48px);
+        }
+        .chain-col { display: flex; flex-direction: column; gap: clamp(20px, 3.4vh, 34px); }
+        .chain-col-l { grid-area: l; align-items: flex-end; }
+        .chain-col-r { grid-area: r; align-items: flex-start; }
+
+        .chain-src {
+            display: inline-flex;
+            align-items: baseline;
+            gap: 9px;
+            border: 1px solid rgba(255, 255, 255, 0.13);
+            background: rgba(255, 255, 255, 0.045);
+            border-radius: 999px;
+            padding: 10px 18px;
+            white-space: nowrap;
+            opacity: 0;
+            will-change: opacity, transform;
+        }
+        .chain-src b { font-size: 0.95rem; font-weight: 600; color: #F5F5F4; }
+        .chain-src i { font-size: 0.82rem; font-style: normal; color: #A8A29E; }
+
+        .chain-node {
+            grid-area: n;
+            display: flex;
+            align-items: center;
+            gap: 13px;
+            width: fit-content;
+            max-width: 100%;
+            border: 1px solid rgba(94, 234, 212, 0.42);
+            background: rgba(94, 234, 212, 0.07);
+            border-radius: 22px;
+            padding: 13px 24px 13px 15px;
+            opacity: 0;
+            will-change: opacity, transform;
+        }
+        .chain-mark { height: 32px; width: auto; flex-shrink: 0; }
+        .chain-node span { display: flex; flex-direction: column; gap: 1px; }
+        .chain-node b { font-size: 1.05rem; font-weight: 700; color: #FAFAF9; line-height: 1.25; }
+        .chain-node i { font-size: 0.83rem; font-style: normal; color: #99F6E4; line-height: 1.3; }
+
+        .chain-out {
+            width: fit-content;
+            max-width: 100%;
+            margin: clamp(66px, 10vh, 112px) auto 0;
             text-align: center;
-            max-width: 620px;
-            margin: 0 auto 34px;
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            background: rgba(255, 255, 255, 0.035);
+            border-radius: 20px;
+            padding: 24px 36px 20px;
+            opacity: 0;
+            will-change: opacity, transform;
+        }
+        .chain-figure {
+            display: block;
+            font-family: var(--font-serif);
+            font-weight: 700;
+            font-size: clamp(2.2rem, 4.6vw, 3.2rem);
+            line-height: 1;
+            letter-spacing: -0.02em;
+            color: #FAFAF9;
+        }
+        .chain-what { display: block; margin-top: 9px; font-size: 0.95rem; color: #A8A29E; }
+        .chain-cite {
+            display: block;
+            margin-top: 15px;
+            padding-top: 13px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+            font-size: 0.72rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: #5EEAD4;
+        }
+        /* Si el JS no corre, el diagrama no se queda en blanco: la clase
+           chain-on la pone el propio script antes de apagar nada. */
+        .trust-chain:not(.chain-on) .chain-src,
+        .trust-chain:not(.chain-on) .chain-node,
+        .trust-chain:not(.chain-on) .chain-out { opacity: 1; transform: none; }
+
+        /* Antes de que las pills en linea dejen de caber, el texto gris se
+           va abajo del nombre en vez de encogerse. */
+        @media (max-width: 1100px) {
+            .chain-src { flex-direction: column; gap: 1px; white-space: normal; }
+            .chain-col-l .chain-src { align-items: flex-end; text-align: right; }
+            .chain-col-r .chain-src { align-items: flex-start; text-align: left; }
+            .chain-src i { line-height: 1.3; }
+        }
+        @media (max-width: 760px) {
+            .trust-stage { height: 195vh; }
+            .trust-panel { min-height: 82vh; border-radius: 22px; }
+            /* El nodo baja: las dos columnas quedan arriba y los hilos
+               bajan por el pasillo del centro, sin cruzar nada. */
+            .chain-core {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                grid-template-areas: "l r" "n n";
+                align-items: start;
+                gap: 0 26px;
+            }
+            .chain-col { gap: 10px; }
+            .chain-col-l, .chain-col-r { align-items: stretch; }
+            .chain-src {
+                align-items: center;
+                text-align: center;
+                padding: 9px 12px;
+                border-radius: 16px;
+            }
+            .chain-col-l .chain-src, .chain-col-r .chain-src { align-items: center; text-align: center; }
+            .chain-src { min-height: 64px; justify-content: center; }
+            .chain-src b { font-size: 0.84rem; white-space: nowrap; }
+            .chain-src i { font-size: 0.72rem; }
+            .chain-node {
+                justify-self: center;
+                margin-top: clamp(56px, 9vh, 84px);
+                padding: 11px 18px 11px 12px;
+                border-radius: 18px;
+                gap: 10px;
+            }
+            .chain-mark { height: 27px; }
+            .chain-node b { font-size: 0.93rem; }
+            .chain-node i { font-size: 0.76rem; }
+            .chain-out { margin-top: clamp(52px, 8vh, 80px); padding: 20px 22px 18px; border-radius: 16px; }
+            .chain-what { font-size: 0.86rem; }
+            .chain-cite { font-size: 0.64rem; letter-spacing: 0.06em; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .trust-stage { height: auto; }
+            .trust-panel { position: relative; top: auto; }
+            .chain-src, .chain-node, .chain-out { opacity: 1; }
         }
         /* La serif de acento tambien en los leads editoriales del mapa
            y del FAQ: una sola voz tipografica en todo el sitio. */
         .map-section .blk-lead,
         #faq .section-subtitle { font-family: var(--font-serif); font-size: 1.05rem; }
-        .trust-facts {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 10px;
-        }
-        .trust-fact {
-            font-size: 0.8rem;
-            color: #A8A29E;
-            border: 1px solid rgba(255, 255, 255, 0.14);
-            background: rgba(255, 255, 255, 0.04);
-            border-radius: 999px;
-            padding: 8px 16px;
-        }
-
         /* FAQ */
         .faq-list { max-width: 640px; margin: 0 auto; }
         .faq-item {
@@ -1691,12 +1775,39 @@
 <!-- CONFIANZA -->
 <section class="trust-section" id="sobre">
     <div class="container trust-wrap">
-        <div class="trust-panel">
-            <p class="trust-kicker" data-i18n="trust.title">¿Por qué confiar en Fisco Abierto?</p>
-            <p class="trust-mega" data-i18n="trust.mega">Compruébalo tú mismo.</p>
-            <p class="trust-audience" data-i18n="trust.audience">Cada dato de este sitio sale del Diario Oficial, de las leyes vigentes y de las reglas del SAT.</p>
-            <p class="trust-statement" id="trust-statement" data-i18n="trust.statement">Junto a cada cifra está el artículo que la sostiene: puedes abrir la ley y verificarla sin creerle a nadie. Cuando una regla cambia, el sitio se actualiza con su fuente. Cuando algo sigue sin confirmarse, se dice tal cual.</p>
-            <p class="trust-receipts" data-i18n="trust.receipts">Gratis y sin registro · Cada cifra con su artículo · Lo no confirmado, señalado</p>
+        <div class="trust-stage">
+            <div class="trust-panel">
+                <p class="trust-kicker" data-i18n="trust.title">¿Por qué confiar en Fisco Abierto?</p>
+
+                <div class="trust-chain" id="trust-chain">
+                    <svg class="chain-threads" aria-hidden="true" focusable="false"></svg>
+
+                    <div class="chain-core">
+                        <div class="chain-col chain-col-l">
+                            <span class="chain-src"><b data-i18n="trust.src1">Diario Oficial</b><i data-i18n="trust.src1s">reformas y decretos</i></span>
+                            <span class="chain-src"><b data-i18n="trust.src2">Ley del ISR</b><i data-i18n="trust.src2s">tarifas y retenciones</i></span>
+                            <span class="chain-src"><b data-i18n="trust.src3">Ley del IVA</b><i data-i18n="trust.src3s">tasas y retenciones</i></span>
+                        </div>
+
+                        <div class="chain-node">
+                            <img class="chain-mark" src="favicon.svg" alt="" aria-hidden="true">
+                            <span><b data-i18n="trust.node">Fisco Abierto</b><i data-i18n="trust.nodeSub">traduce y cita el artículo</i></span>
+                        </div>
+
+                        <div class="chain-col chain-col-r">
+                            <span class="chain-src"><b data-i18n="trust.src4">Código Fiscal</b><i data-i18n="trust.src4s">obligaciones y plazos</i></span>
+                            <span class="chain-src"><b data-i18n="trust.src5">Miscelánea Fiscal</b><i data-i18n="trust.src5s">reglas del año</i></span>
+                            <span class="chain-src"><b data-i18n="trust.src6">Criterios del SAT</b><i data-i18n="trust.src6s">interpretación oficial</i></span>
+                        </div>
+                    </div>
+
+                    <div class="chain-out">
+                        <span class="chain-figure">2.5%</span>
+                        <span class="chain-what" data-i18n="trust.outWhat">retención de ISR si vendes en línea</span>
+                        <span class="chain-cite" data-i18n="trust.outCite">Art. 25, fr. VI, LIF 2026 · DOF 07-nov-2025</span>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </section>
@@ -2006,19 +2117,22 @@ const translations = {
         'audience.creators': 'Creas contenido',
         'audience.payments': 'Cobras del extranjero',
         'trust.title': '¿Por qué confiar en Fisco Abierto?',
-        'trust.subtitle': 'Es justo que te lo preguntes. Aquí van las respuestas.',
-        'trust.card1.title': 'Quién está detrás',
-        'trust.card1.text': 'Un proyecto independiente, hecho desde el derecho fiscal mexicano. No es una empresa, no es un despacho, no vende nada. Existe porque la información fiscal básica debería ser accesible para todos.',
-        'trust.card2.title': 'Por qué es gratis',
-        'trust.card2.text': 'Porque la información fiscal básica no debería costar dinero. No hay plan premium, no hay upsell, no hay trampa. Solo información pública, bien explicada.',
-        'trust.manifesto': 'Un proyecto independiente hecho desde el derecho fiscal mexicano. No es una empresa ni un despacho: no vende nada, no hay plan premium y no pide tus datos. Solo información pública, bien explicada y con su fuente citada.',
-        'trust.fact1': 'Sin fines de lucro',
-        'trust.fact2': 'Sin registro ni datos personales',
-        'trust.fact3': 'Cada cifra con su artículo',
-        'trust.mega': 'Compruébalo tú mismo.',
-        'trust.audience': 'Cada dato de este sitio sale del Diario Oficial, de las leyes vigentes y de las reglas del SAT.',
-        'trust.statement': 'Junto a cada cifra está el artículo que la sostiene: puedes abrir la ley y verificarla sin creerle a nadie. Cuando una regla cambia, el sitio se actualiza con su fuente. Cuando algo sigue sin confirmarse, se dice tal cual.',
-        'trust.receipts': 'Gratis y sin registro · Cada cifra con su artículo · Lo no confirmado, señalado',
+        'trust.src1': 'Diario Oficial',
+        'trust.src1s': 'reformas y decretos',
+        'trust.src2': 'Ley del ISR',
+        'trust.src2s': 'tarifas y retenciones',
+        'trust.src3': 'Ley del IVA',
+        'trust.src3s': 'tasas y retenciones',
+        'trust.src4': 'Código Fiscal',
+        'trust.src4s': 'obligaciones y plazos',
+        'trust.src5': 'Miscelánea Fiscal',
+        'trust.src5s': 'reglas del año',
+        'trust.src6': 'Criterios del SAT',
+        'trust.src6s': 'interpretación oficial',
+        'trust.node': 'Fisco Abierto',
+        'trust.nodeSub': 'traduce y cita el artículo',
+        'trust.outWhat': 'retención de ISR si vendes en línea',
+        'trust.outCite': 'Art. 25, fr. VI, LIF 2026 · DOF 07-nov-2025',
         'diag.title': 'Diagnóstico fiscal express',
         'diag.intro': 'Selecciona tus plataformas e ingresos aproximados. No pedimos datos personales (ni nombre, ni RFC, ni correo). Todo se procesa en tu navegador.',
         'diag.step1.question': '¿En qué plataformas generas ingresos?',
@@ -2137,19 +2251,22 @@ const translations = {
         'audience.creators': 'You create content',
         'audience.payments': 'You get paid from abroad',
         'trust.title': 'Why trust Fisco Abierto?',
-        'trust.subtitle': "It's fair to ask. Here are the answers.",
-        'trust.card1.title': 'Who\'s behind it',
-        'trust.card1.text': 'An independent project built from within Mexican tax law. Not a company, not a law firm, doesn\'t sell anything. It exists because basic tax information in Mexico should be accessible to everyone.',
-        'trust.card2.title': 'Why it\'s free',
-        'trust.card2.text': 'Because basic tax information shouldn\'t cost money. No premium plans, no upsells, no tricks. Just public information, clearly explained.',
-        'trust.manifesto': 'An independent project built from within Mexican tax law. Not a company, not a firm: it sells nothing, has no premium plan, and asks for none of your data. Just public information, clearly explained, with its source cited.',
-        'trust.fact1': 'Non-profit',
-        'trust.fact2': 'No signup, no personal data',
-        'trust.fact3': 'Every figure with its legal source',
-        'trust.mega': 'Check it yourself.',
-        'trust.audience': 'Every figure on this site comes from the Official Gazette, the laws in force and the SAT\'s own rules.',
-        'trust.statement': 'Next to every number is the article that backs it: you can open the law and verify it without taking anyone\'s word. When a rule changes, the site updates with its source. When something is not yet confirmed, it says so.',
-        'trust.receipts': 'Free, no signup · Every figure with its legal source · Unconfirmed items flagged',
+        'trust.src1': 'Official Gazette',
+        'trust.src1s': 'amendments and decrees',
+        'trust.src2': 'Income Tax Law',
+        'trust.src2s': 'rates and withholding',
+        'trust.src3': 'VAT Law',
+        'trust.src3s': 'rates and withholding',
+        'trust.src4': 'Federal Tax Code',
+        'trust.src4s': 'duties and deadlines',
+        'trust.src5': 'Miscellaneous Tax Rules',
+        'trust.src5s': 'rules for the year',
+        'trust.src6': 'SAT criteria',
+        'trust.src6s': 'official interpretation',
+        'trust.node': 'Fisco Abierto',
+        'trust.nodeSub': 'translates it and cites the article',
+        'trust.outWhat': 'income tax withheld if you sell online',
+        'trust.outCite': '2026 Revenue Law art. 25, section VI · published 07-Nov-2025',
         'diag.title': 'Quick tax diagnostic',
         'diag.intro': 'Select your platforms and approximate income. We don\'t ask for personal data (no name, tax ID, or email). Everything is processed in your browser.',
         'diag.step1.question': 'Which platforms do you earn income on?',
@@ -3328,6 +3445,196 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         reduced.addEventListener('change', function() { onScroll(); });
     }
     update();
+})();
+</script>
+
+<!-- CADENA DE VERIFICACION (TRUST) -->
+<script>
+(function() {
+    // Contrato: entra la posicion del scroll, sale UN progreso 0..1. Ese
+    // progreso se reparte en tramos y cada pieza del diagrama se enciende
+    // dentro del suyo. Sin umbrales ni clases: si el scroll se frena a la
+    // mitad, el diagrama se queda dibujado a la mitad.
+    var chain = document.getElementById('trust-chain');
+    if (!chain) return;
+    var stage = document.querySelector('.trust-stage');
+    var panel = document.querySelector('.trust-panel');
+    var svg = chain.querySelector('.chain-threads');
+    var node = chain.querySelector('.chain-node');
+    var out = chain.querySelector('.chain-out');
+    var L = Array.prototype.slice.call(chain.querySelectorAll('.chain-col-l .chain-src'));
+    var R = Array.prototype.slice.call(chain.querySelectorAll('.chain-col-r .chain-src'));
+    if (!stage || !panel || !svg || !node || !out || !L.length || !R.length) return;
+    chain.classList.add('chain-on');
+
+    // Orden de encendido: izquierda, derecha, izquierda... de arriba abajo,
+    // para que el diagrama se lea creciendo hacia el centro.
+    var pills = [], k;
+    for (k = 0; k < Math.max(L.length, R.length); k++) {
+        if (L[k]) pills.push({ el: L[k], side: -1 });
+        if (R[k]) pills.push({ el: R[k], side: 1 });
+    }
+
+    var NS = 'http://www.w3.org/2000/svg';
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var threads = [], dots = [], stem = null;
+    var ready = false, ticking = false, progress = 0, lastW = -1, lastH = -1;
+
+    function pillSpan(i) { return [0.02 + i * 0.042, 0.12 + i * 0.042]; }
+    function threadSpan(i) { return [0.07 + i * 0.042, 0.23 + i * 0.042]; }
+    var NODE_SPAN = [0.24, 0.37], DOT_SPAN = [0.40, 0.48];
+    var STEM_SPAN = [0.47, 0.58], OUT_SPAN = [0.56, 0.74];
+
+    function ease(t) { return t * t * (3 - 2 * t); }
+    function span(p, s) {
+        var t = (p - s[0]) / (s[1] - s[0]);
+        return t <= 0 ? 0 : (t >= 1 ? 1 : ease(t));
+    }
+    function mk(name, attrs) {
+        var n = document.createElementNS(NS, name);
+        for (var a in attrs) n.setAttribute(a, attrs[a]);
+        return n;
+    }
+    function line(d) {
+        var p = mk('path', { d: d, pathLength: '1' });
+        p.style.strokeDasharray = '1';
+        p.style.strokeDashoffset = '1';
+        svg.appendChild(p);
+        return p;
+    }
+    function n1(v) { return v.toFixed(1); }
+
+    function layout(force) {
+        var box = chain.getBoundingClientRect();
+        var W = box.width, H = box.height;
+        if (!W || !H) { ready = false; return; }
+        if (!force && Math.round(W) === lastW && Math.round(H) === lastH) return;
+        lastW = Math.round(W); lastH = Math.round(H);
+        // El panel puede venir escalado por el grow. El viewBox se toma del
+        // MISMO rect escalado que las coordenadas, asi que la escala se
+        // cancela y el trazo cae donde debe.
+        svg.setAttribute('viewBox', '0 0 ' + n1(W) + ' ' + n1(H));
+        while (svg.firstChild) svg.removeChild(svg.firstChild);
+        threads = []; dots = [];
+
+        var nb = node.getBoundingClientRect();
+        var nTop = nb.top - box.top, nBot = nb.bottom - box.top;
+        var nCx = nb.left - box.left + nb.width / 2;
+        var nCy = nTop + nb.height / 2;
+        var nL = nb.left - box.left, nR = nb.right - box.left;
+
+        // Que el nodo este al lado de las columnas (escritorio) o debajo de
+        // ellas (movil) lo decide el layout, no un breakpoint repetido aqui.
+        var colBottom = 0;
+        pills.forEach(function(o) {
+            colBottom = Math.max(colBottom, o.el.getBoundingClientRect().bottom - box.top);
+        });
+        var below = nTop > colBottom - 2;
+
+        pills.forEach(function(o) {
+            var r = o.el.getBoundingClientRect();
+            var y0 = r.top - box.top + r.height / 2;
+            var x0 = o.side < 0 ? (r.right - box.left + 7) : (r.left - box.left - 7);
+            var x1, y1, d;
+            if (below) {
+                x1 = nCx; y1 = nTop - 7;
+                d = 'M ' + n1(x0) + ' ' + n1(y0) +
+                    ' C ' + n1(x0 + (x1 - x0) * 0.62) + ' ' + n1(y0) +
+                    ', ' + n1(x1) + ' ' + n1(y0 + (y1 - y0) * 0.45) +
+                    ', ' + n1(x1) + ' ' + n1(y1);
+            } else {
+                x1 = o.side < 0 ? nL - 7 : nR + 7;
+                y1 = nCy;
+                var mx = (x0 + x1) / 2;
+                d = 'M ' + n1(x0) + ' ' + n1(y0) +
+                    ' C ' + n1(mx) + ' ' + n1(y0) +
+                    ', ' + n1(mx) + ' ' + n1(y1) +
+                    ', ' + n1(x1) + ' ' + n1(y1);
+            }
+            threads.push(line(d));
+        });
+
+        var landings = below ? [[nCx, nTop - 7]] : [[nL - 7, nCy], [nR + 7, nCy]];
+        landings.forEach(function(pt) {
+            var c = mk('circle', { cx: n1(pt[0]), cy: n1(pt[1]), r: '0' });
+            svg.appendChild(c);
+            dots.push(c);
+        });
+
+        var ob = out.getBoundingClientRect();
+        stem = line('M ' + n1(nCx) + ' ' + n1(nBot + 7) + ' L ' + n1(nCx) + ' ' + n1(ob.top - box.top - 7));
+
+        ready = true;
+        paint();
+    }
+
+    function paint() {
+        if (!ready) return;
+        var i, t;
+        if (reduced.matches) {
+            pills.forEach(function(o) { o.el.style.opacity = '1'; o.el.style.transform = 'none'; });
+            node.style.opacity = '1'; node.style.transform = 'none';
+            out.style.opacity = '1'; out.style.transform = 'none';
+            threads.concat([stem]).forEach(function(p) {
+                if (p) { p.style.strokeDashoffset = '0'; p.style.opacity = '1'; }
+            });
+            dots.forEach(function(d) { d.setAttribute('r', '3'); });
+            return;
+        }
+        var p = progress;
+        for (i = 0; i < pills.length; i++) {
+            t = span(p, pillSpan(i));
+            pills[i].el.style.opacity = t.toFixed(3);
+            pills[i].el.style.transform = 'translate(' + (pills[i].side * (1 - t) * 14).toFixed(1) + 'px, ' + ((1 - t) * 8).toFixed(1) + 'px)';
+        }
+        for (i = 0; i < threads.length; i++) {
+            t = span(p, threadSpan(i));
+            threads[i].style.strokeDashoffset = (1 - t).toFixed(4);
+            threads[i].style.opacity = t > 0 ? '1' : '0';
+        }
+        t = span(p, NODE_SPAN);
+        node.style.opacity = t.toFixed(3);
+        node.style.transform = 'scale(' + (0.94 + t * 0.06).toFixed(4) + ')';
+        t = span(p, DOT_SPAN);
+        for (i = 0; i < dots.length; i++) dots[i].setAttribute('r', (3 * t).toFixed(2));
+        t = span(p, STEM_SPAN);
+        stem.style.strokeDashoffset = (1 - t).toFixed(4);
+        stem.style.opacity = t > 0 ? '1' : '0';
+        t = span(p, OUT_SPAN);
+        out.style.opacity = t.toFixed(3);
+        out.style.transform = 'translateY(' + ((1 - t) * 18).toFixed(1) + 'px)';
+    }
+
+    function update() {
+        ticking = false;
+        if (!ready) layout(true);
+        if (reduced.matches) { paint(); return; }
+        var runway = stage.offsetHeight - panel.offsetHeight;
+        if (runway <= 0) { progress = 1; paint(); return; }
+        // p = 0 justo cuando el panel se pega arriba (el grow ya termino);
+        // p = 1 cuando el panel llega al fondo de su pista.
+        var d = (window.innerHeight * 0.04 - stage.getBoundingClientRect().top) / runway;
+        progress = d < 0 ? 0 : (d > 1 ? 1 : d);
+        paint();
+    }
+    function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+    function relayout() { layout(true); update(); }
+
+    window.addEventListener('scroll', onScroll, { passive: true });
+    window.addEventListener('resize', relayout);
+    window.addEventListener('load', relayout);
+    if (window.ResizeObserver) new ResizeObserver(function() { layout(false); update(); }).observe(chain);
+    if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
+    if (reduced.addEventListener) reduced.addEventListener('change', relayout);
+    // Al cambiar de idioma las pills cambian de ancho: se retrazan los hilos.
+    document.addEventListener('click', function(e) {
+        var el = e.target;
+        while (el && el.classList) {
+            if (el.classList.contains('lang-btn')) { setTimeout(relayout, 60); return; }
+            el = el.parentNode;
+        }
+    }, true);
+    relayout();
 })();
 </script>
 
