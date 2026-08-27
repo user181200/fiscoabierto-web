@@ -1073,17 +1073,12 @@
         }
 
         /* LA CADENA DE VERIFICACION
-           Un diagrama en lugar de un parrafo: entran seis fuentes oficiales,
-           el sitio las lee, y sale una cifra con el articulo que la sostiene.
-           Se dibuja con el scroll y cada pieza tiene su tramo del recorrido,
-           asi que si el scroll se frena, el diagrama se queda a medio dibujar
-           — misma familia que el scroll-fade de las cifras.
-
-           Las fuentes van en dos columnas que flanquean el nodo y se alinean
-           por su borde INTERIOR: cada hilo sale hacia el centro y nunca
-           regresa, asi que ningun hilo cruza por encima de una pill. Esa es
-           la razon del layout, no la simetria. */
+           Un diagrama en lugar de un parrafo: entran seis fuentes oficiales, el sitio
+           las lee, y sale una cifra con el articulo que la sostiene.
+           La FORMA se declara aqui (--chain-form) y el JS la lee, para que el
+           breakpoint viva en un solo lugar: mover el media query mueve la geometria. */
         .trust-chain {
+            --chain-form: fan;
             position: relative;
             width: 100%;
             max-width: 980px;
@@ -1132,6 +1127,32 @@
         }
         .chain-src b { font-size: 0.95rem; font-weight: 600; color: #F5F5F4; }
         .chain-src i { font-size: 0.82rem; font-style: normal; color: #A8A29E; }
+
+        /* La pill ES el link a su fuente. La flecha va pegada al texto gris y no al
+           nombre, para no partirlo cuando la pill se apila. */
+        a.chain-src {
+            text-decoration: none;
+            cursor: pointer;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+        a.chain-src i::after {
+            content: '\2197\FE0E';
+            margin-left: 5px;
+            font-weight: 400;
+            color: rgba(94, 234, 212, 0.45);
+            transition: color 0.2s ease;
+        }
+        a.chain-src:hover, a.chain-src:focus-visible, a.chain-src:active {
+            border-color: rgba(94, 234, 212, 0.5);
+            background: rgba(94, 234, 212, 0.09);
+        }
+        a.chain-src:hover i::after,
+        a.chain-src:focus-visible i::after,
+        a.chain-src:active i::after { color: #5EEAD4; }
+        a.chain-src:focus-visible, a.chain-cite:focus-visible {
+            outline: 2px solid #5EEAD4;
+            outline-offset: 3px;
+        }
 
         .chain-node {
             grid-area: n;
@@ -1185,30 +1206,6 @@
             text-transform: uppercase;
             color: #5EEAD4;
         }
-        /* La pill es el link a su fuente. La flecha va pegada al nombre y no
-           como tercer elemento, para que sobreviva al layout apilado de
-           <=1100px sin caerse a su propio renglon. */
-        a.chain-src {
-            text-decoration: none;
-            cursor: pointer;
-            transition: border-color 0.2s ease, background-color 0.2s ease;
-        }
-        a.chain-src i::after {
-            content: '\2197\FE0E';
-            margin-left: 5px;
-            font-weight: 400;
-            color: rgba(94, 234, 212, 0.45);
-            transition: color 0.2s ease;
-        }
-        a.chain-src:hover, a.chain-src:focus-visible {
-            border-color: rgba(94, 234, 212, 0.5);
-            background: rgba(94, 234, 212, 0.09);
-        }
-        a.chain-src:hover i::after, a.chain-src:focus-visible i::after { color: #5EEAD4; }
-        a.chain-src:focus-visible, a.chain-cite:focus-visible {
-            outline: 2px solid #5EEAD4;
-            outline-offset: 3px;
-        }
         a.chain-cite {
             text-decoration: underline;
             text-decoration-color: rgba(94, 234, 212, 0.35);
@@ -1216,62 +1213,113 @@
             transition: text-decoration-color 0.2s ease;
         }
         a.chain-cite:hover { text-decoration-color: #5EEAD4; }
-        /* Si el JS no corre, el diagrama no se queda en blanco: la clase
-           chain-on la pone el propio script antes de apagar nada. */
+
+        /* Si el JS no corre, el diagrama no se queda en blanco: la clase chain-on la
+           pone el propio script antes de apagar nada. */
         .trust-chain:not(.chain-on) .chain-src,
         .trust-chain:not(.chain-on) .chain-node,
         .trust-chain:not(.chain-on) .chain-out { opacity: 1; transform: none; }
 
-        /* Antes de que las pills en linea dejen de caber, el texto gris se
-           va abajo del nombre en vez de encogerse. */
+        /* Antes de que las pills en linea dejen de caber, el texto gris baja debajo
+           del nombre en vez de encogerse. */
         @media (max-width: 1100px) {
             .chain-src { flex-direction: column; gap: 1px; white-space: normal; }
             .chain-col-l .chain-src { align-items: flex-end; text-align: right; }
             .chain-col-r .chain-src { align-items: flex-start; text-align: left; }
             .chain-src i { line-height: 1.3; }
         }
+
+        /* TELEFONO: otra forma y otro motor.
+           El scroll del telefono es inercia, no una perilla: un solo flick se come la
+           pista entera y la animacion pasa durante el frenado, asi que se ven el
+           estado inicial y el final y nada en medio. Aqui muere el panel pegado, la
+           seccion vuelve a alto normal, y el dibujo lo maneja una linea de tiempo
+           propia que arranca cuando el diagrama entra en pantalla. La forma pasa a
+           espina vertical porque el telefono es alto y angosto. */
         @media (max-width: 760px) {
-            .trust-stage { height: 195vh; }
-            .trust-panel { min-height: 82vh; border-radius: 22px; }
-            /* El nodo baja: las dos columnas quedan arriba y los hilos
-               bajan por el pasillo del centro, sin cruzar nada. */
+            .trust-chain { --chain-form: rail; }
+            .trust-stage { height: auto; }
+            .trust-panel {
+                position: static;
+                top: auto;
+                min-height: 0;
+                border-radius: 22px;
+                padding: 34px 18px 30px;
+            }
+            .trust-kicker { text-align: left; margin-bottom: 26px; }
             .chain-core {
-                grid-template-columns: repeat(2, minmax(0, 1fr));
-                grid-template-areas: "l r" "n n";
-                align-items: start;
-                gap: 0 26px;
+                display: flex;
+                flex-direction: column;
+                /* el align-items:center del abanico centraba las columnas en vez de
+                   estirarlas, y las pills quedaban despegadas del riel */
+                align-items: stretch;
+                gap: 10px;
+                grid-template-columns: none;
+                grid-template-areas: none;
             }
-            .chain-col { gap: 10px; }
-            .chain-col-l, .chain-col-r { align-items: stretch; }
+            /* El orden visual lo fija order: en el DOM el nodo va entre las columnas. */
+            .chain-col { display: flex; flex-direction: column; gap: 10px; }
+            .chain-col-l { order: 1; align-items: stretch; }
+            .chain-col-r { order: 2; align-items: stretch; }
             .chain-src {
-                align-items: center;
-                text-align: center;
-                padding: 9px 12px;
-                border-radius: 16px;
+                margin-left: 34px;
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 2px;
+                padding: 11px 15px;
+                border-radius: 14px;
+                white-space: normal;
+                text-align: left;
             }
-            .chain-col-l .chain-src, .chain-col-r .chain-src { align-items: center; text-align: center; }
-            .chain-src { min-height: 64px; justify-content: center; }
-            .chain-src b { font-size: 0.84rem; white-space: nowrap; }
-            .chain-src i { font-size: 0.72rem; }
+            .chain-col-l .chain-src, .chain-col-r .chain-src { align-items: flex-start; text-align: left; }
+            .chain-src b {
+                font-size: 0.9rem;
+                display: flex;
+                width: 100%;
+                justify-content: space-between;
+                align-items: baseline;
+            }
+            .chain-src i { font-size: 0.76rem; line-height: 1.3; }
+            /* la flecha se muda al renglon del nombre, contra el borde derecho */
+            a.chain-src i::after { content: none; }
+            a.chain-src b::after {
+                content: '\2197\FE0E';
+                margin-left: 10px;
+                font-weight: 400;
+                color: rgba(94, 234, 212, 0.45);
+            }
+            a.chain-src:hover b::after,
+            a.chain-src:focus-visible b::after,
+            a.chain-src:active b::after { color: #5EEAD4; }
             .chain-node {
-                justify-self: center;
-                margin-top: clamp(56px, 9vh, 84px);
+                order: 3;
+                margin: 26px 0 0 34px;
+                align-self: flex-start;
                 padding: 11px 18px 11px 12px;
-                border-radius: 18px;
+                border-radius: 16px;
                 gap: 10px;
             }
-            .chain-mark { height: 27px; }
-            .chain-node b { font-size: 0.93rem; }
-            .chain-node i { font-size: 0.76rem; }
-            .chain-out { margin-top: clamp(52px, 8vh, 80px); padding: 20px 22px 18px; border-radius: 16px; }
-            .chain-what { font-size: 0.86rem; }
-            .chain-cite { font-size: 0.64rem; letter-spacing: 0.06em; }
+            .chain-mark { height: 26px; }
+            .chain-node b { font-size: 0.95rem; }
+            .chain-node i { font-size: 0.78rem; }
+            .chain-out {
+                width: auto;
+                margin: 30px 0 0 34px;
+                padding: 20px 22px 18px;
+                border-radius: 16px;
+                text-align: left;
+            }
+            .chain-figure { font-size: 2.6rem; }
+            .chain-what { font-size: 0.88rem; }
+            .chain-cite { font-size: 0.66rem; letter-spacing: 0.05em; }
         }
+
         @media (prefers-reduced-motion: reduce) {
             .trust-stage { height: auto; }
             .trust-panel { position: relative; top: auto; }
             .chain-src, .chain-node, .chain-out { opacity: 1; }
         }
+
         /* La serif de acento tambien en los leads editoriales del mapa
            y del FAQ: una sola voz tipografica en todo el sitio. */
         .map-section .blk-lead,
@@ -3446,7 +3494,10 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     var ticking = false;
     function update() {
         ticking = false;
-        if (reduced.matches) {
+        // En telefono el panel deja de ser pegajoso: sin pista que recorrer,
+        // este calculo por frame solo producia el re-encuadre al aparecer y
+        // desaparecer la barra del navegador.
+        if (reduced.matches || getComputedStyle(panel).position !== 'sticky') {
             panel.style.transform = '';
             panel.style.borderRadius = '';
             section.style.backgroundColor = '';
@@ -3483,10 +3534,13 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 <!-- CADENA DE VERIFICACION (TRUST) -->
 <script>
 (function() {
-    // Contrato: entra la posicion del scroll, sale UN progreso 0..1. Ese
-    // progreso se reparte en tramos y cada pieza del diagrama se enciende
-    // dentro del suyo. Sin umbrales ni clases: si el scroll se frena a la
-    // mitad, el diagrama se queda dibujado a la mitad.
+    // DOS DRIVERS, UN SOLO DIBUJO.
+    // En escritorio el scroll es continuo y funciona como perilla: el progreso
+    // 0..1 sale de la posicion del scroll. En el telefono el scroll es inercia
+    // (avientas y decelera), asi que una animacion atada al scroll se consume
+    // entera durante el frenado y solo se ven el estado inicial y el final.
+    // Ahi el progreso lo manda una linea de tiempo propia que arranca cuando
+    // el diagrama entra en pantalla. paint() es el mismo en los dos casos.
     var chain = document.getElementById('trust-chain');
     if (!chain) return;
     var stage = document.querySelector('.trust-stage');
@@ -3499,26 +3553,48 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (!stage || !panel || !svg || !node || !out || !L.length || !R.length) return;
     chain.classList.add('chain-on');
 
-    // Orden de encendido: izquierda, derecha, izquierda... de arriba abajo,
-    // para que el diagrama se lea creciendo hacia el centro.
+    // La forma vive en el CSS (--chain-form: fan | rail) y JS la lee. Asi el
+    // breakpoint existe en UN lugar: mover el media query mueve la geometria.
+    function form() {
+        return (getComputedStyle(chain).getPropertyValue('--chain-form') || 'fan').trim();
+    }
+
+    // Orden de encendido. En abanico alterna izquierda/derecha hacia el centro;
+    // en espina es el orden del DOM, que ya es el orden visual.
     var pills = [], k;
     for (k = 0; k < Math.max(L.length, R.length); k++) {
         if (L[k]) pills.push({ el: L[k], side: -1 });
         if (R[k]) pills.push({ el: R[k], side: 1 });
     }
+    var railOrder = L.concat(R).map(function(el) { return { el: el, side: -1 }; });
 
     var NS = 'http://www.w3.org/2000/svg';
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-    var threads = [], dots = [], stem = null;
-    var ready = false, ticking = false, progress = 0, lastW = -1, lastH = -1;
+    var threads = [], dots = [], stem = null, spine = null;
+    var ready = false, ticking = false, progress = 0, railMode = false;
+    var lastW = -1, lastH = -1, lastForm = '';
+    var seq = pills;
 
-    function pillSpan(i) { return [0.02 + i * 0.042, 0.12 + i * 0.042]; }
-    function threadSpan(i) { return [0.07 + i * 0.042, 0.23 + i * 0.042]; }
-    var NODE_SPAN = [0.24, 0.37], DOT_SPAN = [0.40, 0.48];
-    var STEM_SPAN = [0.47, 0.58], OUT_SPAN = [0.56, 0.74];
+    // Tramos del recorrido, uno por forma.
+    var SPANS = {
+        fan: {
+            pill:   function(i) { return [0.02 + i * 0.042, 0.12 + i * 0.042]; },
+            thread: function(i) { return [0.07 + i * 0.042, 0.23 + i * 0.042]; },
+            spine: null, node: [0.24, 0.37], dot: [0.40, 0.48],
+            stem: [0.47, 0.58], out: [0.56, 0.74]
+        },
+        rail: {
+            pill:   function(i) { return [0.04 + i * 0.055, 0.15 + i * 0.055]; },
+            thread: function(i) { return [0.08 + i * 0.055, 0.20 + i * 0.055]; },
+            spine: [0.02, 0.56], node: [0.48, 0.62], dot: [0.58, 0.66],
+            stem: [0.64, 0.75], out: [0.72, 0.90]
+        }
+    };
+    function S() { return railMode ? SPANS.rail : SPANS.fan; }
 
     function ease(t) { return t * t * (3 - 2 * t); }
     function span(p, s) {
+        if (!s) return 0;
         var t = (p - s[0]) / (s[1] - s[0]);
         return t <= 0 ? 0 : (t >= 1 ? 1 : ease(t));
     }
@@ -3538,109 +3614,131 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 
     function layout(force) {
         var box = chain.getBoundingClientRect();
-        var W = box.width, H = box.height;
+        var W = box.width, H = box.height, f = form();
         if (!W || !H) { ready = false; return; }
-        if (!force && Math.round(W) === lastW && Math.round(H) === lastH) return;
-        lastW = Math.round(W); lastH = Math.round(H);
+        if (!force && Math.round(W) === lastW && Math.round(H) === lastH && f === lastForm) return;
+        lastW = Math.round(W); lastH = Math.round(H); lastForm = f;
+        railMode = (f === 'rail');
+        seq = railMode ? railOrder : pills;
         // El panel puede venir escalado por el grow. El viewBox se toma del
-        // MISMO rect escalado que las coordenadas, asi que la escala se
-        // cancela y el trazo cae donde debe.
+        // MISMO rect escalado que las coordenadas, asi la escala se cancela.
         svg.setAttribute('viewBox', '0 0 ' + n1(W) + ' ' + n1(H));
         while (svg.firstChild) svg.removeChild(svg.firstChild);
-        threads = []; dots = [];
+        threads = []; dots = []; spine = null; stem = null;
 
         var nb = node.getBoundingClientRect();
         var nTop = nb.top - box.top, nBot = nb.bottom - box.top;
         var nCx = nb.left - box.left + nb.width / 2;
         var nCy = nTop + nb.height / 2;
         var nL = nb.left - box.left, nR = nb.right - box.left;
-
-        // Que el nodo este al lado de las columnas (escritorio) o debajo de
-        // ellas (movil) lo decide el layout, no un breakpoint repetido aqui.
-        var colBottom = 0;
-        pills.forEach(function(o) {
-            colBottom = Math.max(colBottom, o.el.getBoundingClientRect().bottom - box.top);
-        });
-        var below = nTop > colBottom - 2;
-
-        pills.forEach(function(o) {
-            var r = o.el.getBoundingClientRect();
-            var y0 = r.top - box.top + r.height / 2;
-            var x0 = o.side < 0 ? (r.right - box.left + 7) : (r.left - box.left - 7);
-            var x1, y1, d;
-            if (below) {
-                x1 = nCx; y1 = nTop - 7;
-                d = 'M ' + n1(x0) + ' ' + n1(y0) +
-                    ' C ' + n1(x0 + (x1 - x0) * 0.62) + ' ' + n1(y0) +
-                    ', ' + n1(x1) + ' ' + n1(y0 + (y1 - y0) * 0.45) +
-                    ', ' + n1(x1) + ' ' + n1(y1);
-            } else {
-                x1 = o.side < 0 ? nL - 7 : nR + 7;
-                y1 = nCy;
-                var mx = (x0 + x1) / 2;
-                d = 'M ' + n1(x0) + ' ' + n1(y0) +
-                    ' C ' + n1(mx) + ' ' + n1(y0) +
-                    ', ' + n1(mx) + ' ' + n1(y1) +
-                    ', ' + n1(x1) + ' ' + n1(y1);
-            }
-            threads.push(line(d));
-        });
-
-        var landings = below ? [[nCx, nTop - 7]] : [[nL - 7, nCy], [nR + 7, nCy]];
-        landings.forEach(function(pt) {
-            var c = mk('circle', { cx: n1(pt[0]), cy: n1(pt[1]), r: '0' });
-            svg.appendChild(c);
-            dots.push(c);
-        });
-
         var ob = out.getBoundingClientRect();
-        stem = line('M ' + n1(nCx) + ' ' + n1(nBot + 7) + ' L ' + n1(nCx) + ' ' + n1(ob.top - box.top - 7));
+
+        if (railMode) {
+            // ESPINA: una linea baja por la izquierda y recoge cada fuente con
+            // un tramo corto; abajo dobla hacia el nodo. Cero cruces por
+            // construccion, y usa el eje que al telefono le sobra.
+            var railX = 14;
+            var fr = seq[0].el.getBoundingClientRect();
+            var y0 = fr.top - box.top + fr.height / 2;
+            var elbow = nCy - 14;
+            spine = line('M ' + n1(railX) + ' ' + n1(y0) +
+                         ' L ' + n1(railX) + ' ' + n1(elbow) +
+                         ' Q ' + n1(railX) + ' ' + n1(nCy) + ' ' + n1(railX + 14) + ' ' + n1(nCy) +
+                         ' L ' + n1(nL - 6) + ' ' + n1(nCy));
+            seq.forEach(function(o) {
+                var r = o.el.getBoundingClientRect();
+                var cy = r.top - box.top + r.height / 2;
+                threads.push(line('M ' + n1(railX) + ' ' + n1(cy) +
+                                  ' L ' + n1(r.left - box.left - 6) + ' ' + n1(cy)));
+            });
+            var d0 = mk('circle', { cx: n1(nL - 6), cy: n1(nCy), r: '0' });
+            svg.appendChild(d0); dots.push(d0);
+            stem = line('M ' + n1(nCx) + ' ' + n1(nBot + 6) +
+                        ' L ' + n1(nCx) + ' ' + n1(ob.top - box.top - 6));
+        } else {
+            // ABANICO: dos columnas alineadas por su borde INTERIOR, asi cada
+            // hilo sale hacia el centro y nunca vuelve sobre una pill.
+            var colBottom = 0;
+            seq.forEach(function(o) {
+                colBottom = Math.max(colBottom, o.el.getBoundingClientRect().bottom - box.top);
+            });
+            var below = nTop > colBottom - 2;
+            seq.forEach(function(o) {
+                var r = o.el.getBoundingClientRect();
+                var y = r.top - box.top + r.height / 2;
+                var x = o.side < 0 ? (r.right - box.left + 7) : (r.left - box.left - 7);
+                var x1, y1, d;
+                if (below) {
+                    x1 = nCx; y1 = nTop - 7;
+                    d = 'M ' + n1(x) + ' ' + n1(y) +
+                        ' C ' + n1(x + (x1 - x) * 0.62) + ' ' + n1(y) +
+                        ', ' + n1(x1) + ' ' + n1(y + (y1 - y) * 0.45) +
+                        ', ' + n1(x1) + ' ' + n1(y1);
+                } else {
+                    x1 = o.side < 0 ? nL - 7 : nR + 7;
+                    y1 = nCy;
+                    var mx = (x + x1) / 2;
+                    d = 'M ' + n1(x) + ' ' + n1(y) +
+                        ' C ' + n1(mx) + ' ' + n1(y) + ', ' + n1(mx) + ' ' + n1(y1) +
+                        ', ' + n1(x1) + ' ' + n1(y1);
+                }
+                threads.push(line(d));
+            });
+            (below ? [[nCx, nTop - 7]] : [[nL - 7, nCy], [nR + 7, nCy]]).forEach(function(pt) {
+                var c = mk('circle', { cx: n1(pt[0]), cy: n1(pt[1]), r: '0' });
+                svg.appendChild(c); dots.push(c);
+            });
+            stem = line('M ' + n1(nCx) + ' ' + n1(nBot + 7) +
+                        ' L ' + n1(nCx) + ' ' + n1(ob.top - box.top - 7));
+        }
 
         ready = true;
         paint();
     }
 
+    function draw(path, t) {
+        if (!path) return;
+        path.style.strokeDashoffset = (1 - t).toFixed(4);
+        path.style.opacity = t > 0 ? '1' : '0';
+    }
+
     function paint() {
         if (!ready) return;
-        var i, t;
+        var i, t, sp = S();
         if (reduced.matches) {
-            pills.forEach(function(o) { o.el.style.opacity = '1'; o.el.style.transform = 'none'; });
+            seq.forEach(function(o) { o.el.style.opacity = '1'; o.el.style.transform = 'none'; });
             node.style.opacity = '1'; node.style.transform = 'none';
             out.style.opacity = '1'; out.style.transform = 'none';
-            threads.concat([stem]).forEach(function(p) {
-                if (p) { p.style.strokeDashoffset = '0'; p.style.opacity = '1'; }
-            });
+            threads.concat([stem, spine]).forEach(function(p) { draw(p, 1); });
             dots.forEach(function(d) { d.setAttribute('r', '3'); });
             return;
         }
         var p = progress;
-        for (i = 0; i < pills.length; i++) {
-            t = span(p, pillSpan(i));
-            pills[i].el.style.opacity = t.toFixed(3);
-            pills[i].el.style.transform = 'translate(' + (pills[i].side * (1 - t) * 14).toFixed(1) + 'px, ' + ((1 - t) * 8).toFixed(1) + 'px)';
+        draw(spine, span(p, sp.spine));
+        for (i = 0; i < seq.length; i++) {
+            t = span(p, sp.pill(i));
+            seq[i].el.style.opacity = t.toFixed(3);
+            var dx = railMode ? (-10 * (1 - t)) : (seq[i].side * (1 - t) * 14);
+            seq[i].el.style.transform = 'translate(' + dx.toFixed(1) + 'px, ' + ((1 - t) * (railMode ? 4 : 8)).toFixed(1) + 'px)';
         }
-        for (i = 0; i < threads.length; i++) {
-            t = span(p, threadSpan(i));
-            threads[i].style.strokeDashoffset = (1 - t).toFixed(4);
-            threads[i].style.opacity = t > 0 ? '1' : '0';
-        }
-        t = span(p, NODE_SPAN);
+        for (i = 0; i < threads.length; i++) draw(threads[i], span(p, sp.thread(i)));
+        t = span(p, sp.node);
         node.style.opacity = t.toFixed(3);
         node.style.transform = 'scale(' + (0.94 + t * 0.06).toFixed(4) + ')';
-        t = span(p, DOT_SPAN);
+        t = span(p, sp.dot);
         for (i = 0; i < dots.length; i++) dots[i].setAttribute('r', (3 * t).toFixed(2));
-        t = span(p, STEM_SPAN);
-        stem.style.strokeDashoffset = (1 - t).toFixed(4);
-        stem.style.opacity = t > 0 ? '1' : '0';
-        t = span(p, OUT_SPAN);
+        draw(stem, span(p, sp.stem));
+        t = span(p, sp.out);
         out.style.opacity = t.toFixed(3);
         out.style.transform = 'translateY(' + ((1 - t) * 18).toFixed(1) + 'px)';
     }
 
+    // --- driver 1: el scroll (abanico) ---
     function update() {
         ticking = false;
         if (!ready) layout(true);
         if (reduced.matches) { paint(); return; }
+        if (railMode) return;
         var runway = stage.offsetHeight - panel.offsetHeight;
         if (runway <= 0) { progress = 1; paint(); return; }
         // p = 0 justo cuando el panel se pega arriba (el grow ya termino);
@@ -3650,14 +3748,73 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         paint();
     }
     function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
-    function relayout() { layout(true); update(); }
+
+    // --- driver 2: linea de tiempo propia (espina) ---
+    var played = false, DUR = 1900;
+    function playOnce() {
+        if (played || !ready) return;
+        played = true;
+        var t0 = null;
+        function step(ts) {
+            if (t0 === null) t0 = ts;
+            var t = (ts - t0) / DUR;
+            progress = t < 0 ? 0 : (t > 1 ? 1 : t);
+            paint();
+            if (t < 1) requestAnimationFrame(step);
+        }
+        requestAnimationFrame(step);
+    }
+    function inView() {
+        var r = chain.getBoundingClientRect();
+        return r.top < window.innerHeight * 0.9 && r.bottom > 0;
+    }
+
+    function relayout() {
+        layout(true);
+        if (railMode) {
+            if (reduced.matches) { progress = 1; paint(); return; }
+            if (!played && inView()) { playOnce(); } else { paint(); }
+        } else {
+            update();
+        }
+    }
+
+    // Al pasar, tocar o enfocar una fuente se enciende SU hilo: el diagrama
+    // dice de donde viene cada cosa antes de que le des clic.
+    var hi = -1;
+    function paintHi() {
+        for (var i = 0; i < threads.length; i++) {
+            threads[i].style.stroke = (i === hi) ? '#5EEAD4' : '';
+            threads[i].style.strokeWidth = (i === hi) ? '1.8' : '';
+        }
+    }
+    L.concat(R).forEach(function(el) {
+        function on() {
+            for (var i = 0; i < seq.length; i++) { if (seq[i].el === el) { hi = i; break; } }
+            paintHi();
+        }
+        function off() { hi = -1; paintHi(); }
+        el.addEventListener('mouseenter', on);
+        el.addEventListener('mouseleave', off);
+        el.addEventListener('focus', on);
+        el.addEventListener('blur', off);
+        el.addEventListener('touchstart', on, { passive: true });
+        el.addEventListener('touchend', off, { passive: true });
+        el.addEventListener('touchcancel', off, { passive: true });
+    });
 
     window.addEventListener('scroll', onScroll, { passive: true });
     window.addEventListener('resize', relayout);
+    window.addEventListener('orientationchange', relayout);
     window.addEventListener('load', relayout);
-    if (window.ResizeObserver) new ResizeObserver(function() { layout(false); update(); }).observe(chain);
+    if (window.ResizeObserver) new ResizeObserver(function() { layout(false); if (!railMode) update(); }).observe(chain);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
     if (reduced.addEventListener) reduced.addEventListener('change', relayout);
+    if (window.IntersectionObserver) {
+        new IntersectionObserver(function(es) {
+            if (es[0].isIntersecting && railMode) playOnce();
+        }, { threshold: 0.15 }).observe(chain);
+    }
     // Al cambiar de idioma las pills cambian de ancho: se retrazan los hilos.
     document.addEventListener('click', function(e) {
         var el = e.target;
@@ -3666,23 +3823,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
             el = el.parentNode;
         }
     }, true);
-    // Al pasar o enfocar una fuente se enciende SU hilo: el diagrama dice
-    // de donde viene cada cosa antes de que le des clic.
-    var hi = -1;
-    function paintHi() {
-        for (var i = 0; i < threads.length; i++) {
-            threads[i].style.stroke = (i === hi) ? '#5EEAD4' : '';
-            threads[i].style.strokeWidth = (i === hi) ? '1.8' : '';
-        }
-    }
-    pills.forEach(function(o, i) {
-        function on() { hi = i; paintHi(); }
-        function off() { if (hi === i) { hi = -1; paintHi(); } }
-        o.el.addEventListener('mouseenter', on);
-        o.el.addEventListener('mouseleave', off);
-        o.el.addEventListener('focus', on);
-        o.el.addEventListener('blur', off);
-    });
     relayout();
 })();
 </script>
