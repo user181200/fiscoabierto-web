@@ -12,7 +12,10 @@ function el(cls) {
     appendChild(){}, removeChild(){}, insertBefore(){}, setAttribute(){}, removeAttribute(){},
     addEventListener(){}, removeEventListener(){}, closest: () => el(), focus(){}, blur(){},
     getContext: () => ({ clearRect(){}, beginPath(){}, moveTo(){}, lineTo(){}, stroke(){}, arc(){}, fill(){}, setTransform(){} }),
-    getAttribute(){return null}
+    getAttribute(){return null},
+    get parentNode(){ return el('padre-de-mentiras'); },
+    get nextSibling(){ return null; },
+    scrollWidth: 900, clientWidth: 900, scrollLeft: 0
   };
 }
 const doc = {
