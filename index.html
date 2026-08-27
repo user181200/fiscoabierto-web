@@ -3654,7 +3654,10 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     // En telefono la pista es alto-del-panel + un tramo fijo en PIXELES.
     var RUNWAY = 620;
     function sizeStage() {
-        if (railMode) {
+        // Con movimiento reducido no hay recorrido que dar. Si se deja la
+        // pista puesta queda un hueco vacio del alto del recorrido, que es
+        // justo lo que se veia como espacio en blanco gigante en telefono.
+        if (railMode && !reduced.matches) {
             var h = panel.offsetHeight + RUNWAY;
             if (stage.style.height !== h + 'px') stage.style.height = h + 'px';
         } else if (stage.style.height) {
