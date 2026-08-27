@@ -3830,11 +3830,17 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     // asi que el scroll fija un DESTINO y el dibujo lo persigue en su propio
     // rAF. Se conserva lo que importa: si frenas se frena, si te devuelves se
     // devuelve; y deja de depender de que los eventos lleguen a tiempo.
-    var target = 0, chase = null;
-    function tick() {
+    var target = 0, chase = null, lastTs = 0;
+    function tick(ts) {
+        // El seguidor avanza por TIEMPO, no por frame. Con un factor fijo por
+        // frame, un telefono que baja de fps arrastra el dibujo detras del
+        // dedo: a 60fps converge en medio segundo y a 20fps tarda el triple.
+        // Midiendo el delta real, converge en el mismo tiempo de reloj.
+        var dt = lastTs ? Math.min(64, ts - lastTs) : 16;
+        lastTs = ts;
         var d = target - progress;
-        if (Math.abs(d) < 0.0009) { progress = target; chase = null; paint(); return; }
-        progress += d * 0.16;
+        if (Math.abs(d) < 0.0009) { progress = target; chase = null; lastTs = 0; paint(); return; }
+        progress += d * (1 - Math.exp(-dt / 110));
         paint();
         chase = requestAnimationFrame(tick);
     }
