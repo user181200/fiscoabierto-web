@@ -1229,89 +1229,93 @@
             .chain-src i { line-height: 1.3; }
         }
 
-        /* TELEFONO: otra forma y otro motor.
-           El scroll del telefono es inercia, no una perilla: un solo flick se come la
-           pista entera y la animacion pasa durante el frenado, asi que se ven el
-           estado inicial y el final y nada en medio. Aqui muere el panel pegado, la
-           seccion vuelve a alto normal, y el dibujo lo maneja una linea de tiempo
-           propia que arranca cuando el diagrama entra en pantalla. La forma pasa a
-           espina vertical porque el telefono es alto y angosto. */
+        /* TELEFONO: otra forma, MISMA UX.
+           Lo que se rompia no era el scroll como motor, era medir en vh: cuando el
+           navegador esconde su barra, vh cambia a media animacion y re-encuadra el
+           panel pegado. Aqui la pista la mide el JS en pixeles y el alto de ventana
+           se cachea (un cambio chico es la barra, uno grande es una rotacion).
+           El scroll sigue mandando, el panel sigue creciendo y fundiendose con el
+           fondo. Lo que cambia es la FORMA: un arbol que baja engrosando y recoge
+           cada fuente por una rama, porque el telefono es alto y angosto. Y todo
+           cabe en una pantalla, para que se pueda ver entero mientras se dibuja. */
         @media (max-width: 760px) {
             .trust-chain { --chain-form: rail; }
             .trust-stage { height: auto; }
             .trust-panel {
-                position: static;
-                top: auto;
+                position: sticky;
+                top: 12px;
                 min-height: 0;
-                border-radius: 22px;
-                padding: 34px 18px 30px;
+                border-radius: 24px;
+                padding: 26px 14px 28px;
             }
-            .trust-kicker { text-align: left; margin-bottom: 26px; }
+            .trust-kicker { text-align: center; margin-bottom: 22px; }
             .chain-core {
                 display: flex;
                 flex-direction: column;
-                /* el align-items:center del abanico centraba las columnas en vez de
-                   estirarlas, y las pills quedaban despegadas del riel */
                 align-items: stretch;
-                gap: 10px;
+                gap: 9px;
                 grid-template-columns: none;
                 grid-template-areas: none;
             }
             /* El orden visual lo fija order: en el DOM el nodo va entre las columnas. */
-            .chain-col { display: flex; flex-direction: column; gap: 10px; }
-            .chain-col-l { order: 1; align-items: stretch; }
-            .chain-col-r { order: 2; align-items: stretch; }
+            .chain-col { display: flex; flex-direction: column; gap: 9px; }
+            .chain-col-l { order: 1; align-items: flex-start; }
+            .chain-col-r { order: 2; align-items: flex-start; }
             .chain-src {
-                margin-left: 34px;
+                width: auto;
                 flex-direction: column;
                 align-items: flex-start;
-                gap: 2px;
-                padding: 11px 15px;
+                gap: 0;
+                padding: 8px 13px 9px;
                 border-radius: 14px;
-                white-space: normal;
+                white-space: nowrap;
                 text-align: left;
             }
             .chain-col-l .chain-src, .chain-col-r .chain-src { align-items: flex-start; text-align: left; }
-            .chain-src b {
-                font-size: 0.9rem;
-                display: flex;
-                width: 100%;
-                justify-content: space-between;
-                align-items: baseline;
-            }
-            .chain-src i { font-size: 0.76rem; line-height: 1.3; }
-            /* la flecha se muda al renglon del nombre, contra el borde derecho */
+            /* Sangrias desiguales: colgadas del tronco a distintas distancias se leen
+               como campo; alineadas a la misma x se leen como lista de ajustes. */
+            .chain-col-l .chain-src:nth-child(1) { margin-left: 58px; }
+            .chain-col-l .chain-src:nth-child(2) { margin-left: 72px; }
+            .chain-col-l .chain-src:nth-child(3) { margin-left: 52px; }
+            .chain-col-r .chain-src:nth-child(1) { margin-left: 68px; }
+            .chain-col-r .chain-src:nth-child(2) { margin-left: 54px; }
+            .chain-col-r .chain-src:nth-child(3) { margin-left: 64px; }
+            .chain-src b { font-size: 0.86rem; }
+            .chain-src i { font-size: 0.72rem; line-height: 1.25; }
             a.chain-src i::after { content: none; }
             a.chain-src b::after {
                 content: '\2197\FE0E';
-                margin-left: 10px;
+                margin-left: 11px;
                 font-weight: 400;
                 color: rgba(94, 234, 212, 0.45);
             }
             a.chain-src:hover b::after,
             a.chain-src:focus-visible b::after,
             a.chain-src:active b::after { color: #5EEAD4; }
+            /* El nodo rompe la alineacion del tronco a proposito: es el centro de
+               gravedad, y el tronco hace un barrido para llegar a el. */
             .chain-node {
                 order: 3;
-                margin: 26px 0 0 34px;
-                align-self: flex-start;
-                padding: 11px 18px 11px 12px;
+                align-self: center;
+                margin: 32px auto 0;
+                padding: 10px 18px 10px 11px;
                 border-radius: 16px;
-                gap: 10px;
+                gap: 9px;
+                box-shadow: 0 0 40px rgba(94, 234, 212, 0.10);
             }
             .chain-mark { height: 26px; }
-            .chain-node b { font-size: 0.95rem; }
-            .chain-node i { font-size: 0.78rem; }
+            .chain-node b { font-size: 0.92rem; }
+            .chain-node i { font-size: 0.74rem; }
             .chain-out {
-                width: auto;
-                margin: 30px 0 0 34px;
-                padding: 20px 22px 18px;
+                width: 100%;
+                margin: 26px auto 0;
+                padding: 18px 16px 16px;
                 border-radius: 16px;
-                text-align: left;
+                text-align: center;
             }
-            .chain-figure { font-size: 2.6rem; }
-            .chain-what { font-size: 0.88rem; }
-            .chain-cite { font-size: 0.66rem; letter-spacing: 0.05em; }
+            .chain-figure { font-size: 2.3rem; }
+            .chain-what { margin-top: 6px; font-size: 0.85rem; }
+            .chain-cite { margin-top: 11px; padding-top: 10px; font-size: 0.63rem; letter-spacing: 0.04em; }
         }
 
         @media (prefers-reduced-motion: reduce) {
@@ -3492,19 +3496,22 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     var section = panel.closest('section');
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     var ticking = false;
+    var vhCache = window.innerHeight;
     function update() {
         ticking = false;
-        // En telefono el panel deja de ser pegajoso: sin pista que recorrer,
-        // este calculo por frame solo producia el re-encuadre al aparecer y
-        // desaparecer la barra del navegador.
-        if (reduced.matches || getComputedStyle(panel).position !== 'sticky') {
+        if (reduced.matches) {
             panel.style.transform = '';
             panel.style.borderRadius = '';
             section.style.backgroundColor = '';
             return;
         }
         var rect = panel.getBoundingClientRect();
-        var vh = window.innerHeight;
+        // Alto de ventana cacheado: en telefono la barra del navegador cambia
+        // innerHeight en pleno scroll y eso re-encuadraba el panel. Cambio
+        // chico = barra; cambio grande = rotacion.
+        var v = window.innerHeight;
+        if (Math.abs(v - vhCache) > 120) vhCache = v;
+        var vh = vhCache;
         var progress = 1 - Math.min(1, Math.max(0, (rect.top - vh * 0.12) / (vh * 0.55)));
         // Encapsulacion notoria: escala amplia, esquinas que se afinan al
         // crecer, y las lineas del diagrama se materializan con la entrada.
@@ -3568,9 +3575,24 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     }
     var railOrder = L.concat(R).map(function(el) { return { el: el, side: -1 }; });
 
+    // El alto de ventana se cachea. En el telefono, esconder la barra del
+    // navegador cambia innerHeight en pleno scroll; si la pista se mide con
+    // eso, el panel se re-encuadra a media animacion. Un cambio chico es la
+    // barra; uno grande es una rotacion de verdad.
+    var vhCache = window.innerHeight;
+    function stableVH() {
+        var v = window.innerHeight;
+        if (Math.abs(v - vhCache) > 120) vhCache = v;
+        return vhCache;
+    }
     var NS = 'http://www.w3.org/2000/svg';
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-    var threads = [], dots = [], stem = null, spine = null;
+    var threads = [], dots = [], stem = null;
+    // El tronco se dibuja por TRAMOS, uno entre cada dos uniones, cada uno mas
+    // grueso que el anterior: el grosor ES la cuenta de ramas recogidas.
+    var segs = [];          // { path, a, b }  a,b = tramo del progreso
+    var railPill = [];      // span de cada fuente, calculado por geometria
+    var railTrib = [];      // span de cada rama
     var ready = false, ticking = false, progress = 0, railMode = false;
     var lastW = -1, lastH = -1, lastForm = '';
     var seq = pills;
@@ -3584,10 +3606,12 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
             stem: [0.47, 0.58], out: [0.56, 0.74]
         },
         rail: {
-            pill:   function(i) { return [0.04 + i * 0.055, 0.15 + i * 0.055]; },
-            thread: function(i) { return [0.08 + i * 0.055, 0.20 + i * 0.055]; },
-            spine: [0.02, 0.56], node: [0.48, 0.62], dot: [0.58, 0.66],
-            stem: [0.64, 0.75], out: [0.72, 0.90]
+            // pill y thread los calcula layout() desde la geometria real, para
+            // que cada fuente se encienda cuando la punta llega a su union
+            pill:   function(i) { return railPill[i]; },
+            thread: function(i) { return railTrib[i]; },
+            spine: null, node: [0.66, 0.78], dot: [0.74, 0.82],
+            stem: [0.80, 0.89], out: [0.86, 0.99]
         }
     };
     function S() { return railMode ? SPANS.rail : SPANS.fan; }
@@ -3612,49 +3636,68 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     }
     function n1(v) { return v.toFixed(1); }
 
-    function layout(force) {
-        var box = chain.getBoundingClientRect();
-        var W = box.width, H = box.height, f = form();
-        if (!W || !H) { ready = false; return; }
-        if (!force && Math.round(W) === lastW && Math.round(H) === lastH && f === lastForm) return;
-        lastW = Math.round(W); lastH = Math.round(H); lastForm = f;
-        railMode = (f === 'rail');
-        seq = railMode ? railOrder : pills;
-        // El panel puede venir escalado por el grow. El viewBox se toma del
-        // MISMO rect escalado que las coordenadas, asi la escala se cancela.
-        svg.setAttribute('viewBox', '0 0 ' + n1(W) + ' ' + n1(H));
-        while (svg.firstChild) svg.removeChild(svg.firstChild);
-        threads = []; dots = []; spine = null; stem = null;
-
-        var nb = node.getBoundingClientRect();
-        var nTop = nb.top - box.top, nBot = nb.bottom - box.top;
-        var nCx = nb.left - box.left + nb.width / 2;
-        var nCy = nTop + nb.height / 2;
-        var nL = nb.left - box.left, nR = nb.right - box.left;
-        var ob = out.getBoundingClientRect();
-
+    // En telefono la pista es alto-del-panel + un tramo fijo en PIXELES.
+    var RUNWAY = 620;
+    function sizeStage() {
         if (railMode) {
-            // ESPINA: una linea baja por la izquierda y recoge cada fuente con
-            // un tramo corto; abajo dobla hacia el nodo. Cero cruces por
-            // construccion, y usa el eje que al telefono le sobra.
-            var railX = 14;
-            var fr = seq[0].el.getBoundingClientRect();
-            var y0 = fr.top - box.top + fr.height / 2;
-            var elbow = nCy - 14;
-            spine = line('M ' + n1(railX) + ' ' + n1(y0) +
-                         ' L ' + n1(railX) + ' ' + n1(elbow) +
-                         ' Q ' + n1(railX) + ' ' + n1(nCy) + ' ' + n1(railX + 14) + ' ' + n1(nCy) +
-                         ' L ' + n1(nL - 6) + ' ' + n1(nCy));
-            seq.forEach(function(o) {
+            // EL ARBOL. El tronco baja por la izquierda recogiendo ramas y
+            // engrosando, y al final hace un barrido hacia el nodo. La causa
+            // del movimiento es UNA: la punta del trazo. Cada fuente se
+            // enciende cuando la punta llega a su union, no en un tiempo suelto.
+            var railX = 13;
+            var js = seq.map(function(o) {
                 var r = o.el.getBoundingClientRect();
-                var cy = r.top - box.top + r.height / 2;
-                threads.push(line('M ' + n1(railX) + ' ' + n1(cy) +
-                                  ' L ' + n1(r.left - box.left - 6) + ' ' + n1(cy)));
+                return { px: r.left - box.left, cy: r.top - box.top + r.height / 2 };
             });
-            var d0 = mk('circle', { cx: n1(nL - 6), cy: n1(nCy), r: '0' });
+            var yTop = js[0].cy - 30;
+            var joinY = js.map(function(j) { return j.cy + 21; });
+            var ys = [yTop].concat(joinY);
+
+            var lens = [], total = 0, i2;
+            for (i2 = 0; i2 < ys.length - 1; i2++) { lens.push(ys[i2 + 1] - ys[i2]); }
+            var sweep = Math.abs(nCy - ys[ys.length - 1]) + Math.abs((nL - 8) - railX);
+            lens.push(sweep);
+            for (i2 = 0; i2 < lens.length; i2++) { total += lens[i2]; }
+
+            var A = 0.05, RANGE = 0.60, cum = 0;
+            for (i2 = 0; i2 < lens.length; i2++) {
+                var a0 = A + RANGE * (cum / total);
+                cum += lens[i2];
+                var b0 = A + RANGE * (cum / total);
+                var d2;
+                if (i2 < ys.length - 1) {
+                    d2 = 'M ' + n1(railX) + ' ' + n1(ys[i2]) + ' L ' + n1(railX) + ' ' + n1(ys[i2 + 1]);
+                } else {
+                    // el barrido de llegada: el tronco deja su eje y va al nodo
+                    var yS = ys[ys.length - 1];
+                    d2 = 'M ' + n1(railX) + ' ' + n1(yS) +
+                         ' C ' + n1(railX) + ' ' + n1(yS + (nCy - yS) * 0.6) +
+                         ', ' + n1(nL - 8) + ' ' + n1(nCy - (nCy - yS) * 0.18) +
+                         ', ' + n1(nL - 8) + ' ' + n1(nCy);
+                }
+                var seg = line(d2);
+                seg.style.strokeWidth = (1 + 0.26 * i2).toFixed(2);
+                segs.push({ path: seg, a: a0, b: b0 });
+                if (i2 < seq.length) {
+                    railPill.push([Math.max(0, b0 - 0.11), Math.max(0.01, b0 - 0.01)]);
+                    railTrib.push([b0 - 0.02, b0 + 0.06]);
+                }
+            }
+
+            // Las ramas entran POR DEBAJO del centro de su fuente, en el
+            // sentido de la corriente. Perpendiculares se leian como corchete.
+            seq.forEach(function(o, i3) {
+                var x0 = js[i3].px - 3, y0b = js[i3].cy, y1b = joinY[i3];
+                threads.push(line('M ' + n1(x0) + ' ' + n1(y0b) +
+                    ' C ' + n1(x0 - (x0 - railX) * 0.55) + ' ' + n1(y0b) +
+                    ', ' + n1(railX) + ' ' + n1(y0b + (y1b - y0b) * 0.35) +
+                    ', ' + n1(railX) + ' ' + n1(y1b)));
+            });
+
+            var d0 = mk('circle', { cx: n1(nL - 8), cy: n1(nCy), r: '0' });
             svg.appendChild(d0); dots.push(d0);
-            stem = line('M ' + n1(nCx) + ' ' + n1(nBot + 6) +
-                        ' L ' + n1(nCx) + ' ' + n1(ob.top - box.top - 6));
+            stem = line('M ' + n1(nCx) + ' ' + n1(nBot + 7) +
+                        ' L ' + n1(nCx) + ' ' + n1(ob.top - box.top - 7));
         } else {
             // ABANICO: dos columnas alineadas por su borde INTERIOR, asi cada
             // hilo sale hacia el centro y nunca vuelve sobre una pill.
@@ -3693,6 +3736,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         }
 
         ready = true;
+        sizeStage();
         paint();
     }
 
@@ -3709,12 +3753,13 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
             seq.forEach(function(o) { o.el.style.opacity = '1'; o.el.style.transform = 'none'; });
             node.style.opacity = '1'; node.style.transform = 'none';
             out.style.opacity = '1'; out.style.transform = 'none';
-            threads.concat([stem, spine]).forEach(function(p) { draw(p, 1); });
+            threads.concat([stem]).forEach(function(p) { draw(p, 1); });
+            segs.forEach(function(g) { draw(g.path, 1); });
             dots.forEach(function(d) { d.setAttribute('r', '3'); });
             return;
         }
         var p = progress;
-        draw(spine, span(p, sp.spine));
+        for (i = 0; i < segs.length; i++) draw(segs[i].path, span(p, [segs[i].a, segs[i].b]));
         for (i = 0; i < seq.length; i++) {
             t = span(p, sp.pill(i));
             seq[i].el.style.opacity = t.toFixed(3);
@@ -3733,51 +3778,43 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         out.style.transform = 'translateY(' + ((1 - t) * 18).toFixed(1) + 'px)';
     }
 
-    // --- driver 1: el scroll (abanico) ---
+    // --- EL SCROLL MANDA, en las dos formas ---
+    // En el telefono el scroll llega a tirones (inercia + eventos agrupados),
+    // asi que el scroll fija un DESTINO y el dibujo lo persigue en su propio
+    // rAF. Se conserva lo que importa: si frenas se frena, si te devuelves se
+    // devuelve; y deja de depender de que los eventos lleguen a tiempo.
+    var target = 0, chase = null;
+    function tick() {
+        var d = target - progress;
+        if (Math.abs(d) < 0.0009) { progress = target; chase = null; paint(); return; }
+        progress += d * 0.16;
+        paint();
+        chase = requestAnimationFrame(tick);
+    }
+    function setProgress(v) {
+        if (railMode) {
+            target = v;
+            if (chase === null) chase = requestAnimationFrame(tick);
+        } else {
+            progress = v;
+            paint();
+        }
+    }
     function update() {
         ticking = false;
         if (!ready) layout(true);
-        if (reduced.matches) { paint(); return; }
-        if (railMode) return;
+        if (reduced.matches) { progress = 1; paint(); return; }
+        sizeStage();
         var runway = stage.offsetHeight - panel.offsetHeight;
-        if (runway <= 0) { progress = 1; paint(); return; }
+        if (runway <= 0) { setProgress(1); return; }
         // p = 0 justo cuando el panel se pega arriba (el grow ya termino);
         // p = 1 cuando el panel llega al fondo de su pista.
-        var d = (window.innerHeight * 0.04 - stage.getBoundingClientRect().top) / runway;
-        progress = d < 0 ? 0 : (d > 1 ? 1 : d);
-        paint();
+        var topPx = railMode ? 12 : stableVH() * 0.04;
+        var d = (topPx - stage.getBoundingClientRect().top) / runway;
+        setProgress(d < 0 ? 0 : (d > 1 ? 1 : d));
     }
     function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
-
-    // --- driver 2: linea de tiempo propia (espina) ---
-    var played = false, DUR = 1900;
-    function playOnce() {
-        if (played || !ready) return;
-        played = true;
-        var t0 = null;
-        function step(ts) {
-            if (t0 === null) t0 = ts;
-            var t = (ts - t0) / DUR;
-            progress = t < 0 ? 0 : (t > 1 ? 1 : t);
-            paint();
-            if (t < 1) requestAnimationFrame(step);
-        }
-        requestAnimationFrame(step);
-    }
-    function inView() {
-        var r = chain.getBoundingClientRect();
-        return r.top < window.innerHeight * 0.9 && r.bottom > 0;
-    }
-
-    function relayout() {
-        layout(true);
-        if (railMode) {
-            if (reduced.matches) { progress = 1; paint(); return; }
-            if (!played && inView()) { playOnce(); } else { paint(); }
-        } else {
-            update();
-        }
-    }
+    function relayout() { layout(true); update(); }
 
     // Al pasar, tocar o enfocar una fuente se enciende SU hilo: el diagrama
     // dice de donde viene cada cosa antes de que le des clic.
@@ -3807,14 +3844,9 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     window.addEventListener('resize', relayout);
     window.addEventListener('orientationchange', relayout);
     window.addEventListener('load', relayout);
-    if (window.ResizeObserver) new ResizeObserver(function() { layout(false); if (!railMode) update(); }).observe(chain);
+    if (window.ResizeObserver) new ResizeObserver(function() { layout(false); update(); }).observe(chain);
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
     if (reduced.addEventListener) reduced.addEventListener('change', relayout);
-    if (window.IntersectionObserver) {
-        new IntersectionObserver(function(es) {
-            if (es[0].isIntersecting && railMode) playOnce();
-        }, { threshold: 0.15 }).observe(chain);
-    }
     // Al cambiar de idioma las pills cambian de ancho: se retrazan los hilos.
     document.addEventListener('click', function(e) {
         var el = e.target;
