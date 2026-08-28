@@ -958,18 +958,6 @@
             opacity: 0;
             will-change: opacity, transform;
         }
-        /* Marcas de avance: en escritorio no existen (el marco pegado ya dice
-           que estas dentro de algo). En el carrusel del telefono si, porque
-           ahi no hay pista visible que te diga cuantas fichas faltan. */
-        .stats-ticks { display: none; }
-        .stats-ticks span {
-            width: 22px;
-            height: 2px;
-            border-radius: 2px;
-            background: rgba(255, 255, 255, 0.16);
-            transition: background 0.25s ease;
-        }
-        .stats-ticks span.on { background: #5EEAD4; }
         .stats-items:not(.pin-on) .stats-item { opacity: 1; }
         @media (prefers-reduced-motion: reduce) {
             /* sin movimiento no se traba nada y las fichas se despilan. El
@@ -1030,7 +1018,8 @@
             /* CARRUSEL VERTICAL. La pista de cuatro pantallas se acabo: el
                telefono ya no alarga la pagina, la seccion mide una pantalla y
                las fichas se deslizan DENTRO con snap. Mismo trato que el
-               carril de confianza, girado 90 grados. El contenedor es mas alto
+               carril de confianza, girado 90 grados (sin los puntos: el asomo
+               de abajo ya dice que hay mas). El contenedor es mas alto
                que la ficha a proposito: ese sobrante es el asomo de la
                siguiente, que es de donde sale la profundidad.
                REPARTO DE LA PANTALLA (medido en WebKit, iPhone 13, con el
@@ -1065,13 +1054,6 @@
                 margin-bottom: 0;
                 transform: none !important;
             }
-            .stats-ticks {
-                display: flex;
-                justify-content: center;
-                gap: 8px;
-                margin-top: 20px;
-            }
-            .stats-ticks span { width: 26px; }
             .stat-number { font-size: 4.6rem; }
             .stat-label { font-size: 1.4rem; max-width: none; }
             .stat-source { font-size: 0.9rem; }
@@ -4010,13 +3992,15 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 <script>
 (function() {
     // DOS FORMAS, UN SOLO CONTRATO: entra una posicion de scroll, sale UN foco
-    // continuo 0..n-1, y de ahi salen opacidad, marcas y contador.
+    // continuo 0..n-1, y de ahi salen la opacidad y el arranque del contador.
     //   pin  (escritorio) — el marco se queda pegado y las fichas viven
     //        apiladas en la misma celda: el scroll no las desfila, las
     //        intercambia, y el centro nunca se mueve.
     //   deck (telefono)   — carrusel vertical con snap DENTRO de una pantalla:
     //        la pagina ya no se alarga cuatro pantallas y el foco lo dicta el
-    //        scroll del propio carrusel, no el de la ventana.
+    //        scroll del propio carrusel, no el de la ventana. Aqui el fundido
+    //        lo hace el navegador con el snap; el foco solo sirve para saber
+    //        que cifra arrancar.
     // Cual toca lo dice el CSS en --stats-form, no un media query repetido aqui.
     var track = document.querySelector('.stats-items');
     var pin = document.querySelector('.stats-pin');
@@ -4038,14 +4022,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         if (Math.abs(v - vhCache) > 120) vhCache = v;
         return vhCache;
     }
-
-    // Las marcas cuelgan de la PISTA, no del carrusel: dentro del carrusel se
-    // deslizarian con las fichas y dejarian de ser un indicador de posicion.
-    var ticks = document.createElement('div');
-    ticks.className = 'stats-ticks';
-    ticks.setAttribute('aria-hidden', 'true');
-    for (var q = 0; q < items.length; q++) ticks.appendChild(document.createElement('span'));
-    track.appendChild(ticks);
 
     var POR_FICHA = 0.36;      // pantallas de scroll que dura cada ficha (pin)
     var PERSIGUE = 55;         // ms de la constante del seguidor: mas chico, mas rapido
@@ -4075,8 +4051,11 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         t = t < 0 ? 0 : (t > 1 ? 1 : t);
         return t * t * (3 - 2 * t);
     }
-    function marcarYContar(activo) {
-        for (var i = 0; i < items.length; i++) ticks.children[i].className = (i === activo) ? 'on' : '';
+    // La ficha que toma el centro pide su propia cifra. Antes esto tambien
+    // encendia una marca de avance; las marcas se retiraron (pedido de Jose:
+    // eran el unico elemento suelto de color en la seccion), el disparo del
+    // contador no.
+    function tomaElFoco(activo) {
         if (activo === ultimoActivo) return;
         ultimoActivo = activo;
         var cifra = items[activo] && items[activo].querySelector('.stat-number[data-count]');
@@ -4099,7 +4078,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
             items[i].style.transform = 'translateY(' + ((i - focus) * DESP).toFixed(1) + 'px)';
             items[i].style.pointerEvents = a > 0.5 ? 'auto' : 'none';
         }
-        marcarYContar(activo);
+        tomaElFoco(activo);
     }
     // El foco persigue al scroll por TIEMPO, no por frame: a cualquier fps
     // converge en el mismo tiempo de reloj.
@@ -4115,9 +4094,9 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 
     // DECK: el navegador ya anima el deslizamiento, asi que aqui no hay
     // seguidor ni opacidad que perseguir. Solo se mide que ficha quedo al
-    // centro del carrusel para encender su marca y arrancar su cifra. La
-    // distancia se calcula contra los centros reales porque las fichas no
-    // miden todas lo mismo (el callout es mas alto).
+    // centro del carrusel, para arrancar su cifra. La distancia se calcula
+    // contra los centros reales porque las fichas no miden todas lo mismo
+    // (el callout es mas alto).
     function updateDeck() {
         ticking = false;
         // Se mide con rectangulos de viewport, NO con offsetTop: en el telefono
@@ -4131,7 +4110,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
             var d = Math.abs(r.top + r.height / 2 - centro);
             if (d < dMin) { dMin = d; mejor = i; }
         }
-        marcarYContar(mejor);
+        tomaElFoco(mejor);
     }
     function update() {
         ticking = false;
