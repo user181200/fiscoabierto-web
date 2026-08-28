@@ -9,7 +9,7 @@ function el(cls) {
     offsetHeight: 700, offsetWidth: 900, clientWidth: 900, clientHeight: 700, width: 900, height: 700,
     getBoundingClientRect: () => ({top:100,bottom:400,left:0,right:900,width:900,height:300}),
     querySelector: () => el(), querySelectorAll: () => [el(),el(),el()],
-    appendChild(){}, removeChild(){}, insertBefore(){}, setAttribute(){}, removeAttribute(){},
+    appendChild(c){ this.children.push(c); return c; }, removeChild(){}, insertBefore(){}, setAttribute(){}, removeAttribute(){},
     addEventListener(){}, removeEventListener(){}, closest: () => el(), focus(){}, blur(){},
     getContext: () => ({ clearRect(){}, beginPath(){}, moveTo(){}, lineTo(){}, stroke(){}, arc(){}, fill(){}, setTransform(){} }),
     getAttribute(){return null},

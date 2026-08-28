@@ -273,22 +273,8 @@
         .reveal-delay-2 { transition-delay: 0.16s; }
         .reveal-delay-3 { transition-delay: 0.24s; }
 
-        /* SCROLL-FADE (seccion de cifras) — pieza distinta al reveal:
-           el reveal es interruptor (entra una vez y se queda encendido),
-           esto es perilla continua: el JS al final del body escribe la
-           opacidad en cada frame segun la distancia del elemento al centro
-           del viewport. Por eso aqui NO hay transition de opacidad: dos
-           sistemas animando la misma propiedad son dos manos en el mismo
-           volante. Sin JS, la seccion queda perfectamente legible. */
         html { scroll-padding-top: 90px; }
         @media (max-width: 600px) { html { scroll-padding-top: 90px; } }
-        /* El piso del fade es variable para poder cambiarlo por tamano de
-           pantalla sin repetir el breakpoint en el JS. Ver .stats-item. */
-        :root { --fade-floor: 0.93; }
-        .scroll-fade { will-change: opacity, transform; }
-        @media (prefers-reduced-motion: reduce) {
-            .scroll-fade { opacity: 1 !important; transform: none !important; }
-        }
 
         /* AUDIENCIA */
 
@@ -934,8 +920,8 @@
         .stats-section { background: var(--color-text); color: white; padding: 0; }
         /* BANDA "UNO POR UNO": el titulo queda fijo a la izquierda mientras
            cada dato pasa por su propia pantalla a la derecha (patron del demo
-           scroll_fade / riotters). El fundido continuo lo maneja el JS de
-           .scroll-fade al final del body; aqui solo vive la geometria. */
+           scroll_fade / riotters). El fundido continuo lo maneja el JS del
+           BLOQUEO al final del body; aqui solo vive la geometria. */
         .stats-band {
             display: grid;
             grid-template-columns: minmax(220px, 32%) 1fr;
@@ -944,16 +930,57 @@
         .stats-aside { position: sticky; top: 0; height: 100vh; display: flex; align-items: center; }
         .stats-aside h2 { color: white; text-align: left; margin-bottom: 10px; }
         .stats-aside .section-subtitle { color: #A8A29E; text-align: left; margin-bottom: 0; }
-        .stats-items { padding: 16vh 0 20vh; }
+        /* EL BLOQUEO. La seccion mide varias pantallas (el track) pero el
+           marco se queda pegado, y las fichas viven APILADAS en la misma
+           celda: por eso quedan centradas siempre y deja de sentirse a la
+           deriva. El scroll ya no las desfila, las intercambia. El alto del
+           track lo pone el JS en pixeles, no en vh, porque la barra del
+           navegador movil cambia vh a media animacion. */
+        .stats-items { padding: 0; }
+        .stats-pin {
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            height: 100svh;
+            display: grid;
+            align-content: center;
+        }
         .stats-item {
-            min-height: 78vh;
+            grid-area: 1 / 1;
             display: flex;
             flex-direction: column;
             justify-content: center;
             text-align: left;
+            opacity: 0;
+            will-change: opacity, transform;
+        }
+        /* Marcas de avance: mientras la pantalla esta trabada hay que poder
+           ver cuanto falta para que se suelte. */
+        .stats-ticks {
+            grid-area: 1 / 1;
+            align-self: end;
+            display: flex;
+            gap: 6px;
+            padding-top: 28px;
+        }
+        .stats-ticks span {
+            width: 22px;
+            height: 2px;
+            border-radius: 2px;
+            background: rgba(255, 255, 255, 0.16);
+            transition: background 0.25s ease;
+        }
+        .stats-ticks span.on { background: #5EEAD4; }
+        .stats-items:not(.pin-on) .stats-item { opacity: 1; }
+        @media (prefers-reduced-motion: reduce) {
+            /* sin movimiento: nada se traba y las fichas se despilan */
+            .stats-items { height: auto !important; }
+            .stats-pin { position: static; height: auto; display: block; }
+            .stats-item { opacity: 1; margin-bottom: 12vh; }
+            .stats-ticks { display: none; }
         }
         /* El numero ya NO trae blur/opacity/transition propios: la opacidad
-           de esta seccion tiene UN solo dueno (el JS de scroll-fade). Dos
+           de esta seccion tiene UN solo dueno (el JS del BLOQUEO). Dos
            sistemas escribiendo la misma propiedad fue el bug que evitamos. */
         .stat-number {
             font-size: clamp(3.4rem, 7.5vw, 6.5rem);
@@ -1000,12 +1027,10 @@
                El tope de 26ch de la etiqueta se quita aqui: con el ancho
                completo baja de 9 renglones a 5, el bloque cabe en 55vh y el
                vecino alcanza a meter su CIFRA, no solo su pie. */
-            .stats-items { padding: 10vh 0 12vh; }
-            .stats-item { min-height: 55vh; }
+            .stats-items { padding: 0; }
             .stat-number { font-size: 4.6rem; }
             .stat-label { font-size: 1.4rem; max-width: none; }
             .stat-source { font-size: 0.9rem; }
-            :root { --fade-floor: 0.75; }
         }
 
         /* TRUST / QUIÉN ESTÁ DETRÁS */
@@ -1742,40 +1767,45 @@
                 </div>
             </div>
             <div class="stats-items">
+                <!-- El marco se pega y las siete fichas viven apiladas en el mismo
+                     punto: por eso quedan centradas y deja de sentirse a la deriva.
+                     El track de arriba es el recorrido del bloqueo. -->
+                <div class="stats-pin">
                 <div class="stats-item">
-                    <div class="stat-number scroll-fade" data-count="1.66" data-prefix="" data-suffix="M" data-decimals="2">1.66M</div>
-                    <div class="stat-label scroll-fade" data-i18n="stats.stat1">repartidores y conductores de plataformas ya están registrados ante el IMSS. Y son solo una parte de la economía digital.</div>
-                    <div class="stat-source scroll-fade">IMSS y STPS, junio 2026</div>
+                    <div class="stat-number" data-count="1.66" data-prefix="" data-suffix="M" data-decimals="2">1.66M</div>
+                    <div class="stat-label" data-i18n="stats.stat1">repartidores y conductores de plataformas ya están registrados ante el IMSS. Y son solo una parte de la economía digital.</div>
+                    <div class="stat-source">IMSS y STPS, junio 2026</div>
                 </div>
                 <div class="stats-item">
-                    <div class="stat-number scroll-fade" data-count="278" data-prefix="" data-suffix="" data-decimals="0">278</div>
-                    <div class="stat-label scroll-fade" data-i18n="stats.stat2">plataformas digitales extranjeras inscritas en el RFC y obligadas a reportar al SAT</div>
-                    <div class="stat-source scroll-fade">DOF 22-may-2026, corte al 30-abr-2026</div>
+                    <div class="stat-number" data-count="278" data-prefix="" data-suffix="" data-decimals="0">278</div>
+                    <div class="stat-label" data-i18n="stats.stat2">plataformas digitales extranjeras inscritas en el RFC y obligadas a reportar al SAT</div>
+                    <div class="stat-source">DOF 22-may-2026, corte al 30-abr-2026</div>
                 </div>
                 <div class="stats-item">
-                    <div class="stat-number scroll-fade" data-count="2.5" data-prefix="" data-suffix="%" data-decimals="1">2.5%</div>
-                    <div class="stat-label scroll-fade" data-i18n="stats.stat3">es la retención de ISR por venta o servicio en plataformas durante 2026 (antes era 1%)</div>
-                    <div class="stat-source scroll-fade">LIF 2026, art. 25, fr. VI (vigencia anual)</div>
+                    <div class="stat-number" data-count="2.5" data-prefix="" data-suffix="%" data-decimals="1">2.5%</div>
+                    <div class="stat-label" data-i18n="stats.stat3">es la retención de ISR por venta o servicio en plataformas durante 2026 (antes era 1%)</div>
+                    <div class="stat-source">LIF 2026, art. 25, fr. VI (vigencia anual)</div>
                 </div>
                 <div class="stats-item">
-                    <div class="stat-number scroll-fade" data-count="3" data-prefix="" data-suffix="" data-decimals="0">3</div>
-                    <div class="stat-label scroll-fade" data-i18n="stats.stat4">meses seguidos sin presentar sus declaraciones al SAT y una plataforma puede quedar bloqueada en México. Por eso reportan todo.</div>
-                    <div class="stat-source scroll-fade">Art. 30-B CFF y art. 18-H BIS LIVA</div>
+                    <div class="stat-number" data-count="3" data-prefix="" data-suffix="" data-decimals="0">3</div>
+                    <div class="stat-label" data-i18n="stats.stat4">meses seguidos sin presentar sus declaraciones al SAT y una plataforma puede quedar bloqueada en México. Por eso reportan todo.</div>
+                    <div class="stat-source">Art. 30-B CFF y art. 18-H BIS LIVA</div>
                 </div>
                 <div class="stats-item">
-                    <div class="stat-number scroll-fade" data-count="55" data-prefix="" data-suffix="%" data-decimals="0">55%</div>
-                    <div class="stat-label scroll-fade" data-i18n="stats.stat5">de los trabajadores en México son informales. Muchos sin saberlo.</div>
-                    <div class="stat-source scroll-fade">INEGI, ENOE junio 2026</div>
+                    <div class="stat-number" data-count="55" data-prefix="" data-suffix="%" data-decimals="0">55%</div>
+                    <div class="stat-label" data-i18n="stats.stat5">de los trabajadores en México son informales. Muchos sin saberlo.</div>
+                    <div class="stat-source">INEGI, ENOE junio 2026</div>
                 </div>
                 <div class="stats-item">
-                    <div class="stat-number scroll-fade" data-count="20" data-prefix="" data-suffix="%" data-decimals="0">20%</div>
-                    <div class="stat-label scroll-fade" data-i18n="stats.stat6">de tus ganancias se van en retención si no tienes RFC. Se puede evitar.</div>
-                    <div class="stat-source scroll-fade">Art. 113-C, fr. IV LISR</div>
+                    <div class="stat-number" data-count="20" data-prefix="" data-suffix="%" data-decimals="0">20%</div>
+                    <div class="stat-label" data-i18n="stats.stat6">de tus ganancias se van en retención si no tienes RFC. Se puede evitar.</div>
+                    <div class="stat-source">Art. 113-C, fr. IV LISR</div>
                 </div>
                 <div class="stats-item">
-                    <div class="stats-callout scroll-fade" data-i18n="stats.callout">
+                    <div class="stats-callout" data-i18n="stats.callout">
                         <strong>Desde el 1° de abril de 2026</strong>, está en vigor el Art. 30-B del CFF: las plataformas digitales deben dar al SAT acceso en línea y <strong>en tiempo real</strong> a la información que permite comprobar su cumplimiento fiscal. Las reglas cambiaron. Estar informado ya no es opcional.
                     </div>
+                </div>
                 </div>
             </div>
         </div>
@@ -3216,19 +3246,34 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         requestAnimationFrame(step);
     }
 
+    // Cada cifra lleva su propio disparador de un solo uso. Con la pantalla
+    // trabada las siete fichas estan en el viewport a la vez, asi que contarlas
+    // todas al entrar dejaba la quinta ya terminada antes de que llegaras a
+    // verla: ahora la pide la ficha que toma el foco (lo llama el script del
+    // BLOQUEO). Sin bloqueo se conserva el comportamiento de siempre.
+    function arranca(el) {
+        if (!el || el.__contada) return;
+        el.__contada = true;
+        el.textContent = (el.getAttribute('data-prefix') || '') + '0';
+        el.classList.add('counting');
+        animateCounter(el);
+    }
+    for (var c = 0; c < counters.length; c++) counters[c].__cuenta = arranca;
+
     var statsObserver = new IntersectionObserver(function(entries) {
         entries.forEach(function(entry) {
-            if (entry.isIntersecting && !animated) {
-                animated = true;
-                counters.forEach(function(counter, i) {
-                    setTimeout(function() {
-                        counter.textContent = counter.getAttribute('data-prefix') + '0';
-                        counter.classList.add('counting');
-                        animateCounter(counter);
-                    }, i * 100);
-                });
-                statsObserver.disconnect();
+            if (!entry.isIntersecting || animated) return;
+            animated = true;
+            if (document.querySelector('.stats-items.pin-on')) {
+                arranca(counters[0]);   // las demas las pide el foco
+            } else {
+                for (var i = 0; i < counters.length; i++) {
+                    (function (el, k) {
+                        setTimeout(function () { arranca(el); }, k * 100);
+                    })(counters[i], i);
+                }
             }
+            statsObserver.disconnect();
         });
     }, { threshold: 0.05 });
 
@@ -3917,67 +3962,121 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 })();
 </script>
 
-<!-- SCROLL FADE (CIFRAS) -->
+<!-- BLOQUEO DE LAS CIFRAS -->
 <script>
 (function() {
-    // Opacidad ligada al scroll (tecnica del demo scroll_fade, ago 2026):
-    // la opacidad es funcion CONTINUA de la distancia entre el centro del
-    // elemento y el centro del viewport. Sin umbrales ni clases: si el
-    // scroll se frena a la mitad, el fundido se queda a la mitad.
-    // Tres perillas: HOLD (radio de brillo pleno), FALL (distancia de
-    // caida) y el piso 0.07 del demo: cada dato tiene su propia pantalla,
-    // asi que el que no esta al centro casi desaparece — ese es el chiste.
-    var els = Array.prototype.slice.call(document.querySelectorAll('.scroll-fade'));
-    if (!els.length) return;
-
+    // Contrato: entra la posicion del scroll dentro del track, sale UN foco
+    // continuo 0..n-1. La ficha mas cercana al foco esta encendida y las
+    // demas se apagan por distancia. Como todas ocupan la MISMA celda, no
+    // hay desfile: hay intercambio, y el centro nunca se mueve.
+    var track = document.querySelector('.stats-items');
+    var pin = document.querySelector('.stats-pin');
+    if (!track || !pin) return;
+    var items = Array.prototype.slice.call(pin.querySelectorAll('.stats-item'));
+    if (!items.length) return;
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
-    var ticking = false;
-    // El piso vive en el CSS (--fade-floor) para que el breakpoint exista en
-    // UN lugar. Se lee en el arranque y al cambiar de tamano, no por frame.
-    var floor = 0.93;
-    function readFloor() {
-        var v = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--fade-floor'));
-        if (!isNaN(v)) floor = v;
-    }
-    readFloor();
 
-    function clearStyles() {
-        for (var i = 0; i < els.length; i++) {
-            els[i].style.opacity = '';
-            els[i].style.transform = '';
+    // El alto de ventana se cachea: en telefono la barra del navegador lo
+    // cambia en pleno scroll y el track no debe re-medirse por eso.
+    var vhCache = window.innerHeight;
+    function stableVH() {
+        var v = window.innerHeight;
+        if (Math.abs(v - vhCache) > 120) vhCache = v;
+        return vhCache;
+    }
+
+    var ticks = document.createElement('div');
+    ticks.className = 'stats-ticks';
+    ticks.setAttribute('aria-hidden', 'true');
+    for (var q = 0; q < items.length; q++) ticks.appendChild(document.createElement('span'));
+    pin.appendChild(ticks);
+
+    var POR_FICHA = 0.55;      // pantallas de scroll que dura cada ficha
+    var focus = 0, target = 0, chase = null, lastTs = 0, ticking = false;
+    // Arranca en 0 a proposito: la primera cifra la dispara el observer al
+    // entrar la seccion, aqui solo pedimos de la segunda en adelante.
+    var ultimoActivo = 0;
+
+    // Cuanto se desplaza cada ficha por paso de foco. Con 26px las dos fichas
+    // del relevo ocupaban exactamente los mismos renglones y se veian encimadas;
+    // con ~26% de la pantalla se quitan del camino a tiempo. Se recalcula al
+    // medir la pista, no en cada cuadro: leer el alto en el paint es un reflow.
+    var DESP = 170;
+    function sizeTrack() {
+        if (reduced.matches) { track.style.height = ''; return; }
+        var ph = pin.offsetHeight;
+        DESP = Math.max(90, Math.min(200, Math.round(ph * 0.26)));
+        var h = Math.round(ph + items.length * stableVH() * POR_FICHA);
+        if (track.style.height !== h + 'px') track.style.height = h + 'px';
+    }
+    function smooth(a, b, x) {
+        var t = (x - a) / (b - a);
+        t = t < 0 ? 0 : (t > 1 ? 1 : t);
+        return t * t * (3 - 2 * t);
+    }
+    function paint() {
+        if (reduced.matches) return;
+        var activo = Math.round(focus);
+        for (var i = 0; i < items.length; i++) {
+            var d = Math.abs(focus - i);
+            // El relevo tiene dos formas de salir mal y las dos se midieron:
+            // con la ventana corta (0.18-0.52) las dos fichas caian a 0.01 en el
+            // punto medio y la pantalla se apagaba un 13% del recorrido; con la
+            // ventana larga (0.20-0.70) se cruzaban al 35% cada una y quedaba una
+            // doble exposicion ilegible. 0.30-0.55 no hace ninguna de las dos:
+            // brillo minimo 0.10, solape maximo 0.10, y la ficha activa sigue al
+            // 90% durante casi todo su tramo.
+            var a = 1 - smooth(0.30, 0.55, d);
+            items[i].style.opacity = a.toFixed(3);
+            items[i].style.transform = 'translateY(' + ((i - focus) * DESP).toFixed(1) + 'px)';
+            items[i].style.pointerEvents = a > 0.5 ? 'auto' : 'none';
+            ticks.children[i].className = (i === activo) ? 'on' : '';
+        }
+        if (activo !== ultimoActivo) {
+            ultimoActivo = activo;
+            var cifra = items[activo] && items[activo].querySelector('.stat-number[data-count]');
+            if (cifra && cifra.__cuenta) cifra.__cuenta(cifra);
         }
     }
-
+    // El foco persigue al scroll por TIEMPO, no por frame: a cualquier fps
+    // converge en el mismo tiempo de reloj.
+    function tick(ts) {
+        var dt = lastTs ? Math.min(64, ts - lastTs) : 16;
+        lastTs = ts;
+        var d = target - focus;
+        if (Math.abs(d) < 0.002) { focus = target; chase = null; lastTs = 0; paint(); return; }
+        focus += d * (1 - Math.exp(-dt / 90));
+        paint();
+        chase = requestAnimationFrame(tick);
+    }
     function update() {
         ticking = false;
-        if (reduced.matches) return;
-        var vh = window.innerHeight;
-        var mid = vh / 2;
-        var hold = vh * 0.12;
-        var fall = vh * 0.38;
-        for (var i = 0; i < els.length; i++) {
-            var rect = els[i].getBoundingClientRect();
-            var dist = Math.abs((rect.top + rect.height / 2) - mid);
-            var t = dist <= hold ? 0 : Math.min(1, (dist - hold) / fall);
-            var opacity = 1 - t * floor;
-            els[i].style.opacity = opacity.toFixed(3);
-            els[i].style.transform = 'translateY(' + (t * 10).toFixed(1) + 'px)';
-        }
+        if (reduced.matches) { track.style.height = ''; return; }
+        sizeTrack();
+        var runway = track.offsetHeight - pin.offsetHeight;
+        if (runway <= 0) return;
+        var p = -track.getBoundingClientRect().top / runway;
+        p = p < 0 ? 0 : (p > 1 ? 1 : p);
+        target = p * (items.length - 1);
+        if (chase === null) chase = requestAnimationFrame(tick);
     }
+    function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
 
-    function onScroll() {
-        // rAF como portero: lleguen los eventos de scroll que lleguen,
-        // se calcula UNA vez por frame, sincronizado con el repintado.
-        if (!ticking) { ticking = true; requestAnimationFrame(update); }
-    }
-
+    if (!reduced.matches) track.classList.add('pin-on');
     window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', function() { readFloor(); onScroll(); });
-    if (reduced.addEventListener) {
-        reduced.addEventListener('change', function() {
-            if (reduced.matches) { clearStyles(); } else { onScroll(); }
-        });
-    }
+    window.addEventListener('resize', function () { vhCache = window.innerHeight; sizeTrack(); update(); });
+    window.addEventListener('orientationchange', function () { vhCache = window.innerHeight; sizeTrack(); update(); });
+    window.addEventListener('load', update);
+    if (reduced.addEventListener) reduced.addEventListener('change', function () {
+        if (reduced.matches) {
+            track.classList.remove('pin-on');
+            track.style.height = '';
+            items.forEach(function (el) { el.style.opacity = ''; el.style.transform = ''; });
+        } else { track.classList.add('pin-on'); update(); }
+    });
+    sizeTrack();
+    focus = 0; target = 0;
+    paint();
     update();
 })();
 </script>
