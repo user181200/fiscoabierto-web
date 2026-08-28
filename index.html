@@ -936,7 +936,11 @@
            deriva. El scroll ya no las desfila, las intercambia. El alto del
            track lo pone el JS en pixeles, no en vh, porque la barra del
            navegador movil cambia vh a media animacion. */
-        .stats-items { padding: 0; }
+        /* La FORMA vive en el CSS, igual que --chain-form del panel de
+           confianza: el JS la lee con getComputedStyle y el breakpoint existe
+           en UN solo lugar. 'pin' = el bloqueo de escritorio. 'deck' = el
+           carrusel vertical del telefono. */
+        .stats-items { --stats-form: pin; padding: 0; }
         .stats-pin {
             position: sticky;
             top: 0;
@@ -954,15 +958,10 @@
             opacity: 0;
             will-change: opacity, transform;
         }
-        /* Marcas de avance: mientras la pantalla esta trabada hay que poder
-           ver cuanto falta para que se suelte. */
-        .stats-ticks {
-            grid-area: 1 / 1;
-            align-self: end;
-            display: flex;
-            gap: 6px;
-            padding-top: 28px;
-        }
+        /* Marcas de avance: en escritorio no existen (el marco pegado ya dice
+           que estas dentro de algo). En el carrusel del telefono si, porque
+           ahi no hay pista visible que te diga cuantas fichas faltan. */
+        .stats-ticks { display: none; }
         .stats-ticks span {
             width: 22px;
             height: 2px;
@@ -973,11 +972,12 @@
         .stats-ticks span.on { background: #5EEAD4; }
         .stats-items:not(.pin-on) .stats-item { opacity: 1; }
         @media (prefers-reduced-motion: reduce) {
-            /* sin movimiento: nada se traba y las fichas se despilan */
+            /* sin movimiento no se traba nada y las fichas se despilan. El
+               carrusel del telefono NO cae aqui: deslizar no es una animacion,
+               es el dedo del usuario. Su bloque de 760px va despues y gana. */
             .stats-items { height: auto !important; }
             .stats-pin { position: static; height: auto; display: block; }
             .stats-item { opacity: 1; margin-bottom: 12vh; }
-            .stats-ticks { display: none; }
         }
         /* El numero ya NO trae blur/opacity/transition propios: la opacidad
            de esta seccion tiene UN solo dueno (el JS del BLOQUEO). Dos
@@ -1016,7 +1016,7 @@
         .stats-callout strong { color: #FCD34D; }
         @media (max-width: 760px) {
             .stats-band { grid-template-columns: 1fr; gap: 0; }
-            .stats-aside { position: static; height: auto; padding-top: 48px; }
+            .stats-aside { position: static; height: auto; padding-top: 22px; }
             /* ESCALA PROPIA DE TELEFONO, no una reduccion de la de escritorio.
                Medido en WebKit con perfil de iPhone 13 sobre los tres
                referentes: los tres AGRANDAN la tipografia en movil y dejan que
@@ -1027,7 +1027,51 @@
                El tope de 26ch de la etiqueta se quita aqui: con el ancho
                completo baja de 9 renglones a 5, el bloque cabe en 55vh y el
                vecino alcanza a meter su CIFRA, no solo su pie. */
-            .stats-items { padding: 0; }
+            /* CARRUSEL VERTICAL. La pista de cuatro pantallas se acabo: el
+               telefono ya no alarga la pagina, la seccion mide una pantalla y
+               las fichas se deslizan DENTRO con snap. Mismo trato que el
+               carril de confianza, girado 90 grados. El contenedor es mas alto
+               que la ficha a proposito: ese sobrante es el asomo de la
+               siguiente, que es de donde sale la profundidad.
+               REPARTO DE LA PANTALLA (medido en WebKit, iPhone 13, con el
+               titular en INGLES que es el caso largo): titulo + carrusel +
+               marcas caben en una pantalla. Ese era el punto: antes la
+               seccion media 3220px, o sea casi cinco pantallas. */
+            .stats-items { --stats-form: deck; height: auto !important; padding: 0; }
+            .stats-pin {
+                position: relative;
+                display: block;
+                height: 60svh;
+                margin-top: 8px;
+                overflow-y: auto;
+                scroll-snap-type: y mandatory;
+                scrollbar-width: none;
+                -webkit-overflow-scrolling: touch;
+                /* El sobrante va abajo (padding) para que la ULTIMA ficha
+                   tambien alcance a pegarse arriba: sin el, su tope queda
+                   fuera del alcance del scroll y nunca llega a su sitio. */
+                padding-bottom: 10svh;
+                /* Solo se disuelve el borde de abajo, que es el que dice
+                   'hay mas'. Un asomo ARRIBA no dice nada y ademas caia a 8px
+                   del subtitulo, leyendose como un choque de textos (medido). */
+                -webkit-mask-image: linear-gradient(to bottom, #000 0, #000 78%, transparent 100%);
+                mask-image: linear-gradient(to bottom, #000 0, #000 78%, transparent 100%);
+            }
+            .stats-pin::-webkit-scrollbar { width: 0; height: 0; }
+            .stats-item {
+                grid-area: auto;
+                min-height: 50svh;
+                scroll-snap-align: start;
+                margin-bottom: 0;
+                transform: none !important;
+            }
+            .stats-ticks {
+                display: flex;
+                justify-content: center;
+                gap: 8px;
+                margin-top: 20px;
+            }
+            .stats-ticks span { width: 26px; }
             .stat-number { font-size: 4.6rem; }
             .stat-label { font-size: 1.4rem; max-width: none; }
             .stat-source { font-size: 0.9rem; }
@@ -3264,7 +3308,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         entries.forEach(function(entry) {
             if (!entry.isIntersecting || animated) return;
             animated = true;
-            if (document.querySelector('.stats-items.pin-on')) {
+            if (document.querySelector('.stats-items.cuenta-por-foco')) {
                 arranca(counters[0]);   // las demas las pide el foco
             } else {
                 for (var i = 0; i < counters.length; i++) {
@@ -3962,13 +4006,18 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 })();
 </script>
 
-<!-- BLOQUEO DE LAS CIFRAS -->
+<!-- BLOQUEO / CARRUSEL DE LAS CIFRAS -->
 <script>
 (function() {
-    // Contrato: entra la posicion del scroll dentro del track, sale UN foco
-    // continuo 0..n-1. La ficha mas cercana al foco esta encendida y las
-    // demas se apagan por distancia. Como todas ocupan la MISMA celda, no
-    // hay desfile: hay intercambio, y el centro nunca se mueve.
+    // DOS FORMAS, UN SOLO CONTRATO: entra una posicion de scroll, sale UN foco
+    // continuo 0..n-1, y de ahi salen opacidad, marcas y contador.
+    //   pin  (escritorio) — el marco se queda pegado y las fichas viven
+    //        apiladas en la misma celda: el scroll no las desfila, las
+    //        intercambia, y el centro nunca se mueve.
+    //   deck (telefono)   — carrusel vertical con snap DENTRO de una pantalla:
+    //        la pagina ya no se alarga cuatro pantallas y el foco lo dicta el
+    //        scroll del propio carrusel, no el de la ventana.
+    // Cual toca lo dice el CSS en --stats-form, no un media query repetido aqui.
     var track = document.querySelector('.stats-items');
     var pin = document.querySelector('.stats-pin');
     if (!track || !pin) return;
@@ -3976,8 +4025,13 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (!items.length) return;
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
 
+    function forma() {
+        var v = getComputedStyle(track).getPropertyValue('--stats-form');
+        return (v || 'pin').trim() === 'deck' ? 'deck' : 'pin';
+    }
+
     // El alto de ventana se cachea: en telefono la barra del navegador lo
-    // cambia en pleno scroll y el track no debe re-medirse por eso.
+    // cambia en pleno scroll y la pista no debe re-medirse por eso.
     var vhCache = window.innerHeight;
     function stableVH() {
         var v = window.innerHeight;
@@ -3985,27 +4039,34 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         return vhCache;
     }
 
+    // Las marcas cuelgan de la PISTA, no del carrusel: dentro del carrusel se
+    // deslizarian con las fichas y dejarian de ser un indicador de posicion.
     var ticks = document.createElement('div');
     ticks.className = 'stats-ticks';
     ticks.setAttribute('aria-hidden', 'true');
     for (var q = 0; q < items.length; q++) ticks.appendChild(document.createElement('span'));
-    pin.appendChild(ticks);
+    track.appendChild(ticks);
 
-    var POR_FICHA = 0.55;      // pantallas de scroll que dura cada ficha
+    var POR_FICHA = 0.36;      // pantallas de scroll que dura cada ficha (pin)
+    var PERSIGUE = 55;         // ms de la constante del seguidor: mas chico, mas rapido
     var focus = 0, target = 0, chase = null, lastTs = 0, ticking = false;
     // Arranca en 0 a proposito: la primera cifra la dispara el observer al
     // entrar la seccion, aqui solo pedimos de la segunda en adelante.
     var ultimoActivo = 0;
 
-    // Cuanto se desplaza cada ficha por paso de foco. Con 26px las dos fichas
-    // del relevo ocupaban exactamente los mismos renglones y se veian encimadas;
-    // con ~26% de la pantalla se quitan del camino a tiempo. Se recalcula al
-    // medir la pista, no en cada cuadro: leer el alto en el paint es un reflow.
-    var DESP = 170;
+    // Cuanto se desplaza cada ficha por paso de foco (solo en pin). Con 26px las
+    // dos fichas del relevo ocupaban exactamente los mismos renglones y se veian
+    // encimadas. El 26% que lo arreglo era del arreglo ANTERIOR (ventana ancha,
+    // las dos vecinas al 35% en el relevo); con la ventana 0.30-0.55 el relevo
+    // ocurre al 0.10 de brillo y ya no hay nada que separar, asi que 26% solo
+    // dejaba la ficha en reposo hasta 100px fuera del centro, que es justo la
+    // deriva que veniamos a matar. 13% deja ese error en 33px como maximo.
+    // Se recalcula al medir la pista: leer el alto en el paint es un reflow.
+    var DESP = 110;
     function sizeTrack() {
-        if (reduced.matches) { track.style.height = ''; return; }
+        if (forma() === 'deck' || reduced.matches) { track.style.height = ''; return; }
         var ph = pin.offsetHeight;
-        DESP = Math.max(90, Math.min(200, Math.round(ph * 0.26)));
+        DESP = Math.max(70, Math.min(130, Math.round(ph * 0.13)));
         var h = Math.round(ph + items.length * stableVH() * POR_FICHA);
         if (track.style.height !== h + 'px') track.style.height = h + 'px';
     }
@@ -4014,8 +4075,15 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         t = t < 0 ? 0 : (t > 1 ? 1 : t);
         return t * t * (3 - 2 * t);
     }
+    function marcarYContar(activo) {
+        for (var i = 0; i < items.length; i++) ticks.children[i].className = (i === activo) ? 'on' : '';
+        if (activo === ultimoActivo) return;
+        ultimoActivo = activo;
+        var cifra = items[activo] && items[activo].querySelector('.stat-number[data-count]');
+        if (cifra && cifra.__cuenta) cifra.__cuenta(cifra);
+    }
     function paint() {
-        if (reduced.matches) return;
+        if (reduced.matches || forma() === 'deck') return;
         var activo = Math.round(focus);
         for (var i = 0; i < items.length; i++) {
             var d = Math.abs(focus - i);
@@ -4030,13 +4098,8 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
             items[i].style.opacity = a.toFixed(3);
             items[i].style.transform = 'translateY(' + ((i - focus) * DESP).toFixed(1) + 'px)';
             items[i].style.pointerEvents = a > 0.5 ? 'auto' : 'none';
-            ticks.children[i].className = (i === activo) ? 'on' : '';
         }
-        if (activo !== ultimoActivo) {
-            ultimoActivo = activo;
-            var cifra = items[activo] && items[activo].querySelector('.stat-number[data-count]');
-            if (cifra && cifra.__cuenta) cifra.__cuenta(cifra);
-        }
+        marcarYContar(activo);
     }
     // El foco persigue al scroll por TIEMPO, no por frame: a cualquier fps
     // converge en el mismo tiempo de reloj.
@@ -4045,12 +4108,34 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         lastTs = ts;
         var d = target - focus;
         if (Math.abs(d) < 0.002) { focus = target; chase = null; lastTs = 0; paint(); return; }
-        focus += d * (1 - Math.exp(-dt / 90));
+        focus += d * (1 - Math.exp(-dt / PERSIGUE));
         paint();
         chase = requestAnimationFrame(tick);
     }
+
+    // DECK: el navegador ya anima el deslizamiento, asi que aqui no hay
+    // seguidor ni opacidad que perseguir. Solo se mide que ficha quedo al
+    // centro del carrusel para encender su marca y arrancar su cifra. La
+    // distancia se calcula contra los centros reales porque las fichas no
+    // miden todas lo mismo (el callout es mas alto).
+    function updateDeck() {
+        ticking = false;
+        // Se mide con rectangulos de viewport, NO con offsetTop: en el telefono
+        // el carrusel es position static, asi que offsetTop de las fichas cuelga
+        // de otro ancestro y las ultimas marcas nunca se encendian.
+        var pr = pin.getBoundingClientRect();
+        var centro = pr.top + pr.height / 2;
+        var mejor = 0, dMin = Infinity;
+        for (var i = 0; i < items.length; i++) {
+            var r = items[i].getBoundingClientRect();
+            var d = Math.abs(r.top + r.height / 2 - centro);
+            if (d < dMin) { dMin = d; mejor = i; }
+        }
+        marcarYContar(mejor);
+    }
     function update() {
         ticking = false;
+        if (forma() === 'deck') { track.style.height = ''; updateDeck(); return; }
         if (reduced.matches) { track.style.height = ''; return; }
         sizeTrack();
         var runway = track.offsetHeight - pin.offsetHeight;
@@ -4061,18 +4146,40 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         if (chase === null) chase = requestAnimationFrame(tick);
     }
     function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
+    function onDeckScroll() { if (!ticking) { ticking = true; requestAnimationFrame(updateDeck); } }
 
-    if (!reduced.matches) track.classList.add('pin-on');
-    window.addEventListener('scroll', onScroll, { passive: true });
-    window.addEventListener('resize', function () { vhCache = window.innerHeight; sizeTrack(); update(); });
-    window.addEventListener('orientationchange', function () { vhCache = window.innerHeight; sizeTrack(); update(); });
-    window.addEventListener('load', update);
-    if (reduced.addEventListener) reduced.addEventListener('change', function () {
-        if (reduced.matches) {
+    function refrescarForma() {
+        var f = forma();
+        // pin-on es lo que apaga el respaldo "sin JS, todo visible". Solo debe
+        // estar puesta cuando el JS de verdad va a escribir opacidades.
+        // El contador lo maneja el foco siempre que haya foco: en pin con
+        // movimiento, y en deck SIEMPRE (deslizar funciona igual con movimiento
+        // reducido). Solo pin+reducido se queda con el escalonado del observer.
+        track.classList.toggle('cuenta-por-foco', f === 'deck' || !reduced.matches);
+        if (f === 'pin' && !reduced.matches) track.classList.add('pin-on');
+        else {
             track.classList.remove('pin-on');
             track.style.height = '';
-            items.forEach(function (el) { el.style.opacity = ''; el.style.transform = ''; });
-        } else { track.classList.add('pin-on'); update(); }
+            for (var i = 0; i < items.length; i++) {
+                items[i].style.opacity = '';
+                items[i].style.transform = '';
+                items[i].style.pointerEvents = '';
+            }
+        }
+    }
+
+    refrescarForma();
+    window.addEventListener('scroll', onScroll, { passive: true });
+    pin.addEventListener('scroll', onDeckScroll, { passive: true });
+    window.addEventListener('resize', function () {
+        vhCache = window.innerHeight; refrescarForma(); sizeTrack(); update();
+    });
+    window.addEventListener('orientationchange', function () {
+        vhCache = window.innerHeight; refrescarForma(); sizeTrack(); update();
+    });
+    window.addEventListener('load', update);
+    if (reduced.addEventListener) reduced.addEventListener('change', function () {
+        refrescarForma(); sizeTrack(); update();
     });
     sizeTrack();
     focus = 0; target = 0;

@@ -4,7 +4,7 @@
 const fs = require('fs');
 function el(cls) {
   return {
-    className: cls || '', classList: { add(){}, contains(){return false} },
+    className: cls || '', classList: { add(){}, remove(){}, toggle(){return false}, contains(){return false} },
     style: {}, children: [], firstChild: null,
     offsetHeight: 700, offsetWidth: 900, clientWidth: 900, clientHeight: 700, width: 900, height: 700,
     getBoundingClientRect: () => ({top:100,bottom:400,left:0,right:900,width:900,height:300}),
@@ -27,6 +27,9 @@ const doc = {
 };
 const win = {
   innerHeight: 900, innerWidth: 1440, scrollY: 0, devicePixelRatio: 2,
+  location: { search: '', hash: '', pathname: '/', href: 'https://fiscoabierto.org/' },
+  localStorage: { getItem: () => null, setItem(){}, removeItem(){} },
+  navigator: { language: 'es-MX', languages: ['es-MX'], userAgent: 'humo' },
   matchMedia: () => ({ matches:false, addEventListener(){}, addListener(){} }),
   getComputedStyle: () => ({ getPropertyValue: () => '0.93', position: 'sticky', alignItems: 'center' }),
   requestAnimationFrame: cb => { cb(0); return 1; }, cancelAnimationFrame(){},
