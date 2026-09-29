@@ -119,7 +119,7 @@
             transition: opacity 0.25s ease, transform 0.25s ease,
                         visibility 0s, background-color 0.2s;
         }
-        .nav-cta:hover { background: var(--color-accent); }
+        @media (hover: hover) { .nav-cta:hover { background: var(--color-accent); } }
         @media (prefers-reduced-motion: reduce) {
             nav, nav .container, .logo-word, .nav-cta { transition: none; }
         }
@@ -131,7 +131,7 @@
             font-weight: 500;
             transition: color 0.2s;
         }
-        .nav-links a:hover { color: var(--color-accent); }
+        @media (hover: hover) { .nav-links a:hover { color: var(--color-accent); } }
 
         /* LANGUAGE SWITCH (nav) */
         .lang-switch {
@@ -157,7 +157,7 @@
             transition: background-color 0.2s, color 0.2s;
         }
         .lang-btn + .lang-btn { border-left: 1px solid var(--color-border); }
-        .lang-btn:hover { color: var(--color-accent); }
+        @media (hover: hover) { .lang-btn:hover { color: var(--color-accent); } }
         .lang-btn.active { background: var(--color-accent); color: #FFFFFF; }
         .lang-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
         /* HERO */
@@ -212,11 +212,13 @@
             transition: background 0.2s ease, color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
             box-shadow: 0 4px 15px rgba(0,0,0,0.2);
         }
+        @media (hover: hover) {
         .hero-cta:hover {
-            background: #5EEAD4;
-            color: #042f2e;
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+                background: #5EEAD4;
+                color: #042f2e;
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+            }
         }
 
         /* SECTIONS */
@@ -464,10 +466,12 @@
             transition: all 0.2s ease;
             text-align: center;
         }
+        @media (hover: hover) {
         .platform-btn:hover {
-            border-color: rgba(94,234,212,0.4);
-            background: rgba(94,234,212,0.08);
-            transform: translateY(-1px);
+                border-color: rgba(94,234,212,0.4);
+                background: rgba(94,234,212,0.08);
+                transform: translateY(-1px);
+            }
         }
         .platform-btn.selected {
             border-color: #5EEAD4;
@@ -499,9 +503,11 @@
             color: rgba(255,255,255,0.85);
             transition: all 0.2s ease;
         }
+        @media (hover: hover) {
         .income-btn:hover {
-            border-color: rgba(94,234,212,0.5);
-            background: rgba(94,234,212,0.04);
+                border-color: rgba(94,234,212,0.5);
+                background: rgba(94,234,212,0.04);
+            }
         }
         .income-btn.selected {
             border-color: #5EEAD4;
@@ -578,9 +584,11 @@
             background: #5EEAD4;
             color: #042f2e;
         }
+        @media (hover: hover) {
         .btn-next:hover, .btn-results:hover {
-            transform: translateY(-1px);
-            background: #86F3E3;
+                transform: translateY(-1px);
+                background: #86F3E3;
+            }
         }
         .btn-next:disabled, .btn-results:disabled {
             opacity: 0.3;
@@ -593,9 +601,11 @@
             border: 1px solid rgba(255,255,255,0.15);
             color: rgba(255,255,255,0.6);
         }
+        @media (hover: hover) {
         .btn-prev:hover {
-            background: rgba(255,255,255,0.1);
-            color: rgba(255,255,255,0.85);
+                background: rgba(255,255,255,0.1);
+                color: rgba(255,255,255,0.85);
+            }
         }
 
         .step-indicator {
@@ -800,7 +810,7 @@
             color: rgba(255,255,255,0.6);
             cursor: pointer;
         }
-        .btn-restart:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); }
+        @media (hover: hover) { .btn-restart:hover { background: rgba(255,255,255,0.1); color: rgba(255,255,255,0.85); } }
 
         /* NEWSLETTER */
         #newsletter { text-align: center; }
@@ -814,8 +824,10 @@
             margin: 0 auto;
             transition: box-shadow 0.3s ease;
         }
+        @media (hover: hover) {
         .newsletter-box:hover {
-            box-shadow: 0 12px 40px rgba(15,118,110,0.1);
+                box-shadow: 0 12px 40px rgba(15,118,110,0.1);
+            }
         }
         .newsletter-box h2 { font-size: 1.3rem; margin-bottom: 8px; }
         .newsletter-box p {
@@ -844,7 +856,7 @@
         }
         .footer-copy .sep { margin: 0 8px; opacity: 0.6; }
         .footer-copy a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
-        .footer-copy a:hover { color: var(--color-accent); }
+        @media (hover: hover) { .footer-copy a:hover { color: var(--color-accent); } }
         .footer-mark { white-space: nowrap; }
         @media (max-width: 600px) {
             .footer-copy .sep { display: none; }
@@ -1220,7 +1232,7 @@
             text-underline-offset: 4px;
             transition: text-decoration-color 0.2s ease;
         }
-        a.chain-cite:hover { text-decoration-color: #5EEAD4; }
+        @media (hover: hover) { a.chain-cite:hover { text-decoration-color: #5EEAD4; } }
 
         /* Si el JS no corre, el diagrama no se queda en blanco: la clase chain-on la
            pone el propio script antes de apagar nada. */
@@ -1372,7 +1384,7 @@
             gap: 12px;
             transition: color 0.2s ease;
         }
-        .faq-question:hover { color: var(--color-accent); }
+        @media (hover: hover) { .faq-question:hover { color: var(--color-accent); } }
         .faq-arrow {
             font-size: 1.2rem;
             transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -1466,7 +1478,7 @@
         }
         .blk-foot .sep { margin: 0 7px; opacity: 0.55; }
         .blk-foot a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
-        .blk-foot a:hover { color: var(--color-accent); }
+        @media (hover: hover) { .blk-foot a:hover { color: var(--color-accent); } }
         /* Fecha de verificacion por bloque. La fecha vive en data-verificado y
            el texto lo pinta el JS en el idioma activo; tools/cifras.js la lee
            y avisa cuando envejece. */
@@ -1504,7 +1516,7 @@
             cursor: pointer;
             transition: background-color 0.15s, color 0.15s, border-color 0.15s;
         }
-        .act-btn:hover { border-color: var(--color-accent); color: var(--color-accent); }
+        @media (hover: hover) { .act-btn:hover { border-color: var(--color-accent); color: var(--color-accent); } }
         .act-btn.active {
             background: var(--color-accent);
             border-color: var(--color-accent);
@@ -1602,6 +1614,9 @@
             color: var(--color-text);
         }
         .calc-verdict.is-advance { border-left-color: var(--color-text-secondary); }
+        .calc-paso { color: var(--color-accent); font-weight: 600; text-decoration: none; white-space: nowrap; }
+        .calc-paso::after { content: " \2193"; }
+        @media (hover: hover) { .calc-paso:hover { text-decoration: underline; } }
         .calc-caveat { margin-top: 12px; font-size: 0.8rem; color: var(--color-text-secondary); line-height: 1.6; }
         .results-cta { text-align: center; font-size: 0.88rem; color: rgba(255,255,255,0.5); margin-top: 24px; }
         .results-cta a { color: #5EEAD4; font-weight: 600; text-decoration: none; }
@@ -1625,6 +1640,34 @@
         }
         .calc-iva-total { margin: 14px 0 0; font-size: 0.87rem; line-height: 1.65; }
 
+        /* --- Trámites del SAT ---
+           Seis tarjetas que abren la página exacta del trámite. En escritorio
+           es una cuadrícula; en teléfono, un carril con snap, como el resto
+           de los carruseles del sitio. Sin JS. */
+        .tram-section { background: var(--color-surface); border-top: 1px solid var(--color-border); }
+        .tram-section .container { max-width: 1080px; }
+        .tram-kicker { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-accent); margin: 0; }
+        .tram-section .blk-title { margin-top: 10px; }
+        .tram-grid { list-style: none; margin: 26px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; counter-reset: tram; }
+        .tram-card {
+            display: flex; flex-direction: column; gap: 8px; height: 100%;
+            padding: 18px 18px 16px; border: 1px solid var(--color-border); border-radius: var(--radius);
+            background: var(--color-bg); color: var(--color-text); text-decoration: none;
+            transition: border-color 0.15s;
+        }
+        @media (hover: hover) { .tram-card:hover { border-color: var(--color-accent); } }
+        .tram-card:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+        .tram-n { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.74rem; color: var(--color-accent); }
+        .tram-t { font-size: 1rem; font-weight: 700; line-height: 1.3; letter-spacing: -0.01em; }
+        .tram-d { font-size: 0.86rem; line-height: 1.6; color: var(--color-text-secondary); flex: 1; }
+        .tram-go { font-size: 0.84rem; font-weight: 600; color: var(--color-accent); margin-top: 4px; }
+        .tram-go::after { content: " \2197"; }
+        @media (max-width: 900px) { .tram-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        @media (max-width: 600px) {
+            .tram-grid { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; margin-left: -24px; margin-right: -24px; padding: 2px 24px 8px; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
+            .tram-grid li { flex: 0 0 82%; scroll-snap-align: center; }
+        }
+
         /* --- Mapa del impuesto estatal al hospedaje --- */
         /* --- Videos explicativos ---
            Ayuda en video para el público: sin encabezado visible, el video al
@@ -1638,15 +1681,22 @@
         .vid-section .container { max-width: 1080px; }
         .vid-oculto { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
         .vid-frame { position: relative; border: 1px solid var(--color-border); border-radius: 16px; overflow: hidden; background: #FAFAF9; aspect-ratio: 16 / 9; }
-        .vid-frame video { display: block; width: 100%; height: 100%; object-fit: contain; background: #FAFAF9; cursor: pointer; transition: opacity 0.25s ease; }
-        .vid-frame.is-swap video { opacity: 0; }
+        /* Dos <video> apilados: mientras corre uno, el otro ya descargó el
+           capítulo siguiente, así el cambio es un fundido y no un hueco con
+           el póster asomando, que era lo que se veía en teléfono con red
+           lenta. El póster es una capa aparte: se funde al arrancar el clip
+           y vuelve solo cuando el clip no va a correr solo. */
+        .vid-frame video { position: absolute; inset: 0; display: block; width: 100%; height: 100%; object-fit: contain; background: #FAFAF9; cursor: pointer; transition: opacity 0.3s ease; }
+        .vid-frame video.is-off { opacity: 0; pointer-events: none; }
+        .vid-poster { position: absolute; inset: 0; background: #FAFAF9 center / contain no-repeat; pointer-events: none; transition: opacity 0.4s ease; }
+        .vid-poster.is-off { opacity: 0; }
         .vid-rail { display: grid; grid-template-columns: 40px repeat(4, minmax(0, 1fr)); gap: 0 20px; align-items: start; margin-top: 18px; }
         .vid-play {
             appearance: none; -webkit-appearance: none; cursor: pointer;
             width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
             background: var(--color-accent); border: 0; margin-top: -8px;
         }
-        .vid-play:hover { background: var(--color-accent-dark); }
+        @media (hover: hover) { .vid-play:hover { background: var(--color-accent-dark); } }
         .vid-play:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
         .vid-play svg { width: 14px; height: 14px; fill: #FFFFFF; }
         .vid-play path { display: none; }
@@ -1657,9 +1707,12 @@
         }
         .vid-ch-track { display: block; height: 3px; border-radius: 3px; background: var(--color-border); overflow: hidden; }
         .vid-ch-fill { display: block; height: 100%; width: 0; background: var(--color-accent); }
+        /* timeupdate llega unas cuatro veces por segundo en Safari; la
+           transición rellena los huecos y la barra avanza parejo. */
+        .vid-ch-fill.is-live { transition: width 0.3s linear; }
         .vid-ch-l { display: flex; gap: 8px; align-items: baseline; margin-top: 11px; font-size: 0.88rem; font-weight: 600; line-height: 1.35; }
         .vid-ch-n { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.72rem; color: #78716C; flex: none; }
-        .vid-ch:hover { color: var(--color-text); }
+        @media (hover: hover) { .vid-ch:hover { color: var(--color-text); } }
         .vid-ch.is-done .vid-ch-n { color: var(--color-accent); }
         .vid-ch[aria-pressed="true"] { color: var(--color-text); }
         .vid-ch[aria-pressed="true"] .vid-ch-n { color: var(--color-accent); }
@@ -1668,7 +1721,7 @@
         .vid-text { margin-top: 22px; font-size: 0.85rem; color: var(--color-text-secondary); }
         .vid-text summary { cursor: pointer; font-weight: 600; color: var(--color-text-secondary); width: fit-content; }
         .vid-text p { margin-top: 8px; line-height: 1.7; max-width: 72ch; }
-        @media (prefers-reduced-motion: reduce) { .vid-frame video { transition: none; } }
+        @media (prefers-reduced-motion: reduce) { .vid-frame video, .vid-poster, .vid-ch-fill.is-live { transition: none; } }
         @media (max-width: 600px) {
             .vid-frame { aspect-ratio: 4 / 5; border-radius: 14px; }
             .vid-rail { grid-template-columns: 40px repeat(4, minmax(0, 1fr)); gap: 0 8px; }
@@ -1699,7 +1752,8 @@
         .mx-st.b3 { fill: #5EEAD4; }
         .mx-st.b4 { fill: #14B8A6; }
         .mx-st.b5 { fill: #0F766E; }
-        .mx-st:hover, .mx-st:focus { filter: brightness(0.88); outline: none; }
+        .mx-st:focus { filter: brightness(0.88); outline: none; }
+        @media (hover: hover) { .mx-st:hover { filter: brightness(0.88); outline: none; } }
         /* Confirmación parcial: la incertidumbre se ve en el mapa, no solo
            se lee en la ficha. Va antes de is-active para que el resaltado
            de selección gane por orden de fuente. */
@@ -1925,8 +1979,10 @@
 <section class="vid-section" id="videos">
     <div class="container">
         <h2 class="vid-oculto" data-i18n="vid.title">Retenciones y reportes al SAT, en video</h2>
-        <div class="vid-frame">
+        <div class="vid-frame" id="vidFrame">
             <video id="vidPlayer" muted playsinline preload="none" aria-describedby="vidText"></video>
+            <video id="vidPlayer2" class="is-off" muted playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
+            <div class="vid-poster" id="vidPoster" aria-hidden="true"></div>
         </div>
         <div class="vid-rail" role="group" aria-label="Videos" data-i18n-aria="vid.group">
             <button type="button" class="vid-play" id="vidPlay" aria-controls="vidPlayer" aria-label="Reproducir" data-i18n-aria="vid.play" data-estado="play">
@@ -2049,6 +2105,25 @@
                 </div>
             </div>
         </div>
+    </div>
+</section>
+
+<!-- TRÁMITES DEL SAT -->
+<section class="tram-section" id="tramites">
+    <div class="container">
+        <p class="tram-kicker" data-i18n="tram.kicker">Trámites en el SAT</p>
+        <h2 class="blk-title" data-i18n="tram.title">Seis trámites, cada uno en su página del SAT</h2>
+        <p class="blk-lead" data-i18n="tram.lead">Es la ruta que el propio SAT marca para quien gana en plataformas. Cada enlace abre la página del trámite, no la portada del portal.</p>
+        <ol class="tram-grid">
+            <li><a class="tram-card" href="https://www.sat.gob.mx/portal/public/tramites/inscripcion-y-aviso-al-rfc" target="_blank" rel="noopener noreferrer"><span class="tram-n">01</span><span class="tram-t" data-i18n="tram.t1">Inscríbete en el RFC</span><span class="tram-d" data-i18n="tram.d1">Con tu CURP, en línea y sin documentos. Con el RFC en la plataforma, la retención de ISR es la de tu actividad y no el 20%.</span><span class="tram-go" data-i18n="tram.go">Abrir en el SAT</span></a></li>
+            <li><a class="tram-card" href="https://satid.sat.gob.mx/" target="_blank" rel="noopener noreferrer"><span class="tram-n">02</span><span class="tram-t" data-i18n="tram.t2">Genera tu contraseña</span><span class="tram-d" data-i18n="tram.d2">En SAT ID, desde el celular, con tu identificación oficial. Con ella entras a todos los trámites que siguen.</span><span class="tram-go" data-i18n="tram.go">Abrir en el SAT</span></a></li>
+            <li><a class="tram-card" href="https://www.sat.gob.mx/minisitio/BuzonTributario/index.html" target="_blank" rel="noopener noreferrer"><span class="tram-n">03</span><span class="tram-t" data-i18n="tram.t3">Habilita tu buzón tributario</span><span class="tram-d" data-i18n="tram.d3">Registras un correo y un celular. Por ahí te llegan los avisos y las notificaciones del SAT.</span><span class="tram-go" data-i18n="tram.go">Abrir en el SAT</span></a></li>
+            <li><a class="tram-card" href="https://www.sat.gob.mx/portal/public/tramites/constancia-de-situacion-fiscal" target="_blank" rel="noopener noreferrer"><span class="tram-n">04</span><span class="tram-t" data-i18n="tram.t4">Descarga tu constancia de situación fiscal</span><span class="tram-d" data-i18n="tram.d4">Revisa que aparezca el régimen de plataformas tecnológicas. Es el documento que la plataforma te pide.</span><span class="tram-go" data-i18n="tram.go">Abrir en el SAT</span></a></li>
+            <li><a class="tram-card" href="https://www.sat.gob.mx/portal/public/tramites/inscripcion-y-aviso-al-rfc" target="_blank" rel="noopener noreferrer"><span class="tram-n">05</span><span class="tram-t" data-i18n="tram.t5">Actualiza tus obligaciones</span><span class="tram-d" data-i18n="tram.d5">Si ya tenías RFC por otra cosa, aquí agregas el régimen de plataformas tecnológicas. Pide contraseña o e.firma.</span><span class="tram-go" data-i18n="tram.go">Abrir en el SAT</span></a></li>
+            <li><a class="tram-card" href="https://www.sat.gob.mx/portal/public/tramites/declaraciones-pf" target="_blank" rel="noopener noreferrer"><span class="tram-n">06</span><span class="tram-t" data-i18n="tram.t6">Presenta tus declaraciones</span><span class="tram-d" data-i18n="tram.d6">Si tu retención es un anticipo, declaras cada mes a más tardar el día 17 del mes siguiente. Si es pago definitivo, no.</span><span class="tram-go" data-i18n="tram.go">Abrir en el SAT</span></a></li>
+        </ol>
+        <p class="blk-foot"><span data-i18n="tram.foot1">Para la e.firma hace falta cita:</span> <a href="https://www.sat.gob.mx/portal/public/tramites/firma-electronica-avanzada-efirma" target="_blank" rel="noopener noreferrer" data-i18n="tram.foot2">trámite de e.firma</a> · <a href="https://citas.sat.gob.mx/" target="_blank" rel="noopener noreferrer" data-i18n="tram.foot3">citas.sat.gob.mx</a> · <span data-i18n="tram.foot4">La ruta completa que publica el SAT:</span> <a href="https://www.sat.gob.mx/portal/public/personas-fisicas/regimen-de-las-actividades-empresariales-con-ingresos-a-traves-de-plataformas-tecnologicas" target="_blank" rel="noopener noreferrer" data-i18n="tram.foot5">régimen de plataformas tecnológicas</a>. <span data-i18n="tram.foot6">Todos los trámites del SAT son gratuitos.</span></p>
+        <p class="verif" data-verificado="2026-09-29" data-i18n-js></p>
     </div>
 </section>
 
@@ -2346,6 +2421,8 @@ const translations = {
         'calc.ivaTotal': 'Sumando ISR e IVA, con RFC la plataforma retiene y entera al SAT {totRfc} al año; sin RFC, {totSin}. El IVA retenido sale del IVA que cobras encima de tu precio; el ISR retenido sí se descuenta de lo que te pagan.',
         'calc.foot': 'Art. 113-A, párrafo tercero, fracción III LISR (1%) · Art. 25, fracción VI de la LIF 2026, DOF 07-nov-2025 (2.5%) · Art. 113-C, fracción IV LISR (20% sin RFC) · Umbral del Art. 113-B LISR, medido sobre el ejercicio anterior · Art. 18-J, fracción II, inciso a) LIVA (50% del IVA; 100% sin RFC), con IVA a la tasa general de 16% · Sobre ingresos brutos sin IVA',
         'calc.rateUp': 'Tu tasa subió de 1% a 2.5% en 2026, lo que suma {diff} más de retención al año.',
+        'calc.pasoFinal': 'Qué trámites toca hacer',
+        'calc.pasoAdvance': 'Dónde se presenta la declaración',
         'calc.rateSame': 'Tu tasa no cambió en 2026. La Ley de Ingresos solo sustituyó la tasa de la fracción III del 113-A, y a ti te aplica la fracción {frac}, que sigue en {rate}. Si la plataforma no tiene tu RFC, la retención sube a 20% (Art. 113-C, fracción IV LISR); con tu RFC te retienen {diff} menos al año.',
         'calc.thFinal': 'Con lo que te pagan no rebasas los $300,000 al año. Si el año pasado tampoco los rebasaste, puedes optar por que la retención sea tu pago definitivo de ISR; en ese caso lo retenido es tu impuesto y no se recupera en abril.',
         'calc.thAdvance': 'Con lo que te pagan rebasas los $300,000 al año. La opción de pago definitivo se mide con lo que ganaste el año anterior, así que rebasar el umbral este año te impide usarla el siguiente; si ya la tenías, la pierdes y no puedes volver a ella (Art. 113-B LISR). Sin esa opción, la retención es un anticipo que acreditas en tu declaración.',
@@ -2395,6 +2472,28 @@ const translations = {
         'trust.nodeSub': 'traduce y cita el artículo',
         'trust.outWhat': 'retención de ISR si vendes en línea',
         'trust.outCite': 'Art. 25, fr. VI, LIF 2026 · DOF 07-nov-2025',
+        'tram.kicker': 'Trámites en el SAT',
+        'tram.title': 'Seis trámites, cada uno en su página del SAT',
+        'tram.lead': 'Es la ruta que el propio SAT marca para quien gana en plataformas. Cada enlace abre la página del trámite, no la portada del portal.',
+        'tram.go': 'Abrir en el SAT',
+        'tram.t1': 'Inscríbete en el RFC',
+        'tram.d1': 'Con tu CURP, en línea y sin documentos. Con el RFC en la plataforma, la retención de ISR es la de tu actividad y no el 20%.',
+        'tram.t2': 'Genera tu contraseña',
+        'tram.d2': 'En SAT ID, desde el celular, con tu identificación oficial. Con ella entras a todos los trámites que siguen.',
+        'tram.t3': 'Habilita tu buzón tributario',
+        'tram.d3': 'Registras un correo y un celular. Por ahí te llegan los avisos y las notificaciones del SAT.',
+        'tram.t4': 'Descarga tu constancia de situación fiscal',
+        'tram.d4': 'Revisa que aparezca el régimen de plataformas tecnológicas. Es el documento que la plataforma te pide.',
+        'tram.t5': 'Actualiza tus obligaciones',
+        'tram.d5': 'Si ya tenías RFC por otra cosa, aquí agregas el régimen de plataformas tecnológicas. Pide contraseña o e.firma.',
+        'tram.t6': 'Presenta tus declaraciones',
+        'tram.d6': 'Si tu retención es un anticipo, declaras cada mes a más tardar el día 17 del mes siguiente. Si es pago definitivo, no.',
+        'tram.foot1': 'Para la e.firma hace falta cita:',
+        'tram.foot2': 'trámite de e.firma',
+        'tram.foot3': 'citas.sat.gob.mx',
+        'tram.foot4': 'La ruta completa que publica el SAT:',
+        'tram.foot5': 'régimen de plataformas tecnológicas',
+        'tram.foot6': 'Todos los trámites del SAT son gratuitos.',
         'diag.title': 'Diagnóstico fiscal',
         'diag.intro': 'Selecciona tus plataformas e ingresos aproximados. No pedimos datos personales (ni nombre, ni RFC, ni correo). Todo se procesa en tu navegador.',
         'diag.step1.question': '¿En qué plataformas generas ingresos?',
@@ -2501,6 +2600,8 @@ const translations = {
         'calc.ivaTotal': 'Adding income tax and VAT, with an RFC the platform withholds and pays the tax authority {totRfc} a year; without one, {totSin}. The VAT withheld comes out of the VAT charged on top of your price; the income tax withheld comes out of what you get paid.',
         'calc.foot': 'Income Tax Law art. 113-A, third paragraph, section III (1%) · 2026 Revenue Law art. 25, section VI, published 07-Nov-2025 (2.5%) · Income Tax Law art. 113-C, section IV (20% without an RFC) · Income Tax Law art. 113-B threshold, measured on the preceding tax year · VAT Law art. 18-J, section II, item a) (50% of the VAT; 100% without an RFC), assuming the general 16% VAT rate · On gross income before VAT',
         'calc.rateUp': 'Your rate went from 1% to 2.5% in 2026, which adds {diff} of withholding per year.',
+        'calc.pasoFinal': 'Which procedures to do',
+        'calc.pasoAdvance': 'Where to file the return',
         'calc.rateSame': 'Your rate did not change in 2026. The Revenue Law only replaced the rate in section III of article 113-A, and you fall under section {frac}, still at {rate}. If the platform does not have your RFC (tax ID), withholding rises to 20% (Income Tax Law art. 113-C, section IV); with your RFC, {diff} less is withheld per year.',
         'calc.thFinal': 'At what you get paid you stay under 300,000 pesos a year. If you also stayed under it last year, you can elect to have the withholding be your final income tax payment; in that case what is withheld is your tax and is not recovered in April.',
         'calc.thAdvance': 'At what you get paid you go over 300,000 pesos a year. The final-payment election depends on what you earned the year before, so going over the threshold this year keeps you from using it next year; if you already had it, you lose it and cannot elect it again (Income Tax Law art. 113-B). Without that election, the withholding is an advance you credit in your tax return.',
@@ -2550,6 +2651,28 @@ const translations = {
         'trust.nodeSub': 'translates it and cites the article',
         'trust.outWhat': 'income tax withheld if you sell online',
         'trust.outCite': '2026 Revenue Law art. 25, section VI · published 07-Nov-2025',
+        'tram.kicker': 'Procedures at the SAT',
+        'tram.title': 'Six procedures, each on its own SAT page',
+        'tram.lead': 'This is the route the SAT itself lays out for people who earn on platforms. Each link opens the procedure page, not the portal home.',
+        'tram.go': 'Open at the SAT',
+        'tram.t1': 'Register for an RFC',
+        'tram.d1': 'Online with your CURP, no documents. With your RFC on file, the platform withholds the rate for your activity, not 20%.',
+        'tram.t2': 'Create your password',
+        'tram.d2': 'On SAT ID, from your phone, with an official ID. It gets you into every procedure that follows.',
+        'tram.t3': 'Activate your SAT mailbox',
+        'tram.d3': 'The SAT calls it the tax mailbox. You register an email and a mobile number, and that is where its notices and notifications arrive.',
+        'tram.t4': 'Download your tax status certificate',
+        'tram.d4': 'Check that the digital platforms regime appears on it. It is the document platforms ask you for.',
+        'tram.t5': 'Update your tax obligations',
+        'tram.d5': 'If you already had an RFC for something else, this is where you add the digital platforms regime. Needs your password or e.firma.',
+        'tram.t6': 'File your returns',
+        'tram.d6': 'If your withholding is an advance, you file monthly by the 17th of the following month. If it is a final payment, you do not.',
+        'tram.foot1': 'The e.firma needs an appointment:',
+        'tram.foot2': 'e.firma procedure',
+        'tram.foot3': 'citas.sat.gob.mx',
+        'tram.foot4': 'The full route published by the SAT:',
+        'tram.foot5': 'digital platforms regime',
+        'tram.foot6': 'All SAT procedures are free.',
         'diag.title': 'Tax diagnostic',
         'diag.intro': 'Select your platforms and approximate income. We don\'t ask for personal data (no name, tax ID, or email). Everything is processed in your browser.',
         'diag.step1.question': 'Which platforms do you earn income on?',
@@ -2780,7 +2903,13 @@ document.querySelectorAll('.lang-switch .lang-btn').forEach(function(btn) {
         var rateLine = changed
             ? t('calc.rateUp').replace('{diff}', money(diff))
             : t('calc.rateSame').replace('{rate}', pct(rates.now)).replace('{frac}', rates.frac).replace('{diff}', money(diff));
-        verdict.textContent = rateLine + ' ' + t(overThreshold ? 'calc.thAdvance' : 'calc.thFinal');
+        verdict.textContent = rateLine + ' ' + t(overThreshold ? 'calc.thAdvance' : 'calc.thFinal') + ' ';
+        // El veredicto termina en el tramite que sigue, en la seccion de tramites.
+        var paso = document.createElement('a');
+        paso.href = '#tramites';
+        paso.className = 'calc-paso';
+        paso.textContent = t(overThreshold ? 'calc.pasoAdvance' : 'calc.pasoFinal');
+        verdict.appendChild(paso);
 
         // IVA: sobre la misma base anual. Con RFC se retiene la mitad del IVA
         // (8% de la base); sin RFC, todo (16%). El total suma lo que la
@@ -3414,10 +3543,11 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
 <!-- VIDEOS EXPLICATIVOS -->
 <script>
 (function () {
-    var player = document.getElementById('vidPlayer');
-    if (!player) return;
+    var vids = [document.getElementById('vidPlayer'), document.getElementById('vidPlayer2')];
+    if (!vids[0] || !vids[1]) return;
     var section = document.getElementById('videos');
-    var frame = player.parentNode;
+    var frame = document.getElementById('vidFrame');
+    var poster = document.getElementById('vidPoster');
     var caps = Array.prototype.slice.call(document.querySelectorAll('.vid-ch'));
     var fills = caps.map(function (c) { return c.querySelector('.vid-ch-fill'); });
     var orden = caps.map(function (c) { return c.dataset.vid; });
@@ -3426,83 +3556,134 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     var boton = document.getElementById('vidPlay');
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     var narrow = window.matchMedia('(max-width: 600px)');
-    var i = 0, cargado = false, visible = false, pausadoPorScroll = false, espera = null;
+    // i = capitulo en curso; cur = cual de los dos <video> lo lleva.
+    var i = 0, cur = 0, cargado = false, visible = false, pausadoPorScroll = false, espera = null;
     // t() y currentLanguage vienen del script principal; se leen en cada uso.
     function texto(k) { return typeof t === 'function' ? t(k) : ''; }
     function idioma() { return typeof currentLanguage === 'string' ? currentLanguage : 'es'; }
-    function reproducir() {
-        var p = player.play();
-        if (p && p.catch) p.catch(function () { pintarBoton(); });
-    }
+    function actual() { return vids[cur]; }
+    function reserva() { return vids[1 - cur]; }
     function ultimo() { return i === orden.length - 1; }
+    // Un archivo por video, idioma y formato: videos/<video>-<es|en>[-m].mp4
+    function ruta(j) { return 'videos/' + orden[j] + '-' + idioma() + (narrow.matches ? '-m' : ''); }
 
+    function reproducir() {
+        var v = actual();
+        var p = v.play();
+        // Si el navegador no deja arrancar (ahorro de energia, datos), queda
+        // el poster, que es el diagrama terminado, y el boton de play.
+        if (p && p.catch) p.catch(function () { mostrarPoster(true); pintarBoton(); });
+    }
+    function mostrarPoster(si) {
+        if (si) poster.style.backgroundImage = 'url(' + ruta(i) + '-poster.webp)';
+        poster.classList.toggle('is-off', !si);
+    }
     // El boton dice lo que va a hacer. Entre un capitulo y el siguiente sigue en pausa.
     function pintarBoton() {
-        var estado = player.ended && ultimo() ? 'replay' : (player.paused && !espera ? 'play' : 'pause');
+        var v = actual();
+        var estado = v.ended && ultimo() ? 'replay' : (v.paused && !espera ? 'play' : 'pause');
         boton.dataset.estado = estado;
         boton.setAttribute('aria-label', texto('vid.' + estado));
+    }
+    function barra(j, pct, viva) {
+        fills[j].classList.toggle('is-live', viva);
+        fills[j].style.width = pct + '%';
     }
     function pintarCapitulos() {
         caps.forEach(function (c, j) {
             c.setAttribute('aria-pressed', j === i ? 'true' : 'false');
             c.classList.toggle('is-done', j < i);
         });
-        fills.forEach(function (f, j) { if (j !== i) f.style.width = j < i ? '100%' : '0%'; });
+        fills.forEach(function (f, j) { if (j !== i) barra(j, j < i ? 100 : 0, false); });
         textEl.textContent = texto('vid.tx' + (i + 1));
         nowEl.textContent = texto('vid.tab' + (i + 1));
     }
-    // Un archivo por video, idioma y formato: videos/<video>-<es|en>[-m].mp4
+    function montar(v, j) {
+        var base = ruta(j);
+        if (v.dataset.base === base) return;
+        v.dataset.base = base;
+        v.preload = 'auto';
+        v.src = base + '.mp4';
+        v.load();
+    }
+    function enfrente(v) {
+        vids.forEach(function (x) {
+            x.classList.toggle('is-off', x !== v);
+            x.setAttribute('aria-hidden', x === v ? 'false' : 'true');
+            x.tabIndex = x === v ? 0 : -1;
+        });
+    }
+    // Mientras corre un capitulo, el <video> de reserva baja el siguiente.
+    function precargar() {
+        if (ultimo()) return;
+        montar(reserva(), i + 1);
+    }
     function cargar(correr) {
-        var base = 'videos/' + orden[i] + '-' + idioma() + (narrow.matches ? '-m' : '');
-        player.poster = base + '-poster.webp';
-        player.src = base + '.mp4';
+        var v = actual();
+        montar(v, i);
         cargado = true;
-        fills[i].style.width = '0%';
+        barra(i, 0, false);
         pintarCapitulos();
+        enfrente(v);
+        // Con movimiento reducido no arranca solo: el poster es el estado.
+        if (!correr) mostrarPoster(true);
         if (correr) reproducir();
-        else frame.classList.remove('is-swap');
         pintarBoton();
     }
-    // Cambio de capitulo con fundido corto; sin fundido si se pidio menos movimiento.
+    // Cambio de capitulo: si el siguiente ya esta en la reserva, los dos
+    // <video> se cruzan en un fundido; si no, se carga en el mismo.
     function ir(j, correr) {
         clearTimeout(espera); espera = null;
+        if (cargado && j === i) { actual().currentTime = 0; if (correr) reproducir(); pintarBoton(); return; }
+        var listo = cargado && reserva().dataset.base === ruta(j);
+        if (listo) { actual().pause(); cur = 1 - cur; }
         i = j;
-        if (!cargado || reduced.matches) { cargar(correr); return; }
-        frame.classList.add('is-swap');
-        setTimeout(function () { cargar(correr); }, 250);
-        setTimeout(function () { frame.classList.remove('is-swap'); }, 1500);
+        cargar(correr);
     }
     function alternar() {
         if (!cargado) cargar(false);
-        if (player.ended && ultimo()) { ir(0, true); return; }
-        if (player.paused && !espera) { pausadoPorScroll = false; reproducir(); }
-        else { clearTimeout(espera); espera = null; player.pause(); }
+        var v = actual();
+        if (v.ended && ultimo()) { ir(0, true); return; }
+        if (v.paused && !espera) { pausadoPorScroll = false; reproducir(); }
+        else { clearTimeout(espera); espera = null; v.pause(); }
         pintarBoton();
     }
+    function esActual(e) { return e.target === actual(); }
 
     boton.addEventListener('click', alternar);
-    player.addEventListener('click', alternar);
     caps.forEach(function (c, j) { c.addEventListener('click', function () { ir(j, true); }); });
-    player.addEventListener('playing', function () { frame.classList.remove('is-swap'); });
-    player.addEventListener('timeupdate', function () {
-        if (player.duration) fills[i].style.width = (player.currentTime / player.duration * 100) + '%';
-    });
-    // Al terminar un capitulo pasa solo al siguiente; el ultimo se queda en su cierre.
-    player.addEventListener('ended', function () {
-        fills[i].style.width = '100%';
-        if (!ultimo()) espera = setTimeout(function () { espera = null; ir(i + 1, visible); }, 900);
-        pintarBoton();
-    });
-    ['play', 'pause', 'emptied'].forEach(function (ev) { player.addEventListener(ev, pintarBoton); });
-
-    // Corre despues de setLanguage: el mismo clic ya cambio currentLanguage.
-    document.querySelectorAll('.lang-switch .lang-btn').forEach(function (b) {
-        b.addEventListener('click', function () {
-            if (cargado) cargar(!player.paused); else pintarCapitulos();
+    vids.forEach(function (v) {
+        v.addEventListener('click', alternar);
+        v.addEventListener('playing', function (e) {
+            if (!esActual(e)) return;
+            mostrarPoster(false);
+            precargar();
+        });
+        v.addEventListener('timeupdate', function (e) {
+            if (esActual(e) && v.duration) barra(i, v.currentTime / v.duration * 100, true);
+        });
+        // Al terminar un capitulo pasa solo al siguiente; el ultimo se queda en su cierre.
+        v.addEventListener('ended', function (e) {
+            if (!esActual(e)) return;
+            barra(i, 100, false);
+            if (!ultimo()) espera = setTimeout(function () { espera = null; ir(i + 1, visible); }, 900);
             pintarBoton();
         });
+        ['play', 'pause', 'emptied'].forEach(function (ev) {
+            v.addEventListener(ev, function (e) { if (esActual(e)) pintarBoton(); });
+        });
     });
-    if (narrow.addEventListener) narrow.addEventListener('change', function () { if (cargado) cargar(!player.paused); });
+
+    // Cambio de idioma o de formato: ambos <video> quedan con otra ruta.
+    function recargar() {
+        if (!cargado) { pintarCapitulos(); return; }
+        var corria = !actual().paused;
+        vids.forEach(function (v) { v.dataset.base = ''; });
+        cargar(corria);
+    }
+    // Corre despues de setLanguage: el mismo clic ya cambio currentLanguage.
+    document.querySelectorAll('.lang-switch .lang-btn').forEach(function (b) { b.addEventListener('click', recargar); });
+    if (narrow.addEventListener) narrow.addEventListener('change', recargar);
     pintarCapitulos();
     pintarBoton();
 
@@ -3516,14 +3697,15 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         visible = es[0].isIntersecting;
         if (!visible && !cargado) return;
         if (!cargado) cargar(false);
+        var v = actual();
         if (visible) {
             if (reduced.matches) return;
-            if (pausadoPorScroll || (i === 0 && player.paused && player.currentTime === 0)) { pausadoPorScroll = false; reproducir(); }
-        } else if (!player.paused) {
+            if (pausadoPorScroll || (i === 0 && v.paused && v.currentTime === 0)) { pausadoPorScroll = false; reproducir(); }
+        } else if (!v.paused) {
             pausadoPorScroll = true;
-            player.pause();
+            v.pause();
         }
-    }, { threshold: 0.6 }).observe(player);
+    }, { threshold: 0.6 }).observe(frame);
 })();
 </script>
 
