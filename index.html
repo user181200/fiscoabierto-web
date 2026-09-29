@@ -1627,56 +1627,54 @@
 
         /* --- Mapa del impuesto estatal al hospedaje --- */
         /* --- Videos explicativos ---
-           Cuatro clips sin audio, renderizados cuadro por cuadro desde las
-           mismas tasas de la calculadora (videos/README en el taller). Un
-           solo <video>; las pestañas cambian el archivo. 16:9 en escritorio,
-           4:5 en teléfono. Sin movimiento reducido no arranca solo: queda el
-           póster, que es el diagrama terminado. */
+           Ayuda en video para el público: sin encabezado visible, el video al
+           frente y debajo cuatro capítulos. Cada capítulo lleva una barra que se
+           llena mientras corre su video; al terminar pasa solo al siguiente, así
+           los cuatro se leen como una presentación. Arranca solo al verse y se
+           pausa al salir. Con movimiento reducido no arranca solo ni hay fundido:
+           queda el póster, que es el diagrama terminado. 16:9 en escritorio, 4:5
+           en teléfono. Los clips se rehacen en videos/ (README). */
         .vid-section { background: var(--color-surface); border-top: 1px solid var(--color-border); }
         .vid-section .container { max-width: 1080px; }
-        .vid-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; }
-        .vid-title { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; max-width: 20ch; margin: 0; }
-        .vid-lead { font-size: 0.95rem; color: var(--color-text-secondary); line-height: 1.65; max-width: 46ch; }
-        .vid-tabs { display: flex; gap: 28px; margin-top: 30px; border-bottom: 1px solid var(--color-border); overflow-x: auto; scrollbar-width: none; }
-        .vid-tabs::-webkit-scrollbar { display: none; }
-        .vid-tab {
-            appearance: none; -webkit-appearance: none; background: none; border: 0; cursor: pointer;
-            padding: 12px 0; margin-bottom: -1px; border-bottom: 2px solid transparent;
-            font-family: inherit; font-size: 0.9rem; font-weight: 600; color: var(--color-text-secondary);
-            display: flex; gap: 8px; align-items: baseline; white-space: nowrap;
-        }
-        .vid-tab .vid-n { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.72rem; color: #78716C; }
-        .vid-tab[aria-pressed="true"] { color: var(--color-text); border-bottom-color: var(--color-accent); }
-        .vid-tab[aria-pressed="true"] .vid-n { color: var(--color-accent); }
-        .vid-tab:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 2px; }
-        .vid-frame { margin-top: 22px; border: 1px solid var(--color-border); border-radius: 14px; overflow: hidden; background: #FAFAF9; aspect-ratio: 16 / 9; }
-        .vid-frame { position: relative; }
-        .vid-frame video { display: block; width: 100%; height: 100%; object-fit: contain; background: #FAFAF9; cursor: pointer; }
-        .vid-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--color-border); }
-        .vid-progress span { display: block; height: 100%; width: 0; background: var(--color-accent); }
-        .vid-bar { margin-top: 12px; display: flex; align-items: center; gap: 16px; }
+        .vid-oculto { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+        .vid-frame { position: relative; border: 1px solid var(--color-border); border-radius: 16px; overflow: hidden; background: #FAFAF9; aspect-ratio: 16 / 9; }
+        .vid-frame video { display: block; width: 100%; height: 100%; object-fit: contain; background: #FAFAF9; cursor: pointer; transition: opacity 0.25s ease; }
+        .vid-frame.is-swap video { opacity: 0; }
+        .vid-rail { display: grid; grid-template-columns: 40px repeat(4, minmax(0, 1fr)); gap: 0 20px; align-items: start; margin-top: 18px; }
         .vid-play {
             appearance: none; -webkit-appearance: none; cursor: pointer;
-            display: inline-flex; align-items: center; gap: 8px;
-            background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 999px;
-            padding: 8px 16px 8px 13px; font-family: inherit; font-size: 0.85rem; font-weight: 600; color: var(--color-text);
+            width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+            background: var(--color-accent); border: 0; margin-top: -8px;
         }
-        .vid-play:hover { border-color: var(--color-accent); }
-        .vid-play:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
-        .vid-play svg { width: 13px; height: 13px; fill: var(--color-accent); }
+        .vid-play:hover { background: var(--color-accent-dark); }
+        .vid-play:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+        .vid-play svg { width: 14px; height: 14px; fill: #FFFFFF; }
         .vid-play path { display: none; }
         .vid-play[data-estado="play"] .i-play, .vid-play[data-estado="pause"] .i-pause, .vid-play[data-estado="replay"] .i-replay { display: inline; }
-        .vid-text { margin-top: 14px; font-size: 0.88rem; color: var(--color-text-secondary); }
-        .vid-text summary { cursor: pointer; font-weight: 600; color: var(--color-text); width: fit-content; }
+        .vid-ch {
+            appearance: none; -webkit-appearance: none; background: none; border: 0; padding: 0; cursor: pointer;
+            text-align: left; font-family: inherit; color: var(--color-text-secondary); min-width: 0;
+        }
+        .vid-ch-track { display: block; height: 3px; border-radius: 3px; background: var(--color-border); overflow: hidden; }
+        .vid-ch-fill { display: block; height: 100%; width: 0; background: var(--color-accent); }
+        .vid-ch-l { display: flex; gap: 8px; align-items: baseline; margin-top: 11px; font-size: 0.88rem; font-weight: 600; line-height: 1.35; }
+        .vid-ch-n { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.72rem; color: #78716C; flex: none; }
+        .vid-ch:hover { color: var(--color-text); }
+        .vid-ch.is-done .vid-ch-n { color: var(--color-accent); }
+        .vid-ch[aria-pressed="true"] { color: var(--color-text); }
+        .vid-ch[aria-pressed="true"] .vid-ch-n { color: var(--color-accent); }
+        .vid-ch:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 6px; border-radius: 4px; }
+        .vid-now { display: none; }
+        .vid-text { margin-top: 22px; font-size: 0.85rem; color: var(--color-text-secondary); }
+        .vid-text summary { cursor: pointer; font-weight: 600; color: var(--color-text-secondary); width: fit-content; }
         .vid-text p { margin-top: 8px; line-height: 1.7; max-width: 72ch; }
+        @media (prefers-reduced-motion: reduce) { .vid-frame video { transition: none; } }
         @media (max-width: 600px) {
-            .vid-head { display: block; }
-            .vid-lead { margin-top: 10px; }
-            .vid-title { font-size: 1.4rem; max-width: none; }
-            .vid-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; margin-top: 20px; border-bottom: 0; overflow: visible; }
-            .vid-tab { white-space: normal; text-align: left; border-bottom: 1px solid var(--color-border); margin-bottom: 0; padding: 11px 0; }
-            .vid-tab[aria-pressed="true"] { border-bottom: 2px solid var(--color-accent); padding-bottom: 10px; }
-            .vid-frame { aspect-ratio: 4 / 5; }
+            .vid-frame { aspect-ratio: 4 / 5; border-radius: 14px; }
+            .vid-rail { grid-template-columns: 40px repeat(4, minmax(0, 1fr)); gap: 0 8px; }
+            .vid-ch-t { display: none; }
+            .vid-ch-l { margin-top: 8px; }
+            .vid-now { display: block; margin-top: 12px; font-size: 0.95rem; font-weight: 600; color: var(--color-text); }
         }
 
         .map-section {
@@ -1926,26 +1924,20 @@
 <!-- VIDEOS EXPLICATIVOS -->
 <section class="vid-section" id="videos">
     <div class="container">
-        <div class="vid-head">
-            <h2 class="vid-title" data-i18n="vid.title">Retenciones y reportes al SAT, en video</h2>
-            <p class="vid-lead" data-i18n="vid.lead">Cuatro animaciones cortas y sin audio. Las cifras salen de las mismas tasas que usa la calculadora, y cada video cierra con los artículos que lo sostienen.</p>
-        </div>
-        <div class="vid-tabs" role="group" aria-label="Videos" data-i18n-aria="vid.group">
-            <button type="button" class="vid-tab" data-vid="como-te-retienen" aria-pressed="true"><span class="vid-n">01</span><span data-i18n="vid.tab1">Cómo te retienen</span></button>
-            <button type="button" class="vid-tab" data-vid="con-rfc-sin-rfc" aria-pressed="false"><span class="vid-n">02</span><span data-i18n="vid.tab2">Con RFC y sin RFC</span></button>
-            <button type="button" class="vid-tab" data-vid="que-ve-el-sat" aria-pressed="false"><span class="vid-n">03</span><span data-i18n="vid.tab3">Qué ve el SAT</span></button>
-            <button type="button" class="vid-tab" data-vid="pago-definitivo-o-anticipo" aria-pressed="false"><span class="vid-n">04</span><span data-i18n="vid.tab4">Pago definitivo o anticipo</span></button>
-        </div>
+        <h2 class="vid-oculto" data-i18n="vid.title">Retenciones y reportes al SAT, en video</h2>
         <div class="vid-frame">
             <video id="vidPlayer" muted playsinline preload="none" aria-describedby="vidText"></video>
-            <div class="vid-progress" aria-hidden="true"><span id="vidProgress"></span></div>
         </div>
-        <div class="vid-bar">
-            <button type="button" class="vid-play" id="vidPlay" aria-controls="vidPlayer" data-estado="play">
+        <div class="vid-rail" role="group" aria-label="Videos" data-i18n-aria="vid.group">
+            <button type="button" class="vid-play" id="vidPlay" aria-controls="vidPlayer" aria-label="Reproducir" data-i18n-aria="vid.play" data-estado="play">
                 <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path class="i-play" d="M4 2.5v11l9-5.5z"/><path class="i-pause" d="M4 2.5h3v11H4zM9 2.5h3v11H9z"/><path class="i-replay" d="M8 2.5a5.5 5.5 0 1 1-5.2 3.7l1.4.5A4 4 0 1 0 8 4v2L4.8 3.2 8 .5z"/></svg>
-                <span id="vidPlayLabel" data-i18n-js>Reproducir</span>
             </button>
+            <button type="button" class="vid-ch" data-vid="como-te-retienen" aria-pressed="true"><span class="vid-ch-track" aria-hidden="true"><span class="vid-ch-fill"></span></span><span class="vid-ch-l"><span class="vid-ch-n">01</span><span class="vid-ch-t" data-i18n="vid.tab1">Cómo te retienen</span></span></button>
+            <button type="button" class="vid-ch" data-vid="con-rfc-sin-rfc" aria-pressed="false"><span class="vid-ch-track" aria-hidden="true"><span class="vid-ch-fill"></span></span><span class="vid-ch-l"><span class="vid-ch-n">02</span><span class="vid-ch-t" data-i18n="vid.tab2">Con RFC y sin RFC</span></span></button>
+            <button type="button" class="vid-ch" data-vid="que-ve-el-sat" aria-pressed="false"><span class="vid-ch-track" aria-hidden="true"><span class="vid-ch-fill"></span></span><span class="vid-ch-l"><span class="vid-ch-n">03</span><span class="vid-ch-t" data-i18n="vid.tab3">Qué ve el SAT</span></span></button>
+            <button type="button" class="vid-ch" data-vid="pago-definitivo-o-anticipo" aria-pressed="false"><span class="vid-ch-track" aria-hidden="true"><span class="vid-ch-fill"></span></span><span class="vid-ch-l"><span class="vid-ch-n">04</span><span class="vid-ch-t" data-i18n="vid.tab4">Pago definitivo o anticipo</span></span></button>
         </div>
+        <p class="vid-now" id="vidNow" data-i18n-js>Cómo te retienen</p>
         <details class="vid-text">
             <summary data-i18n="vid.textLabel">Texto del video</summary>
             <p id="vidText" data-i18n-js></p>
@@ -2358,7 +2350,6 @@ const translations = {
         'calc.thFinal': 'Con lo que te pagan no rebasas los $300,000 al año. Si el año pasado tampoco los rebasaste, puedes optar por que la retención sea tu pago definitivo de ISR; en ese caso lo retenido es tu impuesto y no se recupera en abril.',
         'calc.thAdvance': 'Con lo que te pagan rebasas los $300,000 al año. La opción de pago definitivo se mide con lo que ganaste el año anterior, así que rebasar el umbral este año te impide usarla el siguiente; si ya la tenías, la pierdes y no puedes volver a ella (Art. 113-B LISR). Sin esa opción, la retención es un anticipo que acreditas en tu declaración.',
         'vid.title': 'Retenciones y reportes al SAT, en video',
-        'vid.lead': 'Cuatro animaciones cortas y sin audio. Las cifras salen de las mismas tasas que usa la calculadora, y cada video cierra con los artículos que lo sostienen.',
         'vid.group': 'Videos',
         'vid.tab1': 'Cómo te retienen',
         'vid.tab2': 'Con RFC y sin RFC',
@@ -2514,7 +2505,6 @@ const translations = {
         'calc.thFinal': 'At what you get paid you stay under 300,000 pesos a year. If you also stayed under it last year, you can elect to have the withholding be your final income tax payment; in that case what is withheld is your tax and is not recovered in April.',
         'calc.thAdvance': 'At what you get paid you go over 300,000 pesos a year. The final-payment election depends on what you earned the year before, so going over the threshold this year keeps you from using it next year; if you already had it, you lose it and cannot elect it again (Income Tax Law art. 113-B). Without that election, the withholding is an advance you credit in your tax return.',
         'vid.title': 'Withholding and reporting to the SAT, on video',
-        'vid.lead': 'Four short animations without sound. The figures come from the same rates the calculator uses, and each video ends with the articles behind it.',
         'vid.group': 'Videos',
         'vid.tab1': 'How withholding works',
         'vid.tab2': 'With and without an RFC',
@@ -3427,68 +3417,94 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     var player = document.getElementById('vidPlayer');
     if (!player) return;
     var section = document.getElementById('videos');
-    var tabs = document.querySelectorAll('.vid-tab');
+    var frame = player.parentNode;
+    var caps = Array.prototype.slice.call(document.querySelectorAll('.vid-ch'));
+    var fills = caps.map(function (c) { return c.querySelector('.vid-ch-fill'); });
+    var orden = caps.map(function (c) { return c.dataset.vid; });
     var textEl = document.getElementById('vidText');
+    var nowEl = document.getElementById('vidNow');
+    var boton = document.getElementById('vidPlay');
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     var narrow = window.matchMedia('(max-width: 600px)');
-    var TX = { 'como-te-retienen': 'vid.tx1', 'con-rfc-sin-rfc': 'vid.tx2', 'que-ve-el-sat': 'vid.tx3', 'pago-definitivo-o-anticipo': 'vid.tx4' };
-    var actual = 'como-te-retienen';
-    var cargado = false, visible = false, pausadoPorScroll = false;
+    var i = 0, cargado = false, visible = false, pausadoPorScroll = false, espera = null;
     // t() y currentLanguage vienen del script principal; se leen en cada uso.
     function texto(k) { return typeof t === 'function' ? t(k) : ''; }
     function idioma() { return typeof currentLanguage === 'string' ? currentLanguage : 'es'; }
-
     function reproducir() {
         var p = player.play();
-        if (p && p.catch) p.catch(function () {});
+        if (p && p.catch) p.catch(function () { pintarBoton(); });
+    }
+    function ultimo() { return i === orden.length - 1; }
+
+    // El boton dice lo que va a hacer. Entre un capitulo y el siguiente sigue en pausa.
+    function pintarBoton() {
+        var estado = player.ended && ultimo() ? 'replay' : (player.paused && !espera ? 'play' : 'pause');
+        boton.dataset.estado = estado;
+        boton.setAttribute('aria-label', texto('vid.' + estado));
+    }
+    function pintarCapitulos() {
+        caps.forEach(function (c, j) {
+            c.setAttribute('aria-pressed', j === i ? 'true' : 'false');
+            c.classList.toggle('is-done', j < i);
+        });
+        fills.forEach(function (f, j) { if (j !== i) f.style.width = j < i ? '100%' : '0%'; });
+        textEl.textContent = texto('vid.tx' + (i + 1));
+        nowEl.textContent = texto('vid.tab' + (i + 1));
     }
     // Un archivo por video, idioma y formato: videos/<video>-<es|en>[-m].mp4
     function cargar(correr) {
-        var base = 'videos/' + actual + '-' + idioma() + (narrow.matches ? '-m' : '');
+        var base = 'videos/' + orden[i] + '-' + idioma() + (narrow.matches ? '-m' : '');
         player.poster = base + '-poster.webp';
         player.src = base + '.mp4';
         cargado = true;
-        if (correr && visible && !reduced.matches) reproducir();
+        fills[i].style.width = '0%';
+        pintarCapitulos();
+        if (correr) reproducir();
+        else frame.classList.remove('is-swap');
+        pintarBoton();
     }
-    var boton = document.getElementById('vidPlay');
-    var botonTexto = document.getElementById('vidPlayLabel');
-    var barra = document.getElementById('vidProgress');
-    function pintarTexto() { textEl.textContent = texto(TX[actual]); pintarBoton(); }
-    // El boton dice lo que va a hacer: reproducir, pausar o repetir.
-    function pintarBoton() {
-        var estado = player.ended ? 'replay' : (player.paused ? 'play' : 'pause');
-        boton.dataset.estado = estado;
-        botonTexto.textContent = texto('vid.' + estado);
+    // Cambio de capitulo con fundido corto; sin fundido si se pidio menos movimiento.
+    function ir(j, correr) {
+        clearTimeout(espera); espera = null;
+        i = j;
+        if (!cargado || reduced.matches) { cargar(correr); return; }
+        frame.classList.add('is-swap');
+        setTimeout(function () { cargar(correr); }, 250);
+        setTimeout(function () { frame.classList.remove('is-swap'); }, 1500);
     }
     function alternar() {
         if (!cargado) cargar(false);
-        if (player.paused || player.ended) { pausadoPorScroll = false; reproducir(); } else player.pause();
+        if (player.ended && ultimo()) { ir(0, true); return; }
+        if (player.paused && !espera) { pausadoPorScroll = false; reproducir(); }
+        else { clearTimeout(espera); espera = null; player.pause(); }
+        pintarBoton();
     }
+
     boton.addEventListener('click', alternar);
     player.addEventListener('click', alternar);
-    ['play', 'pause', 'ended', 'emptied'].forEach(function (ev) { player.addEventListener(ev, pintarBoton); });
+    caps.forEach(function (c, j) { c.addEventListener('click', function () { ir(j, true); }); });
+    player.addEventListener('playing', function () { frame.classList.remove('is-swap'); });
     player.addEventListener('timeupdate', function () {
-        barra.style.width = (player.duration ? player.currentTime / player.duration * 100 : 0) + '%';
+        if (player.duration) fills[i].style.width = (player.currentTime / player.duration * 100) + '%';
     });
-    player.addEventListener('emptied', function () { barra.style.width = '0%'; });
+    // Al terminar un capitulo pasa solo al siguiente; el ultimo se queda en su cierre.
+    player.addEventListener('ended', function () {
+        fills[i].style.width = '100%';
+        if (!ultimo()) espera = setTimeout(function () { espera = null; ir(i + 1, visible); }, 900);
+        pintarBoton();
+    });
+    ['play', 'pause', 'emptied'].forEach(function (ev) { player.addEventListener(ev, pintarBoton); });
 
-    tabs.forEach(function (btn) {
-        btn.addEventListener('click', function () {
-            actual = btn.dataset.vid;
-            tabs.forEach(function (b) { b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
-            pintarTexto();
-            cargar(true);
-        });
-    });
     // Corre despues de setLanguage: el mismo clic ya cambio currentLanguage.
     document.querySelectorAll('.lang-switch .lang-btn').forEach(function (b) {
         b.addEventListener('click', function () {
-            pintarTexto();
-            if (cargado) cargar(!player.paused);
+            if (cargado) cargar(!player.paused); else pintarCapitulos();
+            pintarBoton();
         });
     });
     if (narrow.addEventListener) narrow.addEventListener('change', function () { if (cargado) cargar(!player.paused); });
-    pintarTexto();
+    pintarCapitulos();
+    pintarBoton();
 
     if (!('IntersectionObserver' in window)) { cargar(false); return; }
     // El poster y el video se piden cerca del viewport, no en la carga inicial.
@@ -3502,7 +3518,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         if (!cargado) cargar(false);
         if (visible) {
             if (reduced.matches) return;
-            if (pausadoPorScroll || (player.paused && player.currentTime === 0)) { pausadoPorScroll = false; reproducir(); }
+            if (pausadoPorScroll || (i === 0 && player.paused && player.currentTime === 0)) { pausadoPorScroll = false; reproducir(); }
         } else if (!player.paused) {
             pausadoPorScroll = true;
             player.pause();
