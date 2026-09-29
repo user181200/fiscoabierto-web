@@ -796,6 +796,19 @@
         }
         .result-section li:last-child { border-bottom: none; }
         .result-section li strong { color: #5EEAD4; font-weight: 600; }
+        /* Pasos del diagnostico: cada uno es un enlace al tramite. */
+        .result-section li.paso { padding: 0; }
+        .paso a { display: flex; gap: 14px; align-items: flex-start; padding: 12px 0; color: inherit; text-decoration: none; }
+        .paso-n {
+            flex: none; width: 26px; height: 26px; border-radius: 50%; display: grid; place-items: center;
+            border: 1px solid rgba(94, 234, 212, 0.45); color: #5EEAD4; font-size: 0.78rem; font-weight: 700;
+        }
+        .paso-b { display: flex; flex-direction: column; gap: 2px; }
+        .paso-b strong::after { content: " \2197\FE0E"; font-weight: 400; color: rgba(94, 234, 212, 0.55); }
+        .paso-b span { font-size: 0.86rem; color: rgba(255, 255, 255, 0.6); }
+        @media (hover: hover) { .paso a:hover strong { text-decoration: underline; text-underline-offset: 3px; } }
+        .paso a:focus-visible { outline: 2px solid #5EEAD4; outline-offset: 2px; border-radius: 6px; }
+        .result-section li.paso-nota { font-size: 0.84rem; color: rgba(255, 255, 255, 0.5); }
 
         .btn-restart {
             display: inline-block;
@@ -1129,7 +1142,7 @@
         /* En escritorio la banda no existe: sus hijas siguen siendo celdas
            de la cuadricula l / n / r. En telefono se convierte en carril. */
         .chain-band { display: contents; }
-        .chain-col { display: flex; flex-direction: column; gap: clamp(20px, 3.4vh, 34px); }
+        .chain-col { display: flex; flex-direction: column; gap: clamp(16px, 2.8vh, 30px); }
         .chain-col-l { grid-area: l; align-items: flex-end; }
         .chain-col-r { grid-area: r; align-items: flex-start; }
 
@@ -1196,7 +1209,7 @@
         .chain-out {
             width: fit-content;
             max-width: 100%;
-            margin: clamp(66px, 10vh, 112px) auto 0;
+            margin: clamp(44px, 7vh, 88px) auto 0;
             text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.14);
             background: rgba(255, 255, 255, 0.035);
@@ -1234,6 +1247,91 @@
         }
         @media (hover: hover) { a.chain-cite:hover { text-decoration-color: #5EEAD4; } }
 
+        /* EL TRADUCTOR. La salida del nodo ya no es una cifra fija: el lector
+           elige un tema y ve la cita literal de la ley (gris, en cursiva, en
+           español en los dos idiomas porque es la fuente), lo que significa
+           (blanco, con la cifra al lado), el artículo y el trámite que toca.
+           Las fuentes de donde sale se encienden arriba y el trámite, abajo. */
+        .chain-out#traductor { width: min(680px, 100%); padding: 18px 28px 16px; text-align: center; }
+        .tr-tabs { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px; margin-bottom: 14px; }
+        .tr-tab {
+            appearance: none; -webkit-appearance: none; cursor: pointer;
+            border: 1px solid rgba(255, 255, 255, 0.14); background: transparent; border-radius: 999px;
+            padding: 7px 12px; font-family: inherit; font-size: 0.76rem; font-weight: 600; color: #A8A29E;
+            transition: color 0.15s, border-color 0.15s, background-color 0.15s;
+        }
+        .tr-tab[aria-pressed="true"] { border-color: rgba(94, 234, 212, 0.6); background: rgba(94, 234, 212, 0.1); color: #CCFBF1; }
+        @media (hover: hover) { .tr-tab:hover { color: #E7E5E4; } }
+        .tr-tab:focus-visible { outline: 2px solid #5EEAD4; outline-offset: 2px; }
+        .tr-lit {
+            margin: 0 auto; max-width: 60ch; font-family: var(--font-serif); font-style: italic;
+            font-size: 0.86rem; line-height: 1.55; color: #8F8984; quotes: "\201C" "\201D";
+        }
+        .tr-lit::before { content: open-quote; } .tr-lit::after { content: close-quote; }
+        .tr-out {
+            display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: 4px 22px;
+            text-align: left; margin-top: 14px; padding-top: 14px; border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        .tr-out .chain-figure { font-size: clamp(1.9rem, 3.6vw, 2.6rem); white-space: nowrap; }
+        .tr-out .chain-what { margin: 0; font-size: 0.94rem; line-height: 1.5; color: #E7E5E4; }
+        .tr-foot {
+            display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 8px 18px;
+            margin-top: 14px; padding-top: 12px; border-top: 1px solid rgba(255, 255, 255, 0.1); text-align: left;
+        }
+        .tr-foot .chain-cite { margin: 0; padding: 0; border: 0; letter-spacing: 0; text-transform: none; font-size: 0.78rem; }
+        .tr-go { font-size: 0.84rem; font-weight: 600; color: #5EEAD4; text-decoration: none; white-space: nowrap; }
+        .tr-go::after { content: " \2197\FE0E"; }
+        @media (hover: hover) { .tr-go:hover { text-decoration: underline; text-underline-offset: 4px; } }
+        .tr-go:focus-visible { outline: 2px solid #5EEAD4; outline-offset: 3px; border-radius: 4px; }
+        .chain-src.is-sel { border-color: rgba(94, 234, 212, 0.6); background: rgba(94, 234, 212, 0.1); }
+
+        /* LA RAMA DE TRÁMITES. Sale del panel hacia abajo sobre el mismo negro
+           (la sección ya se apagó a #1C1917 al llegar aquí). Tiene fondo propio
+           para que, con movimiento reducido, siga leyéndose como parte del
+           panel aunque la sección no se oscurezca. */
+        .tram-rama {
+            position: relative; max-width: 980px; margin: 0 auto;
+            background: #1C1917; color: #E7E5E4; border-radius: 28px;
+            padding: 64px clamp(20px, 4.5vw, 56px) 40px;
+        }
+        .tram-rama::before {
+            content: ''; position: absolute; left: 50%; top: 0; width: 1.25px; height: 40px;
+            background: rgba(94, 234, 212, 0.42); transform: translateX(-50%);
+        }
+        .tram-kicker {
+            width: fit-content; margin: 0 auto 22px; padding: 6px 14px; border-radius: 999px;
+            border: 1px solid rgba(94, 234, 212, 0.42); background: rgba(94, 234, 212, 0.07);
+            font-size: 0.74rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: #5EEAD4;
+        }
+        .tram-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+        .tram-card {
+            display: flex; flex-direction: column; gap: 6px; height: 100%;
+            padding: 16px 18px; border: 1px solid rgba(255, 255, 255, 0.13); border-radius: 18px;
+            background: rgba(255, 255, 255, 0.045); color: #E7E5E4; text-decoration: none;
+            transition: border-color 0.2s ease, background-color 0.2s ease;
+        }
+        @media (hover: hover) { .tram-card:hover { border-color: rgba(94, 234, 212, 0.5); background: rgba(94, 234, 212, 0.07); } }
+        .tram-card:focus-visible { outline: 2px solid #5EEAD4; outline-offset: 3px; }
+        .tram-item.is-sel .tram-card, .tram-item.is-flash .tram-card { border-color: rgba(94, 234, 212, 0.6); background: rgba(94, 234, 212, 0.1); }
+        .tram-n { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.74rem; color: #5EEAD4; }
+        .tram-t { font-size: 0.98rem; font-weight: 600; line-height: 1.3; color: #F5F5F4; }
+        .tram-t::after { content: " \2197\FE0E"; font-weight: 400; color: rgba(94, 234, 212, 0.5); }
+        .tram-d { font-size: 0.84rem; line-height: 1.5; color: #A8A29E; }
+        .tram-plazo { font-size: 0.84rem; line-height: 1.5; color: #CCFBF1; }
+        .tram-plazo:empty { display: none; }
+        .tram-foot { margin: 20px 0 0; text-align: center; font-size: 0.8rem; color: #A8A29E; }
+        .tram-foot a { color: #5EEAD4; text-decoration: underline; text-decoration-color: rgba(94, 234, 212, 0.35); text-underline-offset: 3px; }
+        @media (max-width: 900px) { .tram-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+        @media (min-width: 761px) and (max-height: 780px) {
+            .trust-panel { padding-top: 26px; padding-bottom: 26px; }
+            .trust-kicker { margin-bottom: 14px; }
+            .chain-out { margin-top: clamp(30px, 5vh, 48px); }
+            .chain-out#traductor { padding: 14px 24px 12px; }
+            .tr-lit { font-size: 0.8rem; line-height: 1.45; }
+            .tr-out, .tr-foot { margin-top: 10px; padding-top: 10px; }
+        }
+
         /* Si el JS no corre, el diagrama no se queda en blanco: la clase chain-on la
            pone el propio script antes de apagar nada. */
         .trust-chain:not(.chain-on) .chain-src,
@@ -1267,8 +1365,8 @@
             .trust-canvas { opacity: 0.45; }
             .trust-stage { height: auto; }
             .trust-panel {
-                position: sticky;
-                top: 12px;
+                position: relative;
+                top: auto;
                 min-height: 0;
                 border-radius: 24px;
                 padding: 26px 0 28px;
@@ -1348,6 +1446,17 @@
                 text-align: center;
             }
             .chain-figure { font-size: 2.6rem; }
+            .chain-out#traductor { width: auto; padding: 16px 16px 14px; }
+            .tr-tabs { flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; scrollbar-width: none; margin: 0 -16px 12px; padding: 0 16px; }
+            .tr-tabs::-webkit-scrollbar { display: none; }
+            .tr-tab { flex: none; }
+            .tr-lit { font-size: 0.82rem; }
+            .tr-out { grid-template-columns: 1fr; text-align: center; }
+            .tr-out .chain-figure { font-size: 2.2rem; }
+            .tr-foot { flex-direction: column; align-items: center; text-align: center; }
+            .tram-rama { border-radius: 24px; padding: 56px 16px 28px; }
+            .tram-grid { grid-template-columns: 1fr; gap: 8px; }
+            .tram-card { padding: 14px 16px; border-radius: 16px; }
             .chain-what { margin-top: 7px; font-size: 0.92rem; }
             .chain-cite { margin-top: 13px; padding-top: 11px; font-size: 0.66rem; letter-spacing: 0.04em; }
         }
@@ -1403,7 +1512,12 @@
             color: var(--color-text-secondary);
             line-height: 1.7;
         }
-        .faq-item.open .faq-answer { max-height: 300px; }
+        .faq-item.open .faq-answer { max-height: 560px; }
+        .faq-do { margin: -8px 0 20px; font-size: 0.84rem; display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; }
+        .faq-do-l { font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--color-text-secondary); }
+        .faq-do a { color: var(--color-accent); font-weight: 600; text-decoration: none; }
+        .faq-do a::after { content: " \2193"; }
+        @media (hover: hover) { .faq-do a:hover { text-decoration: underline; } }
 
 
         /* ===== Personalidad prestada de sedlakovalegal.cz =====
@@ -1567,42 +1681,6 @@
             border: 3px solid var(--color-surface);
             cursor: pointer;
         }
-        .calc-rows { margin-top: 28px; display: flex; flex-direction: column; gap: 16px; }
-        .calc-row-head {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            gap: 12px;
-            margin-bottom: 6px;
-        }
-        .calc-row-label { font-size: 0.84rem; color: var(--color-text-secondary); }
-        .calc-row-value {
-            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-            font-size: 1rem;
-            font-weight: 700;
-            white-space: nowrap;
-        }
-        .calc-track { height: 12px; background: var(--color-bg); border-radius: 6px; overflow: hidden; }
-        .calc-fill { height: 100%; border-radius: 6px; transition: width 0.18s ease-out; }
-        .calc-fill.past { background: var(--color-accent-light); }
-        .calc-fill.now { background: var(--color-accent); }
-        .calc-diff {
-            margin-top: 4px;
-            padding-top: 16px;
-            border-top: 1px dashed var(--color-border);
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            gap: 12px;
-        }
-        .calc-diff-label { font-size: 0.88rem; font-weight: 700; }
-        .calc-diff-value {
-            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-            font-size: 1.35rem;
-            font-weight: 800;
-            color: #B45309; /* 5:1 sobre blanco; --color-warning (#D97706) daba 3.2 */
-            white-space: nowrap;
-        }
         .calc-verdict {
             margin-top: 22px;
             padding: 16px 18px;
@@ -1614,7 +1692,6 @@
             color: var(--color-text);
         }
         .calc-verdict.is-advance { border-left-color: var(--color-text-secondary); }
-        .calc-paso { color: var(--color-accent); font-weight: 600; text-decoration: none; white-space: nowrap; }
         .calc-paso::after { content: " \2193"; }
         @media (hover: hover) { .calc-paso:hover { text-decoration: underline; } }
         .calc-caveat { margin-top: 12px; font-size: 0.8rem; color: var(--color-text-secondary); line-height: 1.6; }
@@ -1625,47 +1702,53 @@
         /* Cubetas de la leyenda del mapa: los mismos cinco colores que asigna el JS a los paths */
         .sw-b1 { background: #CCFBF1; } .sw-b2 { background: #99F6E4; } .sw-b3 { background: #5EEAD4; }
         .sw-b4 { background: #14B8A6; } .sw-b5 { background: #0F766E; }
-        /* IVA retenido: mismo monto de la barra, otra ley (18-J LIVA). Sin barras
-           a proposito: las barras de arriba comparan tasas de ISR y mezclar el
-           IVA ahi rompe la comparacion. */
-        .calc-iva { margin-top: 26px; padding-top: 18px; border-top: 1px solid var(--color-border); }
-        .calc-iva-title { font-size: 1.05rem; font-weight: 700; margin: 0 0 4px; }
-        .calc-iva-lead { font-size: 0.87rem; color: var(--color-text-secondary); line-height: 1.6; margin: 0 0 14px; }
-        .calc-iva-rows { margin: 0; display: flex; flex-direction: column; gap: 8px; }
-        .calc-iva-rows div { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; }
-        .calc-iva-rows dt { font-size: 0.84rem; color: var(--color-text-secondary); margin: 0; }
-        .calc-iva-rows dd {
-            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
-            font-size: 1rem; font-weight: 700; white-space: nowrap; margin: 0;
+        /* El recibo del mes. La barra es lo que cobra la plataforma (tu precio
+           más el IVA) partido en lo que te deposita, el ISR y el IVA que
+           retiene; las filas dicen lo mismo en pesos. Los colores de la barra
+           reaparecen como marca en cada fila para ligar una con otra. */
+        .calc-controls { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px 24px; margin-top: 26px; }
+        .calc-controls .calc-activity { margin-top: 0; }
+        .calc-rfc { display: inline-flex; align-items: center; gap: 6px; }
+        .calc-rfc-l { font-size: 0.8rem; color: var(--color-text-secondary); margin-right: 4px; }
+        .rfc-btn {
+            appearance: none; -webkit-appearance: none; cursor: pointer;
+            background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 999px;
+            padding: 7px 14px; font-family: inherit; font-size: 0.8rem; font-weight: 600; color: var(--color-text-secondary);
+            transition: background-color 0.15s, color 0.15s, border-color 0.15s;
         }
-        .calc-iva-total { margin: 14px 0 0; font-size: 0.87rem; line-height: 1.65; }
-
-        /* --- Trámites del SAT ---
-           Seis tarjetas que abren la página exacta del trámite. En escritorio
-           es una cuadrícula; en teléfono, un carril con snap, como el resto
-           de los carruseles del sitio. Sin JS. */
-        .tram-section { background: var(--color-surface); border-top: 1px solid var(--color-border); }
-        .tram-section .container { max-width: 1080px; }
-        .tram-kicker { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-accent); margin: 0; }
-        .tram-section .blk-title { margin-top: 10px; }
-        .tram-grid { list-style: none; margin: 26px 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; counter-reset: tram; }
-        .tram-card {
-            display: flex; flex-direction: column; gap: 8px; height: 100%;
-            padding: 18px 18px 16px; border: 1px solid var(--color-border); border-radius: var(--radius);
-            background: var(--color-bg); color: var(--color-text); text-decoration: none;
-            transition: border-color 0.15s;
+        .rfc-btn.active { background: var(--color-text); border-color: var(--color-text); color: #FFFFFF; }
+        .rfc-btn:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+        @media (hover: hover) { .rfc-btn:not(.active):hover { border-color: var(--color-text); color: var(--color-text); } }
+        .calc-recibo {
+            margin-top: 22px; padding: 18px 20px 16px;
+            border: 1px solid var(--color-border); border-radius: var(--radius); background: var(--color-bg);
         }
-        @media (hover: hover) { .tram-card:hover { border-color: var(--color-accent); } }
-        .tram-card:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
-        .tram-n { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.74rem; color: var(--color-accent); }
-        .tram-t { font-size: 1rem; font-weight: 700; line-height: 1.3; letter-spacing: -0.01em; }
-        .tram-d { font-size: 0.86rem; line-height: 1.6; color: var(--color-text-secondary); flex: 1; }
-        .tram-go { font-size: 0.84rem; font-weight: 600; color: var(--color-accent); margin-top: 4px; }
-        .tram-go::after { content: " \2197"; }
-        @media (max-width: 900px) { .tram-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+        .recibo-bar { display: flex; height: 14px; border-radius: 7px; overflow: hidden; background: var(--color-border); }
+        .recibo-bar span { display: block; height: 100%; transition: width 0.2s ease-out; }
+        .rb-dep, .rr-dep i { background: var(--color-accent); }
+        .rb-isr, .rr-isr i { background: #B45309; }
+        .rb-iva, .rr-iva i { background: #F59E0B; }
+        .recibo-rows { margin: 14px 0 0; }
+        .recibo-rows div { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; padding: 7px 0; border-bottom: 1px solid var(--color-border); }
+        .recibo-rows dt { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 8px; font-size: 0.88rem; color: var(--color-text); margin: 0; }
+        .recibo-rows dt i { width: 9px; height: 9px; border-radius: 2px; align-self: center; flex: none; }
+        .recibo-rows dt small { flex-basis: 100%; font-size: 0.76rem; color: var(--color-text-secondary); }
+        .rr-isr dt small, .rr-iva dt small { display: none; }
+        .recibo-rows dd { margin: 0; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 1rem; font-weight: 700; white-space: nowrap; }
+        .rr-isr dd, .rr-iva dd { color: #B45309; }
+        .rr-dep { border-bottom: 0 !important; }
+        .rr-dep dt span { font-weight: 700; }
+        .rr-dep dd { font-size: 1.3rem; color: var(--color-accent); }
+        .calc-contexto { margin: 10px 0 0; font-size: 0.86rem; line-height: 1.6; color: var(--color-text); }
+        .calc-contexto a, .calc-paso { color: var(--color-accent); font-weight: 600; text-decoration: none; white-space: nowrap; }
+        .calc-contexto a::after { content: " \2197\FE0E"; }
+        @media (hover: hover) { .calc-contexto a:hover { text-decoration: underline; } }
+        .calc-anual { margin: 6px 0 0; font-size: 0.8rem; color: var(--color-text-secondary); line-height: 1.6; }
+        .calc-plazo { display: block; margin-top: 8px; font-weight: 600; }
         @media (max-width: 600px) {
-            .tram-grid { display: flex; gap: 10px; overflow-x: auto; scroll-snap-type: x mandatory; margin-left: -24px; margin-right: -24px; padding: 2px 24px 8px; -webkit-overflow-scrolling: touch; overscroll-behavior-x: contain; }
-            .tram-grid li { flex: 0 0 82%; scroll-snap-align: center; }
+            .calc-controls { flex-direction: column; align-items: flex-start; }
+            .calc-recibo { padding: 14px 14px 12px; }
+            .rr-dep dd { font-size: 1.15rem; }
         }
 
         /* --- Mapa del impuesto estatal al hospedaje --- */
@@ -1792,6 +1875,15 @@
             line-height: 1.1;
         }
         .map-panel-text { margin-top: 8px; font-size: 0.84rem; color: var(--color-text-secondary); line-height: 1.65; }
+        /* El mapa remata en pesos: un monto mensual y, con el estado elegido,
+           cuánto es de impuesto estatal. */
+        .map-monto { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 18px; }
+        .map-monto label { font-size: 0.78rem; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; color: var(--color-text-secondary); }
+        .map-monto-in { display: inline-flex; align-items: center; gap: 4px; border: 1px solid var(--color-border); border-radius: 10px; padding: 6px 10px; background: var(--color-surface); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-weight: 700; }
+        .map-monto-in:focus-within { border-color: var(--color-accent); }
+        .map-monto-in input { border: 0; outline: 0; width: 8.5ch; font: inherit; color: var(--color-text); background: transparent; -moz-appearance: textfield; }
+        .map-monto-in input::-webkit-outer-spin-button, .map-monto-in input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+        .map-panel-pesos { margin-top: 10px; font-size: 0.92rem; font-weight: 600; color: var(--color-text); }
 
         /* RESPONSIVE */
         @media (max-width: 600px) {
@@ -1810,7 +1902,6 @@
             section { padding: 40px 0; }
             .blk-title { font-size: 1.35rem; }
             .calc-amount { font-size: 1.6rem; }
-            .calc-diff-value { font-size: 1.15rem; }
             .map-panel { padding: 14px 15px; }
             .map-panel-figure { font-size: 1.5rem; }
             .diag-nav { gap: 10px; }
@@ -1914,63 +2005,52 @@
 </section>
 
 <!-- CUANTO TE RETIENEN, EN PESOS -->
-<section class="calc-section">
+<section class="calc-section" id="calculadora">
     <div class="container blk-head-wrap">
         <div class="blk-head">
-            <h2 class="blk-title reveal"><span data-i18n="calc.titleA">Retención de ISR en plataformas</span> <span class="mark-hl" data-i18n="calc.titleMark">según tu actividad</span></h2>
-            <p class="blk-lead reveal reveal-delay-1" data-i18n="calc.lead">El art. 113-A de la Ley del ISR fija tres tasas según lo que hagas. Para 2026, la Ley de Ingresos sustituyó solo una de ellas. Elige tu actividad y mueve la barra.</p>
+            <h2 class="blk-title reveal"><span data-i18n="calc.titleA">Lo que retiene la plataforma y lo que</span> <span class="mark-hl" data-i18n="calc.titleMark">te deposita</span></h2>
+            <p class="blk-lead reveal reveal-delay-1" data-i18n="calc.lead">La plataforma cobra tu precio más el IVA, retiene una parte de cada impuesto y te deposita el resto. Elige tu actividad, indica si la plataforma tiene tu RFC y mueve la barra.</p>
         </div>
     </div>
     <div class="container">
 
-        <div class="calc-activity" role="group" aria-label="Tipo de actividad" data-i18n-aria="calc.activityGroup">
-            <button type="button" class="act-btn active" data-act="venta" data-i18n="calc.actVenta">Venta de bienes o servicios</button>
-            <button type="button" class="act-btn" data-act="transporte" data-i18n="calc.actTransporte">Transporte de pasajeros y entrega</button>
-            <button type="button" class="act-btn" data-act="hospedaje" data-i18n="calc.actHospedaje">Hospedaje</button>
+        <div class="calc-controls">
+            <div class="calc-activity" role="group" aria-label="Tipo de actividad" data-i18n-aria="calc.activityGroup">
+                <button type="button" class="act-btn active" data-act="venta" data-i18n="calc.actVenta">Venta de bienes o servicios</button>
+                <button type="button" class="act-btn" data-act="transporte" data-i18n="calc.actTransporte">Transporte de pasajeros y entrega</button>
+                <button type="button" class="act-btn" data-act="hospedaje" data-i18n="calc.actHospedaje">Hospedaje</button>
+            </div>
+            <div class="calc-rfc" role="group" aria-label="¿La plataforma tiene tu RFC?" data-i18n-aria="calc.rfcGroup">
+                <span class="calc-rfc-l" data-i18n="calc.rfcLabel">La plataforma tiene tu RFC</span>
+                <button type="button" class="rfc-btn active" data-rfc="si" aria-pressed="true" data-i18n="calc.rfcSi">Sí</button>
+                <button type="button" class="rfc-btn" data-rfc="no" aria-pressed="false" data-i18n="calc.rfcNo">No</button>
+            </div>
         </div>
 
         <div class="calc-slider">
-            <label for="calcRange" data-i18n="calc.sliderLabel">Lo que te pagan al mes, sin IVA</label>
+            <label for="calcRange" data-i18n="calc.sliderLabel">Lo que cobras al mes, sin IVA</label>
             <div class="calc-amount" id="calcAmount" data-i18n-js>$20,000</div>
             <input type="range" id="calcRange" min="5000" max="60000" step="1000" value="20000" aria-describedby="calcAmount">
         </div>
 
-        <div class="calc-rows">
-            <div>
-                <div class="calc-row-head">
-                    <span class="calc-row-label" id="calcLabelPast" data-i18n-js>Hasta 2025</span>
-                    <span class="calc-row-value" id="calcPast">$2,400</span>
-                </div>
-                <div class="calc-track"><div class="calc-fill past" id="calcBarPast" style="width:40%"></div></div>
-            </div>
-            <div>
-                <div class="calc-row-head">
-                    <span class="calc-row-label" id="calcLabelNow" data-i18n-js>En 2026</span>
-                    <span class="calc-row-value" id="calcNow">$6,000</span>
-                </div>
-                <div class="calc-track"><div class="calc-fill now" id="calcBarNow" style="width:100%"></div></div>
-            </div>
-            <div class="calc-diff">
-                <span class="calc-diff-label" id="calcDiffLabel" data-i18n-js>Lo que te retienen de más cada año</span>
-                <span class="calc-diff-value" id="calcDiff">+$3,600</span>
-            </div>
+        <div class="calc-recibo">
+            <div class="recibo-bar" aria-hidden="true"><span class="rb-dep" id="rbDep" style="width:90.95%"></span><span class="rb-isr" id="rbIsr" style="width:2.16%"></span><span class="rb-iva" id="rbIva" style="width:6.9%"></span></div>
+            <dl class="recibo-rows" aria-live="polite">
+                <div class="rr-total"><dt><span data-i18n="calc.rCobra">La plataforma cobra</span><small id="calcCobraNota" data-i18n-js>tu precio más $3,200 de IVA</small></dt><dd id="calcCobra">$23,200</dd></div>
+                <div class="rr-isr"><dt><i aria-hidden="true"></i><span id="calcIsrL" data-i18n-js>Retiene de ISR, 2.5%</span></dt><dd id="calcIsr" data-i18n-js>&minus;$500</dd></div>
+                <div class="rr-iva"><dt><i aria-hidden="true"></i><span id="calcIvaL" data-i18n-js>Retiene de IVA, la mitad</span></dt><dd id="calcIvaR" data-i18n-js>&minus;$1,600</dd></div>
+                <div class="rr-dep"><dt><i aria-hidden="true"></i><span data-i18n="calc.rDeposita">Te deposita</span><small data-i18n="calc.rComision">antes de su comisión</small></dt><dd id="calcDeposito">$21,100</dd></div>
+            </dl>
+            <p class="calc-contexto" id="calcContexto" data-i18n-js></p>
+            <p class="calc-anual" id="calcAnual" data-i18n-js></p>
         </div>
 
         <div class="calc-verdict" id="calcVerdict" data-i18n-js></div>
 
         <p class="calc-caveat" data-i18n="calc.caveat">El 1% lo fija la Ley del ISR (art. 113-A, párrafo tercero, fracción III). El 2.5% viene de la Ley de Ingresos 2026, que solo rige ese año. La iniciativa de Ley de Ingresos 2027, presentada el 8 de septiembre de 2026, propone repetirlo en su art. 25 y está en discusión en la Cámara de Diputados. Si la ley que se apruebe no lo repite, el 1 de enero vuelve el 1%.</p>
 
-        <div class="calc-iva">
-            <p class="calc-iva-title" data-i18n="calc.ivaTitle">Retención de IVA</p>
-            <p class="calc-iva-lead" data-i18n="calc.ivaLead">La plataforma también retiene el IVA que cobras encima de tu precio. Retiene la mitad si le diste tu RFC y todo si no.</p>
-            <dl class="calc-iva-rows">
-                <div><dt data-i18n="calc.ivaRfc">Con RFC, 8% de lo que te pagan</dt><dd id="calcIvaRfc">$19,200</dd></div>
-                <div><dt data-i18n="calc.ivaSin">Sin RFC, 16%</dt><dd id="calcIvaSin">$38,400</dd></div>
-            </dl>
-            <p class="calc-iva-total" id="calcIvaTotal" data-i18n-js>Sumando ISR e IVA, con RFC la plataforma retiene y entera al SAT $25,200 al año; sin RFC, $86,400. El IVA retenido sale del IVA que cobras encima de tu precio; el ISR retenido sí se descuenta de lo que te pagan.</p>
-        </div>
 
-        <p class="blk-foot" data-i18n="calc.foot">Art. 113-A, párrafo tercero, fracción III LISR (1%) · Art. 25, fracción VI de la LIF 2026, DOF 07-nov-2025 (2.5%) · Art. 113-C, fracción IV LISR (20% sin RFC) · Umbral del Art. 113-B LISR, medido sobre el ejercicio anterior · Art. 18-J, fracción II, inciso a) LIVA (50% del IVA; 100% sin RFC), con IVA a la tasa general de 16% · Sobre ingresos brutos sin IVA</p>
+        <p class="blk-foot" data-i18n="calc.foot">Art. 113-A, párrafo tercero LISR (2.1% transporte y entrega, 4% hospedaje, 1% venta hasta 2025) · Art. 25, fracción VI de la LIF 2026, DOF 07-nov-2025 (2.5% venta en 2026) · Art. 113-C, fracción IV LISR (20% sin RFC) · Art. 18-J, fracción II, inciso a) LIVA (50% del IVA; 100% sin RFC), con IVA a la tasa general de 16% · Umbral del Art. 113-B LISR, medido sobre el ejercicio anterior · Plazos: art. 106 LISR y art. 12 CFF</p>
         <p class="verif" data-verificado="2026-09-29" data-i18n-js></p>
     </div>
 </section>
@@ -2053,6 +2133,10 @@
             <span><i class="sw-partial"></i><span data-i18n="map.lPartial">confirmación parcial</span></span>
         </div>
 
+        <div class="map-monto">
+            <label for="mapMonto" data-i18n="map.montoLabel">Lo que cobras al mes por hospedaje</label>
+            <span class="map-monto-in"><span aria-hidden="true">$</span><input id="mapMonto" type="number" inputmode="numeric" min="0" max="10000000" step="500" value="15000"></span>
+        </div>
         <div class="map-panel" id="mapPanel" aria-live="polite" data-i18n-js></div>
 
         <p class="blk-foot"><span data-i18n="map.creditPre">Geometría:</span> <a href="https://github.com/VictorCazanave/svg-maps" target="_blank" rel="noopener noreferrer">svg-maps</a> <span data-i18n="map.creditMid">de</span> V. Cazanave, <a href="https://creativecommons.org/licenses/by/4.0/" target="_blank" rel="noopener noreferrer">CC BY 4.0</a></p>
@@ -2066,7 +2150,7 @@
     <div class="container trust-wrap">
         <div class="trust-stage">
             <div class="trust-panel">
-                <p class="trust-kicker" data-i18n="trust.title">Fuentes oficiales que cita Fisco Abierto</p>
+                <p class="trust-kicker" data-i18n="trust.title">Fuentes oficiales</p>
 
                 <div class="trust-chain" id="trust-chain">
                     <svg class="chain-threads" aria-hidden="true" focusable="false"></svg>
@@ -2097,33 +2181,41 @@
                         </div>
                     </div>
 
-                    <div class="chain-out">
-                        <span class="chain-figure">2.5%</span>
-                        <span class="chain-what" data-i18n="trust.outWhat">retención de ISR si vendes en línea</span>
-                        <a class="chain-cite" href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LIF_2026.pdf" target="_blank" rel="noopener noreferrer" data-i18n="trust.outCite">Art. 25, fr. VI, LIF 2026 · DOF 07-nov-2025</a>
+                    <div class="chain-out" id="traductor">
+                        <div class="tr-tabs" role="group" aria-label="Qué dice la ley y qué significa" data-i18n-aria="tr.group">
+                            <button type="button" class="tr-tab" aria-pressed="true" data-i18n="tr.tab1">Retención de ISR</button>
+                            <button type="button" class="tr-tab" aria-pressed="false" data-i18n="tr.tab2">Sin RFC</button>
+                            <button type="button" class="tr-tab" aria-pressed="false" data-i18n="tr.tab3">IVA</button>
+                            <button type="button" class="tr-tab" aria-pressed="false" data-i18n="tr.tab4">Pago definitivo</button>
+                            <button type="button" class="tr-tab" aria-pressed="false" data-i18n="tr.tab5">Acceso del SAT</button>
+                        </div>
+                        <blockquote class="tr-lit" id="trLit" lang="es" data-i18n-js>La retención se deberá efectuar sobre el total de los ingresos que efectivamente perciban las personas físicas por conducto de los citados medios […], sin incluir el impuesto al valor agregado. Esta retención tendrá el carácter de pago provisional.</blockquote>
+                        <div class="tr-out">
+                            <span class="chain-figure" id="trFig" data-i18n-js>2.5%</span>
+                            <p class="chain-what" id="trWhat" data-i18n-js>La plataforma retiene 2.5% de lo que te paga sin IVA si vendes, 2.1% si transportas o repartes y 4% si hospedas, y lo entrega al SAT como pago de tu ISR.</p>
+                        </div>
+                        <div class="tr-foot">
+                            <a class="chain-cite" id="trCite" href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LISR.pdf" target="_blank" rel="noopener noreferrer" data-i18n-js>Art. 113-A, párrafo tercero, LISR · 2.5%: LIF 2026, art. 25, fr. VI</a>
+                            <a class="tr-go" id="trGo" href="https://www.sat.gob.mx/portal/public/tramites/declaraciones-pf" target="_blank" rel="noopener noreferrer" data-i18n-js>06 · Presenta tu declaración</a>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
-</section>
 
-<!-- TRÁMITES DEL SAT -->
-<section class="tram-section" id="tramites">
-    <div class="container">
-        <p class="tram-kicker" data-i18n="tram.kicker">Trámites en el SAT</p>
-        <h2 class="blk-title" data-i18n="tram.title">Seis trámites, cada uno en su página del SAT</h2>
-        <p class="blk-lead" data-i18n="tram.lead">Es la ruta que el propio SAT marca para quien gana en plataformas. Cada enlace abre la página del trámite, no la portada del portal.</p>
-        <ol class="tram-grid">
-            <li><a class="tram-card" href="https://www.sat.gob.mx/portal/public/tramites/inscripcion-y-aviso-al-rfc" target="_blank" rel="noopener noreferrer"><span class="tram-n">01</span><span class="tram-t" data-i18n="tram.t1">Inscríbete en el RFC</span><span class="tram-d" data-i18n="tram.d1">Con tu CURP, en línea y sin documentos. Con el RFC en la plataforma, la retención de ISR es la de tu actividad y no el 20%.</span><span class="tram-go" data-i18n="tram.go">Abrir en el SAT</span></a></li>
-            <li><a class="tram-card" href="https://satid.sat.gob.mx/" target="_blank" rel="noopener noreferrer"><span class="tram-n">02</span><span class="tram-t" data-i18n="tram.t2">Genera tu contraseña</span><span class="tram-d" data-i18n="tram.d2">En SAT ID, desde el celular, con tu identificación oficial. Con ella entras a todos los trámites que siguen.</span><span class="tram-go" data-i18n="tram.go">Abrir en el SAT</span></a></li>
-            <li><a class="tram-card" href="https://www.sat.gob.mx/minisitio/BuzonTributario/index.html" target="_blank" rel="noopener noreferrer"><span class="tram-n">03</span><span class="tram-t" data-i18n="tram.t3">Habilita tu buzón tributario</span><span class="tram-d" data-i18n="tram.d3">Registras un correo y un celular. Por ahí te llegan los avisos y las notificaciones del SAT.</span><span class="tram-go" data-i18n="tram.go">Abrir en el SAT</span></a></li>
-            <li><a class="tram-card" href="https://www.sat.gob.mx/portal/public/tramites/constancia-de-situacion-fiscal" target="_blank" rel="noopener noreferrer"><span class="tram-n">04</span><span class="tram-t" data-i18n="tram.t4">Descarga tu constancia de situación fiscal</span><span class="tram-d" data-i18n="tram.d4">Revisa que aparezca el régimen de plataformas tecnológicas. Es el documento que la plataforma te pide.</span><span class="tram-go" data-i18n="tram.go">Abrir en el SAT</span></a></li>
-            <li><a class="tram-card" href="https://www.sat.gob.mx/portal/public/tramites/inscripcion-y-aviso-al-rfc" target="_blank" rel="noopener noreferrer"><span class="tram-n">05</span><span class="tram-t" data-i18n="tram.t5">Actualiza tus obligaciones</span><span class="tram-d" data-i18n="tram.d5">Si ya tenías RFC por otra cosa, aquí agregas el régimen de plataformas tecnológicas. Pide contraseña o e.firma.</span><span class="tram-go" data-i18n="tram.go">Abrir en el SAT</span></a></li>
-            <li><a class="tram-card" href="https://www.sat.gob.mx/portal/public/tramites/declaraciones-pf" target="_blank" rel="noopener noreferrer"><span class="tram-n">06</span><span class="tram-t" data-i18n="tram.t6">Presenta tus declaraciones</span><span class="tram-d" data-i18n="tram.d6">Si tu retención es un anticipo, declaras cada mes a más tardar el día 17 del mes siguiente. Si es pago definitivo, no.</span><span class="tram-go" data-i18n="tram.go">Abrir en el SAT</span></a></li>
-        </ol>
-        <p class="blk-foot"><span data-i18n="tram.foot1">Para la e.firma hace falta cita:</span> <a href="https://www.sat.gob.mx/portal/public/tramites/firma-electronica-avanzada-efirma" target="_blank" rel="noopener noreferrer" data-i18n="tram.foot2">trámite de e.firma</a> · <a href="https://citas.sat.gob.mx/" target="_blank" rel="noopener noreferrer" data-i18n="tram.foot3">citas.sat.gob.mx</a> · <span data-i18n="tram.foot4">La ruta completa que publica el SAT:</span> <a href="https://www.sat.gob.mx/portal/public/personas-fisicas/regimen-de-las-actividades-empresariales-con-ingresos-a-traves-de-plataformas-tecnologicas" target="_blank" rel="noopener noreferrer" data-i18n="tram.foot5">régimen de plataformas tecnológicas</a>. <span data-i18n="tram.foot6">Todos los trámites del SAT son gratuitos.</span></p>
-        <p class="verif" data-verificado="2026-09-29" data-i18n-js></p>
+        <!-- La rama de salida: los trámites, sobre el mismo fondo oscuro. -->
+        <div class="tram-rama" id="tramites">
+            <p class="tram-kicker" data-i18n="tram.kicker">Trámites</p>
+            <ol class="tram-grid">
+                <li class="tram-item" id="tram-01"><a class="tram-card" href="https://www.sat.gob.mx/portal/public/tramites/inscripcion-y-aviso-al-rfc" target="_blank" rel="noopener noreferrer"><span class="tram-n">01</span><span class="tram-t" data-i18n="tram.t1">Inscríbete en el RFC</span><span class="tram-d" data-i18n="tram.d1">Con tu CURP, en línea y sin documentos.</span></a></li>
+                <li class="tram-item" id="tram-02"><a class="tram-card" href="https://satid.sat.gob.mx/" target="_blank" rel="noopener noreferrer"><span class="tram-n">02</span><span class="tram-t" data-i18n="tram.t2">Genera tu contraseña</span><span class="tram-d" data-i18n="tram.d2">En SAT ID, desde el celular, con tu identificación oficial.</span></a></li>
+                <li class="tram-item" id="tram-03"><a class="tram-card" href="https://www.sat.gob.mx/minisitio/BuzonTributario/index.html" target="_blank" rel="noopener noreferrer"><span class="tram-n">03</span><span class="tram-t" data-i18n="tram.t3">Habilita tu buzón tributario</span><span class="tram-d" data-i18n="tram.d3">Ahí te llegan los avisos del SAT.</span></a></li>
+                <li class="tram-item" id="tram-04"><a class="tram-card" href="https://www.sat.gob.mx/portal/public/tramites/constancia-de-situacion-fiscal" target="_blank" rel="noopener noreferrer"><span class="tram-n">04</span><span class="tram-t" data-i18n="tram.t4">Descarga tu constancia de situación fiscal</span><span class="tram-d" data-i18n="tram.d4">Revisa que diga plataformas tecnológicas. Es la que te pide la plataforma.</span></a></li>
+                <li class="tram-item" id="tram-05"><a class="tram-card" href="https://www.sat.gob.mx/portal/public/tramites/inscripcion-y-aviso-al-rfc" target="_blank" rel="noopener noreferrer"><span class="tram-n">05</span><span class="tram-t" data-i18n="tram.t5">Actualiza tus obligaciones</span><span class="tram-d" data-i18n="tram.d5">Para agregar el régimen de plataformas a un RFC que ya tenías.</span></a></li>
+                <li class="tram-item" id="tram-06"><a class="tram-card" href="https://www.sat.gob.mx/portal/public/tramites/declaraciones-pf" target="_blank" rel="noopener noreferrer"><span class="tram-n">06</span><span class="tram-t" data-i18n="tram.t6">Presenta tu declaración</span><span class="tram-d" data-i18n="tram.d6">Cada mes si tu retención es un anticipo, y la anual en abril.</span><span class="tram-plazo" id="tramPlazo" data-i18n-js></span></a></li>
+            </ol>
+            <p class="tram-foot"><span data-i18n="tram.foot1">La e.firma se tramita con cita en</span> <a href="https://citas.sat.gob.mx/" target="_blank" rel="noopener noreferrer" data-i18n="tram.cita">citas.sat.gob.mx</a>. <span data-i18n="tram.foot6">Los trámites son gratuitos.</span></p>
+        </div>
     </div>
 </section>
 
@@ -2265,7 +2357,7 @@
                         <ul id="obligations-list"></ul>
                     </div>
                     <div class="result-section" id="actions">
-                        <h3 data-i18n="results.actions">Pasos que puedes tomar</h3>
+                        <h3 data-i18n="results.actions">Tus siguientes pasos</h3>
                         <ul id="actions-list"></ul>
                     </div>
                 </div>
@@ -2296,6 +2388,7 @@
                 </button>
                 <div class="faq-answer">
                     <div class="faq-answer-inner" data-i18n="faq.a2">Si te inscribes por tu cuenta, antes de que el SAT descubra la omisión o te requiera, no hay multa por la inscripción tardía (arts. 73 y 79, fracción I CFF). La multa de $5,070 a $15,200 (art. 80, fracción I CFF, montos del Anexo 5 RMF 2026) aplica cuando el SAT descubre la omisión o te inscribes después de un requerimiento. Inscribirte por tu cuenta no borra los impuestos que no pagaste; esos se pagan con actualización y recargos (art. 21 CFF). Consulta a un contador para tu caso.</div>
+                    <p class="faq-do"><span class="faq-do-l" data-i18n="faq.doL">Qué hacer</span> <a href="#tram-01" data-tram="01" data-i18n="faq.do2">Inscríbete en el RFC</a></p>
                 </div>
             </div>
             <div class="faq-item">
@@ -2305,6 +2398,7 @@
                 </button>
                 <div class="faq-answer">
                     <div class="faq-answer-inner" data-i18n="faq.a3">Solo si tus ingresos por plataformas del año pasado no excedieron $300,000 MXN y presentaste el aviso para que las retenciones de ISR e IVA sean tu pago definitivo (el aviso se presenta dentro de los 30 días siguientes a tu primer ingreso; Art. 113-B LISR y art. 18-M LIVA). Tener además sueldo o intereses no te saca de esa opción, aunque sí puede obligarte a declarar por esos otros ingresos. Si rebasas el umbral, pierdes la opción de forma permanente y las retenciones vuelven a ser un anticipo, no el pago completo.</div>
+                    <p class="faq-do"><span class="faq-do-l" data-i18n="faq.doL">Qué hacer</span> <a href="#tram-05" data-tram="05" data-i18n="faq.do3">Actualiza tus obligaciones</a></p>
                 </div>
             </div>
             <div class="faq-item">
@@ -2399,33 +2493,43 @@ const translations = {
         'stats.src5': 'INEGI, ENOE agosto 2026',
         'stats.src6': 'Art. 113-C, fr. IV LISR',
         'stats.callout': '<strong>Desde el 1° de abril de 2026</strong> está en vigor el Art. 30-B del CFF, que obliga a las plataformas digitales a dar al SAT acceso en línea y <strong>en tiempo real</strong> a la información que permite comprobar su cumplimiento fiscal.',
-        'calc.titleA': 'Retención de ISR en plataformas',
-        'calc.titleMark': 'según tu actividad',
-        'calc.lead': 'El art. 113-A de la Ley del ISR fija tres tasas según lo que hagas. Para 2026, la Ley de Ingresos sustituyó solo una de ellas. Elige tu actividad y mueve la barra.',
+        'calc.titleA': 'Lo que retiene la plataforma y lo que',
+        'calc.titleMark': 'te deposita',
+        'calc.lead': 'La plataforma cobra tu precio más el IVA, retiene una parte de cada impuesto y te deposita el resto. Elige tu actividad, indica si la plataforma tiene tu RFC y mueve la barra.',
         'calc.activityGroup': 'Tipo de actividad',
-        'calc.sliderLabel': 'Lo que te pagan al mes, sin IVA',
+        'calc.sliderLabel': 'Lo que cobras al mes, sin IVA',
         'calc.actVenta': 'Venta de bienes o servicios',
         'calc.actTransporte': 'Transporte de pasajeros y entrega',
         'calc.actHospedaje': 'Hospedaje',
-        'calc.rowPast': 'Hasta 2025, retención de {rate}',
-        'calc.rowNow': 'En 2026, retención de {rate}',
-        'calc.rowDiff': 'Lo que te retienen de más cada año',
-        'calc.rowConRfc': 'Con RFC, retención de {rate}',
-        'calc.rowSinRfc': 'Sin RFC, retención de 20%',
-        'calc.rowDiffRfc': 'Retención adicional al año sin RFC',
+        'calc.rfcGroup': '¿La plataforma tiene tu RFC?',
+        'calc.rfcLabel': 'La plataforma tiene tu RFC',
+        'calc.rfcSi': 'Sí',
+        'calc.rfcNo': 'No',
+        'calc.rCobra': 'La plataforma cobra',
+        'calc.rCobraNota': 'tu precio más {iva} de IVA',
+        'calc.rIsr': 'Retiene de ISR, {rate}',
+        'calc.rIvaMitad': 'Retiene de IVA, la mitad',
+        'calc.rIvaTodo': 'Retiene de IVA, todo',
+        'calc.rDeposita': 'Te deposita',
+        'calc.rComision': 'antes de su comisión',
+        'calc.ctxVenta': 'En 2025, con la tasa de 1%, la retención de ISR por este monto era de {antes} al mes; en 2026 es de {ahora}.',
+        'calc.ctxIgual': 'Tu tasa de ISR es la misma que en 2025, porque la Ley de Ingresos 2026 solo cambió la de venta de bienes y servicios.',
+        'calc.ctxSinRfc': 'Con tu RFC en la plataforma te depositaría {dep}, {diff} más cada mes.',
+        'calc.ctxSinRfcGo': 'Inscríbete en el RFC',
+        'calc.anual': 'Al año, la plataforma entrega al SAT {isr} de ISR y {iva} de IVA a tu nombre.',
+        'calc.plazo': 'Si declaras cada mes, la próxima declaración vence el {fecha}, {cuando}.',
+        'plazo.mensual': 'La próxima mensual vence el {fecha}, {cuando}.',
+        'plazo.anual': 'La anual de {ej} vence el {fecha}, {cuando}.',
+        'plazo.anualLejos': 'La anual de {ej} se presenta en abril de {sig}.',
+        'plazo.hoy': 'hoy',
+        'plazo.dia': 'en 1 día',
+        'plazo.dias': 'en {n} días',
         'calc.caveat': 'El 1% lo fija la Ley del ISR (art. 113-A, párrafo tercero, fracción III). El 2.5% viene de la Ley de Ingresos 2026, que solo rige ese año. La iniciativa de Ley de Ingresos 2027, presentada el 8 de septiembre de 2026, propone repetirlo en su art. 25 y está en discusión en la Cámara de Diputados. Si la ley que se apruebe no lo repite, el 1 de enero vuelve el 1%.',
-        'calc.ivaTitle': 'Retención de IVA',
-        'calc.ivaLead': 'La plataforma también retiene el IVA que cobras encima de tu precio. Retiene la mitad si le diste tu RFC y todo si no.',
-        'calc.ivaRfc': 'Con RFC, 8% de lo que te pagan',
-        'calc.ivaSin': 'Sin RFC, 16%',
-        'calc.ivaTotal': 'Sumando ISR e IVA, con RFC la plataforma retiene y entera al SAT {totRfc} al año; sin RFC, {totSin}. El IVA retenido sale del IVA que cobras encima de tu precio; el ISR retenido sí se descuenta de lo que te pagan.',
-        'calc.foot': 'Art. 113-A, párrafo tercero, fracción III LISR (1%) · Art. 25, fracción VI de la LIF 2026, DOF 07-nov-2025 (2.5%) · Art. 113-C, fracción IV LISR (20% sin RFC) · Umbral del Art. 113-B LISR, medido sobre el ejercicio anterior · Art. 18-J, fracción II, inciso a) LIVA (50% del IVA; 100% sin RFC), con IVA a la tasa general de 16% · Sobre ingresos brutos sin IVA',
-        'calc.rateUp': 'Tu tasa subió de 1% a 2.5% en 2026, lo que suma {diff} más de retención al año.',
+        'calc.foot': 'Art. 113-A, párrafo tercero LISR (2.1% transporte y entrega, 4% hospedaje, 1% venta hasta 2025) · Art. 25, fracción VI de la LIF 2026, DOF 07-nov-2025 (2.5% venta en 2026) · Art. 113-C, fracción IV LISR (20% sin RFC) · Art. 18-J, fracción II, inciso a) LIVA (50% del IVA; 100% sin RFC), con IVA a la tasa general de 16% · Umbral del Art. 113-B LISR, medido sobre el ejercicio anterior · Plazos: art. 106 LISR y art. 12 CFF',
         'calc.pasoFinal': 'Qué trámites toca hacer',
         'calc.pasoAdvance': 'Dónde se presenta la declaración',
-        'calc.rateSame': 'Tu tasa no cambió en 2026. La Ley de Ingresos solo sustituyó la tasa de la fracción III del 113-A, y a ti te aplica la fracción {frac}, que sigue en {rate}. Si la plataforma no tiene tu RFC, la retención sube a 20% (Art. 113-C, fracción IV LISR); con tu RFC te retienen {diff} menos al año.',
-        'calc.thFinal': 'Con lo que te pagan no rebasas los $300,000 al año. Si el año pasado tampoco los rebasaste, puedes optar por que la retención sea tu pago definitivo de ISR; en ese caso lo retenido es tu impuesto y no se recupera en abril.',
-        'calc.thAdvance': 'Con lo que te pagan rebasas los $300,000 al año. La opción de pago definitivo se mide con lo que ganaste el año anterior, así que rebasar el umbral este año te impide usarla el siguiente; si ya la tenías, la pierdes y no puedes volver a ella (Art. 113-B LISR). Sin esa opción, la retención es un anticipo que acreditas en tu declaración.',
+        'calc.thFinal': 'Con lo que cobras no rebasas los $300,000 al año. Si el año pasado tampoco los rebasaste, puedes optar por que la retención sea tu pago definitivo de ISR; en ese caso lo retenido es tu impuesto y no se recupera en abril.',
+        'calc.thAdvance': 'Con lo que cobras rebasas los $300,000 al año. La opción de pago definitivo se mide con lo que ganaste el año anterior, así que rebasar el umbral este año te impide usarla el siguiente; si ya la tenías, la pierdes y no puedes volver a ella (Art. 113-B LISR). Sin esa opción, la retención es un anticipo que acreditas en tu declaración.',
         'vid.title': 'Retenciones y reportes al SAT, en video',
         'vid.group': 'Videos',
         'vid.tab1': 'Cómo te retienen',
@@ -2449,13 +2553,15 @@ const translations = {
         'map.creditPre': 'Geometría:',
         'map.creditMid': 'de',
         'map.panelNatName': 'Las 32 entidades cobran impuesto sobre hospedaje',
-        'map.panelNatText': 'La tasa cambia según la entidad donde esté el inmueble. Toca tu estado para ver la tuya, quién la retiene y el artículo que la fija.',
+        'map.panelNatText': 'La tasa cambia según la entidad donde esté el inmueble. Toca tu estado para ver la tuya, cuánto es en pesos, quién la retiene y el artículo que la fija.',
+        'map.montoLabel': 'Lo que cobras al mes por hospedaje',
+        'map.pesos': 'Sobre {monto} al mes son {imp} de impuesto estatal ({tasa}).',
         'map.basis': 'Fundamento: {f}.',
         'map.ret_si': 'La plataforma está obligada a retenerlo o enterarlo, así que probablemente ya viene descontado de lo que te depositan.',
         'map.ret_solidaria': 'La ley no obliga a la plataforma a retenerlo, pero la hace responsable solidaria del pago. Revisa si te lo están descontando.',
         'map.ret_no': 'La ley no obliga a la plataforma a retenerlo ni a enterarlo. Si aplica, el pago te toca a ti.',
         'map.ret_nv': 'No pudimos confirmar si la plataforma está obligada a retenerlo. No asumas que ya está pagado.',
-        'trust.title': 'Fuentes oficiales que cita Fisco Abierto',
+        'trust.title': 'Fuentes oficiales',
         'trust.src1': 'Diario Oficial',
         'trust.src1s': 'reformas y decretos',
         'trust.src2': 'Ley del ISR',
@@ -2470,30 +2576,39 @@ const translations = {
         'trust.src6s': 'interpretación oficial',
         'trust.node': 'Fisco Abierto',
         'trust.nodeSub': 'traduce y cita el artículo',
-        'trust.outWhat': 'retención de ISR si vendes en línea',
-        'trust.outCite': 'Art. 25, fr. VI, LIF 2026 · DOF 07-nov-2025',
-        'tram.kicker': 'Trámites en el SAT',
-        'tram.title': 'Seis trámites, cada uno en su página del SAT',
-        'tram.lead': 'Es la ruta que el propio SAT marca para quien gana en plataformas. Cada enlace abre la página del trámite, no la portada del portal.',
-        'tram.go': 'Abrir en el SAT',
+        'tr.group': 'Qué dice la ley y qué significa',
+        'tr.tab1': 'Retención de ISR',
+        'tr.tab2': 'Sin RFC',
+        'tr.tab3': 'IVA',
+        'tr.tab4': 'Pago definitivo',
+        'tr.tab5': 'Acceso del SAT',
+        'tr.f5': 'En línea',
+        'tr.w1': 'La plataforma retiene 2.5% de lo que te paga sin IVA si vendes, 2.1% si transportas o repartes y 4% si hospedas, y lo entrega al SAT como pago de tu ISR.',
+        'tr.w2': 'Si la plataforma no tiene tu RFC, la retención de ISR sube a 20% de lo que cobras. En una venta de $1,000 son $200 en lugar de $25.',
+        'tr.w3': 'De cada $160 de IVA que cobras sobre una venta de $1,000, la plataforma entrega $80 al SAT a tu nombre. La otra mitad la declaras tú, salvo que la retención sea tu pago definitivo.',
+        'tr.w4': 'Si el año pasado tus ingresos por plataformas no pasaron de $300,000 y no tuviste otros, salvo sueldo o intereses, puedes pedir que lo retenido sea tu pago definitivo. Entonces ya no declaras cada mes por esos ingresos.',
+        'tr.w5': 'Desde el 1 de abril de 2026 el SAT puede consultar en línea lo que la plataforma registra de tus operaciones, solo para revisar el cumplimiento de impuestos. Si el SAT te escribe, lo hace por el buzón tributario.',
+        'tr.c1': 'Art. 113-A, párrafo tercero, LISR · 2.5%: LIF 2026, art. 25, fr. VI',
+        'tr.c2': 'Art. 113-C, fracción IV, LISR',
+        'tr.c3': 'Art. 18-J, fracción II, inciso a), LIVA',
+        'tr.c4': 'Art. 113-B, fracciones I y II, LISR',
+        'tr.c5': 'Art. 30-B CFF, vigente desde el 1 de abril de 2026',
+        'tram.kicker': 'Trámites',
         'tram.t1': 'Inscríbete en el RFC',
-        'tram.d1': 'Con tu CURP, en línea y sin documentos. Con el RFC en la plataforma, la retención de ISR es la de tu actividad y no el 20%.',
+        'tram.d1': 'Con tu CURP, en línea y sin documentos.',
         'tram.t2': 'Genera tu contraseña',
-        'tram.d2': 'En SAT ID, desde el celular, con tu identificación oficial. Con ella entras a todos los trámites que siguen.',
+        'tram.d2': 'En SAT ID, desde el celular, con tu identificación oficial.',
         'tram.t3': 'Habilita tu buzón tributario',
-        'tram.d3': 'Registras un correo y un celular. Por ahí te llegan los avisos y las notificaciones del SAT.',
+        'tram.d3': 'Ahí te llegan los avisos del SAT.',
         'tram.t4': 'Descarga tu constancia de situación fiscal',
-        'tram.d4': 'Revisa que aparezca el régimen de plataformas tecnológicas. Es el documento que la plataforma te pide.',
+        'tram.d4': 'Revisa que diga plataformas tecnológicas. Es la que te pide la plataforma.',
         'tram.t5': 'Actualiza tus obligaciones',
-        'tram.d5': 'Si ya tenías RFC por otra cosa, aquí agregas el régimen de plataformas tecnológicas. Pide contraseña o e.firma.',
-        'tram.t6': 'Presenta tus declaraciones',
-        'tram.d6': 'Si tu retención es un anticipo, declaras cada mes a más tardar el día 17 del mes siguiente. Si es pago definitivo, no.',
-        'tram.foot1': 'Para la e.firma hace falta cita:',
-        'tram.foot2': 'trámite de e.firma',
-        'tram.foot3': 'citas.sat.gob.mx',
-        'tram.foot4': 'La ruta completa que publica el SAT:',
-        'tram.foot5': 'régimen de plataformas tecnológicas',
-        'tram.foot6': 'Todos los trámites del SAT son gratuitos.',
+        'tram.d5': 'Para agregar el régimen de plataformas a un RFC que ya tenías.',
+        'tram.t6': 'Presenta tu declaración',
+        'tram.d6': 'Cada mes si tu retención es un anticipo, y la anual en abril.',
+        'tram.foot1': 'La e.firma se tramita con cita en',
+        'tram.cita': 'citas.sat.gob.mx',
+        'tram.foot6': 'Los trámites son gratuitos.',
         'diag.title': 'Diagnóstico fiscal',
         'diag.intro': 'Selecciona tus plataformas e ingresos aproximados. No pedimos datos personales (ni nombre, ni RFC, ni correo). Todo se procesa en tu navegador.',
         'diag.step1.question': '¿En qué plataformas generas ingresos?',
@@ -2529,12 +2644,22 @@ const translations = {
         'results.riskLabel': 'Nivel de exposición ante el SAT',
         'results.visibility': 'Lo que el SAT puede ver sobre tus operaciones',
         'results.obligations': 'Obligaciones que probablemente tienes',
-        'results.actions': 'Pasos que puedes tomar',
+        'results.actions': 'Tus siguientes pasos',
+        'pasos.oblig': 'Para que tu RFC quede en el régimen de plataformas tecnológicas.',
+        'pasos.revisa': 'Ahí ves si estás inscrito, en qué régimen y qué obligaciones tienes.',
+        'pasos.sinPass': 'Si no puedes entrar al portal, con la contraseña lo resuelves.',
+        'pasos.cfdiT': 'Emite tus facturas (CFDI)',
+        'pasos.cfdiD': 'Gratis en el portal del SAT, con tu contraseña o e.firma.',
+        'pasos.contador': 'Si hay meses sin declarar, un contador puede calcular lo pendiente antes de que lo haga el SAT.',
+        'pasos.mapea': 'Con más de dos plataformas, lleva un registro de cuánto te paga cada una; lo vas a necesitar para declarar.',
         'results.cta': '¿Quieres estar al día con los cambios del SAT?',
         'results.newsletter': 'Suscríbete al newsletter',
         'results.restart': 'Hacer otro diagnóstico',
         'faq.title': 'Preguntas frecuentes',
         'faq.subtitle': 'Lo que la mayoría se pregunta antes de usar la herramienta.',
+        'faq.doL': 'Qué hacer',
+        'faq.do2': 'Inscríbete en el RFC',
+        'faq.do3': 'Actualiza tus obligaciones',
         'faq.q1': '¿El SAT se va a enterar de que usé esta herramienta?',
         'faq.a1': 'No. El diagnóstico corre completo en tu navegador, tus respuestas no se envían a ningún servidor y el sitio no usa analítica ni cookies propias. Como cualquier página, al abrirla tu navegador se conecta con GitHub Pages, que aloja el sitio y guarda la IP de cada visita por seguridad, con Google Fonts, que sirve las tipografías, y con Substack, que muestra el formulario de la newsletter. Ninguno recibe tus respuestas.',
         'faq.q2': '¿Me van a multar si no estoy dado de alta en el SAT?',
@@ -2578,33 +2703,43 @@ const translations = {
         'stats.src5': 'INEGI, ENOE August 2026',
         'stats.src6': 'Income Tax Law art. 113-C, section IV',
         'stats.callout': '<strong>Since April 1, 2026</strong>, Article 30-B of Mexico\'s Federal Tax Code (CFF) requires digital platforms to give the tax authority online, <strong>real-time access</strong> to the information needed to verify their tax compliance.',
-        'calc.titleA': 'Income tax withholding on platforms',
-        'calc.titleMark': 'by activity',
-        'calc.lead': 'Article 113-A of the Income Tax Law sets three rates depending on what you do. For 2026, the Revenue Law replaced only one of them. Pick your activity and move the slider.',
+        'calc.titleA': 'What the platform withholds and what it',
+        'calc.titleMark': 'pays you',
+        'calc.lead': 'The platform charges your price plus VAT, withholds part of each tax and pays you the rest. Pick your activity, say whether the platform has your RFC and move the slider.',
         'calc.activityGroup': 'Type of activity',
-        'calc.sliderLabel': 'What you get paid monthly, before VAT',
+        'calc.sliderLabel': 'What you charge monthly, before VAT',
         'calc.actVenta': 'Selling goods or services',
         'calc.actTransporte': 'Ride-hailing and delivery',
         'calc.actHospedaje': 'Lodging',
-        'calc.rowPast': 'Through 2025, {rate} withholding',
-        'calc.rowNow': 'In 2026, {rate} withholding',
-        'calc.rowDiff': 'Extra withheld from you each year',
-        'calc.rowConRfc': 'With an RFC on file, {rate} withholding',
-        'calc.rowSinRfc': 'Without an RFC, 20% withholding',
-        'calc.rowDiffRfc': 'Extra withheld per year without an RFC',
+        'calc.rfcGroup': 'Does the platform have your RFC?',
+        'calc.rfcLabel': 'The platform has your RFC',
+        'calc.rfcSi': 'Yes',
+        'calc.rfcNo': 'No',
+        'calc.rCobra': 'The platform charges',
+        'calc.rCobraNota': 'your price plus {iva} of VAT',
+        'calc.rIsr': 'Income tax withheld, {rate}',
+        'calc.rIvaMitad': 'VAT withheld, half',
+        'calc.rIvaTodo': 'VAT withheld, all of it',
+        'calc.rDeposita': 'It pays you',
+        'calc.rComision': 'before its commission',
+        'calc.ctxVenta': 'In 2025, at the 1% rate, the income tax withheld on this amount was {antes} a month; in 2026 it is {ahora}.',
+        'calc.ctxIgual': 'Your income tax rate is the same as in 2025, because the 2026 Revenue Law only changed the rate for selling goods and services.',
+        'calc.ctxSinRfc': 'With your RFC on file, the platform would pay you {dep}, {diff} more each month.',
+        'calc.ctxSinRfcGo': 'Register for an RFC',
+        'calc.anual': 'Over a year, the platform pays the SAT {isr} of income tax and {iva} of VAT in your name.',
+        'calc.plazo': 'If you file monthly, the next return is due {fecha}, {cuando}.',
+        'plazo.mensual': 'The next monthly return is due {fecha}, {cuando}.',
+        'plazo.anual': 'The {ej} annual return is due {fecha}, {cuando}.',
+        'plazo.anualLejos': 'The {ej} annual return is filed in April {sig}.',
+        'plazo.hoy': 'today',
+        'plazo.dia': 'in 1 day',
+        'plazo.dias': 'in {n} days',
         'calc.caveat': 'The 1% is set by the Income Tax Law (art. 113-A, third paragraph, section III). The 2.5% comes from the 2026 Revenue Law, which only covers that year. The 2027 Revenue Law bill, submitted on 8 September 2026, proposes keeping it in its art. 25 and is under discussion in the Chamber of Deputies. If the law that passes does not repeat it, the rate returns to 1% on January 1.',
-        'calc.ivaTitle': 'VAT withholding',
-        'calc.ivaLead': 'The platform also withholds the VAT you charge on top of your price. It withholds half if you gave it your RFC and all of it if you did not.',
-        'calc.ivaRfc': 'With an RFC, 8% of what you get paid',
-        'calc.ivaSin': 'Without an RFC, 16%',
-        'calc.ivaTotal': 'Adding income tax and VAT, with an RFC the platform withholds and pays the tax authority {totRfc} a year; without one, {totSin}. The VAT withheld comes out of the VAT charged on top of your price; the income tax withheld comes out of what you get paid.',
-        'calc.foot': 'Income Tax Law art. 113-A, third paragraph, section III (1%) · 2026 Revenue Law art. 25, section VI, published 07-Nov-2025 (2.5%) · Income Tax Law art. 113-C, section IV (20% without an RFC) · Income Tax Law art. 113-B threshold, measured on the preceding tax year · VAT Law art. 18-J, section II, item a) (50% of the VAT; 100% without an RFC), assuming the general 16% VAT rate · On gross income before VAT',
-        'calc.rateUp': 'Your rate went from 1% to 2.5% in 2026, which adds {diff} of withholding per year.',
+        'calc.foot': 'Income Tax Law art. 113-A, third paragraph (2.1% ride-hailing and delivery, 4% lodging, 1% selling through 2025) · 2026 Revenue Law art. 25, section VI, published 07-Nov-2025 (2.5% selling in 2026) · Income Tax Law art. 113-C, section IV (20% without an RFC) · VAT Law art. 18-J, section II, item a) (50% of the VAT; 100% without an RFC), assuming the general 16% VAT rate · Income Tax Law art. 113-B threshold, measured on the preceding tax year · Deadlines: Income Tax Law art. 106 and Federal Tax Code art. 12',
         'calc.pasoFinal': 'Which procedures to do',
         'calc.pasoAdvance': 'Where to file the return',
-        'calc.rateSame': 'Your rate did not change in 2026. The Revenue Law only replaced the rate in section III of article 113-A, and you fall under section {frac}, still at {rate}. If the platform does not have your RFC (tax ID), withholding rises to 20% (Income Tax Law art. 113-C, section IV); with your RFC, {diff} less is withheld per year.',
-        'calc.thFinal': 'At what you get paid you stay under 300,000 pesos a year. If you also stayed under it last year, you can elect to have the withholding be your final income tax payment; in that case what is withheld is your tax and is not recovered in April.',
-        'calc.thAdvance': 'At what you get paid you go over 300,000 pesos a year. The final-payment election depends on what you earned the year before, so going over the threshold this year keeps you from using it next year; if you already had it, you lose it and cannot elect it again (Income Tax Law art. 113-B). Without that election, the withholding is an advance you credit in your tax return.',
+        'calc.thFinal': 'At what you charge you stay under 300,000 pesos a year. If you also stayed under it last year, you can elect to have the withholding be your final income tax payment; in that case what is withheld is your tax and is not recovered in April.',
+        'calc.thAdvance': 'At what you charge you go over 300,000 pesos a year. The final-payment election depends on what you earned the year before, so going over the threshold this year keeps you from using it next year; if you already had it, you lose it and cannot elect it again (Income Tax Law art. 113-B). Without that election, the withholding is an advance you credit in your tax return.',
         'vid.title': 'Withholding and reporting to the SAT, on video',
         'vid.group': 'Videos',
         'vid.tab1': 'How withholding works',
@@ -2628,13 +2763,15 @@ const translations = {
         'map.creditPre': 'Map geometry:',
         'map.creditMid': 'by',
         'map.panelNatName': 'All 32 federal entities levy a lodging tax',
-        'map.panelNatText': 'The rate depends on where the property is. Tap your state to see your rate, who withholds it, and the article that sets it.',
+        'map.panelNatText': 'The rate depends on where the property is. Tap your state to see your rate, what it comes to in pesos, who withholds it, and the article that sets it.',
+        'map.montoLabel': 'What you charge monthly for lodging',
+        'map.pesos': 'On {monto} a month, that is {imp} of state tax ({tasa}).',
         'map.basis': 'Legal basis: {f}.',
         'map.ret_si': 'The platform is required to withhold or remit it, so it is probably already deducted from what they pay you.',
         'map.ret_solidaria': 'The law does not require the platform to withhold it, but makes it jointly liable for payment. Check whether it is being deducted.',
         'map.ret_no': 'The law does not require the platform to withhold or remit it. If it applies, paying it is on you.',
         'map.ret_nv': 'We could not confirm whether the platform is required to withhold it. Do not assume it is already paid.',
-        'trust.title': 'Official sources Fisco Abierto cites',
+        'trust.title': 'Official sources',
         'trust.src1': 'Official Gazette',
         'trust.src1s': 'amendments and decrees',
         'trust.src2': 'Income Tax Law',
@@ -2649,30 +2786,39 @@ const translations = {
         'trust.src6s': 'official interpretation',
         'trust.node': 'Fisco Abierto',
         'trust.nodeSub': 'translates it and cites the article',
-        'trust.outWhat': 'income tax withheld if you sell online',
-        'trust.outCite': '2026 Revenue Law art. 25, section VI · published 07-Nov-2025',
-        'tram.kicker': 'Procedures at the SAT',
-        'tram.title': 'Six procedures, each on its own SAT page',
-        'tram.lead': 'This is the route the SAT itself lays out for people who earn on platforms. Each link opens the procedure page, not the portal home.',
-        'tram.go': 'Open at the SAT',
+        'tr.group': 'What the law says and what it means',
+        'tr.tab1': 'Income tax withholding',
+        'tr.tab2': 'No RFC',
+        'tr.tab3': 'VAT',
+        'tr.tab4': 'Final payment',
+        'tr.tab5': 'SAT access',
+        'tr.f5': 'Online',
+        'tr.w1': 'The platform withholds 2.5% of what it pays you before VAT if you sell, 2.1% if you drive or deliver and 4% if you host, and pays it to the SAT toward your income tax.',
+        'tr.w2': 'If the platform does not have your RFC, the income tax withholding rises to 20% of what you charge. On a 1,000-peso sale that is 200 pesos instead of 25.',
+        'tr.w3': 'Of every 160 pesos of VAT you charge on a 1,000-peso sale, the platform pays 80 to the SAT in your name. You report the other half yourself, unless the withholding is your final payment.',
+        'tr.w4': 'If last year your platform income did not go over 300,000 pesos and you had no other income except salary or interest, you can elect to make the withholding your final payment. Then you stop filing monthly for that income.',
+        'tr.w5': 'Since 1 April 2026 the SAT can look up online what the platform records about your transactions, only to check tax compliance. When the SAT contacts you, it does so through the tax mailbox.',
+        'tr.c1': 'Income Tax Law art. 113-A, third paragraph · 2.5%: 2026 Revenue Law, art. 25, section VI',
+        'tr.c2': 'Income Tax Law art. 113-C, section IV',
+        'tr.c3': 'VAT Law art. 18-J, section II, item a)',
+        'tr.c4': 'Income Tax Law art. 113-B, sections I and II',
+        'tr.c5': 'Federal Tax Code art. 30-B, in force since 1 April 2026',
+        'tram.kicker': 'Procedures',
         'tram.t1': 'Register for an RFC',
-        'tram.d1': 'Online with your CURP, no documents. With your RFC on file, the platform withholds the rate for your activity, not 20%.',
+        'tram.d1': 'Online with your CURP, no documents.',
         'tram.t2': 'Create your password',
-        'tram.d2': 'On SAT ID, from your phone, with an official ID. It gets you into every procedure that follows.',
-        'tram.t3': 'Activate your SAT mailbox',
-        'tram.d3': 'The SAT calls it the tax mailbox. You register an email and a mobile number, and that is where its notices and notifications arrive.',
+        'tram.d2': 'On SAT ID, from your phone, with an official ID.',
+        'tram.t3': 'Activate your tax mailbox',
+        'tram.d3': 'SAT notices arrive there.',
         'tram.t4': 'Download your tax status certificate',
-        'tram.d4': 'Check that the digital platforms regime appears on it. It is the document platforms ask you for.',
+        'tram.d4': 'Check that it lists digital platforms. It is the one platforms ask for.',
         'tram.t5': 'Update your tax obligations',
-        'tram.d5': 'If you already had an RFC for something else, this is where you add the digital platforms regime. Needs your password or e.firma.',
-        'tram.t6': 'File your returns',
-        'tram.d6': 'If your withholding is an advance, you file monthly by the 17th of the following month. If it is a final payment, you do not.',
-        'tram.foot1': 'The e.firma needs an appointment:',
-        'tram.foot2': 'e.firma procedure',
-        'tram.foot3': 'citas.sat.gob.mx',
-        'tram.foot4': 'The full route published by the SAT:',
-        'tram.foot5': 'digital platforms regime',
-        'tram.foot6': 'All SAT procedures are free.',
+        'tram.d5': 'To add the digital platforms regime to an RFC you already had.',
+        'tram.t6': 'File your return',
+        'tram.d6': 'Monthly if your withholding is an advance, and the annual one in April.',
+        'tram.foot1': 'The e.firma requires an appointment at',
+        'tram.cita': 'citas.sat.gob.mx',
+        'tram.foot6': 'Procedures are free.',
         'diag.title': 'Tax diagnostic',
         'diag.intro': 'Select your platforms and approximate income. We don\'t ask for personal data (no name, tax ID, or email). Everything is processed in your browser.',
         'diag.step1.question': 'Which platforms do you earn income on?',
@@ -2708,12 +2854,22 @@ const translations = {
         'results.riskLabel': 'Exposure level with the tax authority (SAT)',
         'results.visibility': 'What the tax authority can see about your operations',
         'results.obligations': 'Obligations you probably have',
-        'results.actions': 'Steps you can take',
+        'results.actions': 'Your next steps',
+        'pasos.oblig': 'So your RFC is registered under the digital platforms regime.',
+        'pasos.revisa': 'It shows whether you are registered, under which regime and with which obligations.',
+        'pasos.sinPass': 'If you cannot log in to the portal, the password fixes it.',
+        'pasos.cfdiT': 'Issue your invoices (CFDI)',
+        'pasos.cfdiD': 'Free on the SAT portal, with your password or e.firma.',
+        'pasos.contador': 'If there are months you did not file, an accountant can work out what is owed before the SAT does.',
+        'pasos.mapea': 'With more than two platforms, keep a record of what each one pays you; you will need it to file.',
         'results.cta': 'Want to stay updated on tax authority (SAT) changes?',
         'results.newsletter': 'Subscribe to the newsletter',
         'results.restart': 'Run another diagnostic',
         'faq.title': 'Frequently asked questions',
         'faq.subtitle': 'What most people ask before using the tool.',
+        'faq.doL': 'What to do',
+        'faq.do2': 'Register for an RFC',
+        'faq.do3': 'Update your tax obligations',
         'faq.q1': 'Will the tax authority know I used this tool?',
         'faq.a1': 'No. The diagnostic runs entirely in your browser, your answers are not sent to any server, and the site uses no analytics and sets no cookies of its own. As with any web page, opening it connects your browser to GitHub Pages, which hosts the site and logs visitor IP addresses for security, to Google Fonts, which serves the typefaces, and to Substack, which shows the newsletter form. None of them receives your answers.',
         'faq.q2': 'Will I be fined if I\'m not registered with the tax authority?',
@@ -2824,20 +2980,92 @@ document.querySelectorAll('.lang-switch .lang-btn').forEach(function(btn) {
     updateLangToggle();
 })();
 
+// ==================== PLAZOS ====================
+// Contrato: entra un dia (hoy por omision); salen la fecha limite de la
+// siguiente declaracion mensual y la de la anual, ya corridas al siguiente
+// dia habil. Fuente: art. 106 LISR (mensual, a mas tardar el dia 17 del mes
+// siguiente), art. 150 LISR (anual, en abril) y art. 12 CFF (dias inhabiles;
+// si la fecha cae en uno, el plazo se prorroga al siguiente dia habil). Las
+// vacaciones del SAT no cuentan: para declaraciones esos dias son habiles.
+// No incluye dias que el SAT declare inhabiles por regla (jueves y viernes
+// santos): en esos casos la fecha que da es la mas temprana, nunca la tardia.
+var faPlazo = (function () {
+    function lunes(y, m, n) { var d = new Date(y, m, 1); return 1 + (8 - d.getDay()) % 7 + (n - 1) * 7; }
+    function inhabil(d) {
+        var w = d.getDay(), y = d.getFullYear(), m = d.getMonth(), x = d.getDate();
+        if (w === 0 || w === 6) return true;
+        return (m === 0 && x === 1) || (m === 1 && x === lunes(y, 1, 1)) || (m === 2 && x === lunes(y, 2, 3)) ||
+            (m === 4 && (x === 1 || x === 5)) || (m === 8 && x === 16) || (m === 10 && x === lunes(y, 10, 3)) ||
+            (m === 11 && x === 25);
+    }
+    function habil(d) { while (inhabil(d)) d.setDate(d.getDate() + 1); return d; }
+    function hoy() { var h = new Date(); return new Date(h.getFullYear(), h.getMonth(), h.getDate()); }
+    function mensual(h) {
+        h = h || hoy();
+        var d = habil(new Date(h.getFullYear(), h.getMonth(), 17));
+        return d < h ? habil(new Date(h.getFullYear(), h.getMonth() + 1, 17)) : d;
+    }
+    function anual(h) {
+        h = h || hoy();
+        var y = h.getFullYear(), fin = habil(new Date(y, 3, 30));
+        if (h > fin) { y++; fin = habil(new Date(y, 3, 30)); }
+        return { ejercicio: y - 1, fin: fin, enCurso: h >= new Date(y, 0, 1) && h.getMonth() <= 3 && h.getFullYear() === y };
+    }
+    function dias(d, h) { return Math.round((d - (h || hoy())) / 86400000); }
+    var DIAS = { es: ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'], en: ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'] };
+    var MESES = { es: ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'], en: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'] };
+    function fecha(d) {
+        var en = currentLanguage === 'en';
+        return en ? DIAS.en[d.getDay()] + ', ' + MESES.en[d.getMonth()] + ' ' + d.getDate()
+                  : DIAS.es[d.getDay()] + ' ' + d.getDate() + ' de ' + MESES.es[d.getMonth()];
+    }
+    function cuando(d) {
+        var n = dias(d);
+        return n <= 0 ? t('plazo.hoy') : (n === 1 ? t('plazo.dia') : t('plazo.dias').replace('{n}', n));
+    }
+    // Textos listos en el idioma actual.
+    function textoMensual(clave) {
+        var d = mensual();
+        return t(clave || 'plazo.mensual').replace('{fecha}', fecha(d)).replace('{cuando}', cuando(d));
+    }
+    function textoAnual() {
+        var a = anual();
+        if (a.enCurso) return t('plazo.anual').replace('{ej}', a.ejercicio).replace('{fecha}', fecha(a.fin)).replace('{cuando}', cuando(a.fin));
+        return t('plazo.anualLejos').replace('{ej}', a.ejercicio).replace('{sig}', a.fin.getFullYear());
+    }
+    return { mensual: mensual, anual: anual, dias: dias, textoMensual: textoMensual, textoAnual: textoAnual };
+})();
+
+// ==================== RAMA DE TRAMITES ====================
+// Contrato: pinta el plazo de la siguiente declaracion bajo el tramite 06 y,
+// cuando un enlace interno apunta a un tramite (data-tram), lo resalta al
+// llegar. No toca las URLs: viven en el HTML de la rama.
+(function () {
+    var plazo = document.getElementById('tramPlazo');
+    function pintar() { if (plazo) plazo.textContent = faPlazo.textoMensual() + ' ' + faPlazo.textoAnual(); }
+    pintar();
+    document.querySelectorAll('.lang-switch .lang-btn').forEach(function (b) { b.addEventListener('click', pintar); });
+    document.addEventListener('click', function (e) {
+        var a = e.target.closest && e.target.closest('a[data-tram]');
+        if (!a) return;
+        var li = document.getElementById('tram-' + a.dataset.tram);
+        if (!li) return;
+        li.classList.add('is-flash');
+        setTimeout(function () { li.classList.remove('is-flash'); }, 2600);
+    });
+})();
+
 // ==================== RETENCION EN PESOS ====================
-// El punto del bloque: 1% contra 2.5% no dice nada, pesos si. El umbral
-// del 113-B se mide con el ejercicio anterior; la calculadora solo conoce el
-// ingreso de este año, asi que el veredicto condiciona al lector al suyo.
+// Contrato: entran actividad, monto mensual sin IVA y si la plataforma tiene
+// el RFC; sale el recibo del mes (lo que cobra la plataforma, lo que retiene
+// de ISR y de IVA, lo que deposita), el acumulado del ano y el umbral del
+// 113-B. El umbral se mide con el ejercicio anterior; la calculadora solo
+// conoce el ingreso de este ano, asi que el veredicto condiciona al lector.
 (function() {
     var range = document.getElementById('calcRange');
     if (!range) return;
-    var amountEl = document.getElementById('calcAmount');
-    var pastEl = document.getElementById('calcPast');
-    var nowEl = document.getElementById('calcNow');
-    var diffEl = document.getElementById('calcDiff');
-    var barPast = document.getElementById('calcBarPast');
-    var barNow = document.getElementById('calcBarNow');
-    var verdict = document.getElementById('calcVerdict');
+    var $ = function (id) { return document.getElementById(id); };
+    var amountEl = $('calcAmount'), verdict = $('calcVerdict');
 
     // Las tres tasas del Art. 113-A, parrafo tercero. La LIF 2026 solo sustituyo
     // la fraccion III; las fracciones I y II quedaron intactas, asi que para
@@ -2848,18 +3076,13 @@ document.querySelectorAll('.lang-switch .lang-btn').forEach(function(btn) {
         hospedaje:  { past: 0.040, now: 0.040, frac: 'II' }
     };
     var THRESHOLD = 300000; // Umbral del Art. 113-B LISR
-    var act = 'venta';
-
-    var labelPast = document.getElementById('calcLabelPast');
-    var labelNow = document.getElementById('calcLabelNow');
-    var diffLabel = document.getElementById('calcDiffLabel');
     var SIN_RFC = 0.20; // Art. 113-C, fraccion IV LISR: sin RFC, retencion del 20%
     var IVA = 0.16; // Tasa general de IVA; el calculo supone que la actividad la causa
     var IVA_RET = 0.50; // Art. 18-J, fraccion II, inciso a) LIVA: la plataforma retiene el 50% del IVA cobrado; 100% sin RFC
-    var ivaRfcEl = document.getElementById('calcIvaRfc');
-    var ivaSinEl = document.getElementById('calcIvaSin');
-    var ivaTotalEl = document.getElementById('calcIvaTotal');
+    var act = 'venta', rfc = true;
     var actBtns = document.querySelectorAll('.act-btn');
+    var rfcBtns = document.querySelectorAll('.rfc-btn');
+    var RFC_URL = 'https://www.sat.gob.mx/portal/public/tramites/inscripcion-y-aviso-al-rfc';
 
     function money(n) {
         return '$' + Math.round(n).toLocaleString('es-MX');
@@ -2869,59 +3092,65 @@ document.querySelectorAll('.lang-switch .lang-btn').forEach(function(btn) {
         var v = r * 100;
         return (v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)) + '%';
     }
+    // Un recibo para una combinacion dada; se usa dos veces cuando falta el
+    // RFC, para decir cuanto mas te depositarian con el.
+    function recibo(base, conRfc) {
+        var iva = base * IVA;
+        var isrR = base * (conRfc ? ACTS[act].now : SIN_RFC);
+        var ivaR = iva * (conRfc ? IVA_RET : 1);
+        return { base: base, iva: iva, cobra: base + iva, isr: isrR, ivaR: ivaR, dep: base + iva - isrR - ivaR, tasa: conRfc ? ACTS[act].now : SIN_RFC };
+    }
 
     function paint() {
-        var rates = ACTS[act];
         var monthly = +range.value;
-        var annual = monthly * 12;
-        var changed = rates.past !== rates.now;
-
-        // Dos comparaciones con la MISMA estructura: si tu tasa cambio,
-        // 2025 contra 2026. Si no cambio, compararla consigo misma da +$0
-        // y no dice nada; el dato con sustancia es con RFC contra sin RFC
-        // (20%, Art. 113-C, fr. IV LISR).
-        var rateA = changed ? rates.past : rates.now;
-        var rateB = changed ? rates.now : SIN_RFC;
-        var a = annual * rateA;
-        var b = annual * rateB;
-        var diff = b - a;
-
+        var r = recibo(monthly, rfc);
         amountEl.textContent = money(monthly);
-        pastEl.textContent = money(a);
-        nowEl.textContent = money(b);
-        diffEl.textContent = (diff > 0 ? '+' : '') + money(diff);
-        labelPast.textContent = t(changed ? 'calc.rowPast' : 'calc.rowConRfc').replace('{rate}', pct(rateA));
-        labelNow.textContent = t(changed ? 'calc.rowNow' : 'calc.rowSinRfc').replace('{rate}', pct(rateB));
-        diffLabel.textContent = t(changed ? 'calc.rowDiff' : 'calc.rowDiffRfc');
-        // Las barras se escalan contra la mayor de las dos.
-        var max = Math.max(rateA, rateB);
-        barPast.style.width = (rateA / max * 100) + '%';
-        barNow.style.width = (rateB / max * 100) + '%';
+        $('calcCobra').textContent = money(r.cobra);
+        $('calcCobraNota').textContent = t('calc.rCobraNota').replace('{iva}', money(r.iva));
+        $('calcIsrL').textContent = t('calc.rIsr').replace('{rate}', pct(r.tasa));
+        $('calcIsr').textContent = '−' + money(r.isr);
+        $('calcIvaL').textContent = t(rfc ? 'calc.rIvaMitad' : 'calc.rIvaTodo');
+        $('calcIvaR').textContent = '−' + money(r.ivaR);
+        $('calcDeposito').textContent = money(r.dep);
+        $('rbDep').style.width = (r.dep / r.cobra * 100).toFixed(2) + '%';
+        $('rbIsr').style.width = (r.isr / r.cobra * 100).toFixed(2) + '%';
+        $('rbIva').style.width = (r.ivaR / r.cobra * 100).toFixed(2) + '%';
 
-        var overThreshold = annual > THRESHOLD;
+        // Contexto: sin RFC, cuanto mas te depositarian con el; con RFC, que
+        // cambio en 2026 para tu actividad.
+        var ctx = $('calcContexto');
+        ctx.textContent = '';
+        if (!rfc) {
+            var conRfc = recibo(monthly, true);
+            ctx.textContent = t('calc.ctxSinRfc').replace('{dep}', money(conRfc.dep)).replace('{diff}', money(conRfc.dep - r.dep)) + ' ';
+            var a = document.createElement('a');
+            a.href = RFC_URL; a.target = '_blank'; a.rel = 'noopener noreferrer';
+            a.textContent = t('calc.ctxSinRfcGo');
+            ctx.appendChild(a);
+        } else if (ACTS[act].past !== ACTS[act].now) {
+            ctx.textContent = t('calc.ctxVenta').replace('{antes}', money(monthly * ACTS[act].past)).replace('{ahora}', money(monthly * ACTS[act].now));
+        } else {
+            ctx.textContent = t('calc.ctxIgual');
+        }
+        $('calcAnual').textContent = t('calc.anual').replace('{isr}', money(r.isr * 12)).replace('{iva}', money(r.ivaR * 12));
+
+        // Umbral del 113-B y, si la retencion es anticipo, cuando vence la
+        // siguiente declaracion. Remata en la seccion de tramites.
+        var overThreshold = monthly * 12 > THRESHOLD;
         verdict.classList.toggle('is-advance', overThreshold);
-        var rateLine = changed
-            ? t('calc.rateUp').replace('{diff}', money(diff))
-            : t('calc.rateSame').replace('{rate}', pct(rates.now)).replace('{frac}', rates.frac).replace('{diff}', money(diff));
-        verdict.textContent = rateLine + ' ' + t(overThreshold ? 'calc.thAdvance' : 'calc.thFinal') + ' ';
-        // El veredicto termina en el tramite que sigue, en la seccion de tramites.
+        verdict.textContent = t(overThreshold ? 'calc.thAdvance' : 'calc.thFinal') + ' ';
+        if (overThreshold) {
+            var pl = document.createElement('span');
+            pl.className = 'calc-plazo';
+            pl.textContent = faPlazo.textoMensual('calc.plazo');
+            verdict.appendChild(pl);
+        }
         var paso = document.createElement('a');
         paso.href = '#tramites';
         paso.className = 'calc-paso';
         paso.textContent = t(overThreshold ? 'calc.pasoAdvance' : 'calc.pasoFinal');
+        if (overThreshold) paso.style.display = 'inline-block';
         verdict.appendChild(paso);
-
-        // IVA: sobre la misma base anual. Con RFC se retiene la mitad del IVA
-        // (8% de la base); sin RFC, todo (16%). El total suma lo que la
-        // plataforma retiene y entera de ISR y de IVA; no se expresa como
-        // porcentaje de la base porque el IVA se cobra encima de ella.
-        var ivaRfc = annual * IVA * IVA_RET;
-        var ivaSin = annual * IVA;
-        ivaRfcEl.textContent = money(ivaRfc);
-        ivaSinEl.textContent = money(ivaSin);
-        ivaTotalEl.textContent = t('calc.ivaTotal')
-            .replace('{totRfc}', money(annual * rates.now + ivaRfc))
-            .replace('{totSin}', money(annual * SIN_RFC + ivaSin));
     }
 
     actBtns.forEach(function(btn) {
@@ -2931,9 +3160,16 @@ document.querySelectorAll('.lang-switch .lang-btn').forEach(function(btn) {
             paint();
         });
     });
+    rfcBtns.forEach(function(btn) {
+        btn.addEventListener('click', function() {
+            rfc = btn.dataset.rfc === 'si';
+            rfcBtns.forEach(function(b) { b.classList.toggle('active', b === btn); b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
+            paint();
+        });
+    });
     range.addEventListener('input', paint);
     paint();
-    // El veredicto se arma en JS, asi que el barrido de data-i18n no lo alcanza.
+    // El recibo se arma en JS, asi que el barrido de data-i18n no lo alcanza.
     document.querySelectorAll('.lang-switch .lang-btn').forEach(function(btn) {
         btn.addEventListener('click', paint);
     });
@@ -2954,9 +3190,11 @@ document.querySelectorAll('.lang-switch .lang-btn').forEach(function(btn) {
     var panel = document.getElementById('mapPanel');
     if (!group || !panel) return;
 
-    var ST = {"agu": {"n": "Aguascalientes", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 41", "r": "si", "nota": "", "nota_en": "", "b": 2}, "bcn": {"n": "Baja California", "t": 5.0, "f": "Ley de Ingresos 2026, art. 6, a la que remite el art. 130 de la Ley de Hacienda", "r": "si", "nota": "Los moteles pagan 7%. La tasa la fija la Ley de Ingresos cada año, no la Ley de Hacienda, así que cambia con más facilidad.", "nota_en": "Motels pay 7%. The rate is set each year by the Revenue Law, not by the Finance Law, so it changes more easily.", "b": 4}, "bcs": {"n": "Baja California Sur", "t": 4.0, "f": "Ley de Hacienda del Estado, art. 16", "r": "nv", "nota": "Tasa con alta confianza pero sin confirmar en fuente oficial vigente: el sitio del Congreso de BCS no respondía al momento de la consulta.", "nota_en": "High-confidence rate, but not confirmed in the current official text: the BCS Congress website was not responding when we checked.", "b": 3}, "cam": {"n": "Campeche", "t": 2.0, "f": "Ley de Hacienda del Estado, art. 32", "r": "si", "nota": "La reforma de diciembre de 2023 quitó la mención expresa a plataformas, pero la obligación del intermediario sigue viva en el art. 29.", "nota_en": "The December 2023 reform removed the express mention of platforms, but the intermediary's obligation survives in art. 29.", "b": 1}, "chp": {"n": "Chiapas", "t": 2.0, "f": "Código de la Hacienda Pública del Estado, art. 240, fracción I", "r": "si", "nota": "Los moteles pagan 5%. El hospedaje por plataforma está expresamente en el 2%.", "nota_en": "Motels pay 5%. Platform lodging is expressly placed in the 2% bracket.", "b": 1}, "chh": {"n": "Chihuahua", "t": 4.0, "f": "Ley de Hacienda del Estado, art. 49", "r": "si", "nota": "Encima se causa el impuesto adicional universitario, 6% sobre el impuesto, así que la carga efectiva es 4.24%. La ley obliga a la plataforma a entregar tus datos, incluida la CLABE donde recibes depósitos.", "nota_en": "On top of it there is a university surtax of 6% on the tax itself, so the effective burden is 4.24%. The law requires the platform to hand over your data, including the CLABE where you receive deposits.", "b": 3}, "coa": {"n": "Coahuila", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 36", "r": "si", "nota": "La obligación de retener aplica solo a departamentos, casas, campamentos y paraderos, no a hoteles.", "nota_en": "The withholding obligation applies only to apartments, houses, campsites and rest stops, not to hotels.", "b": 2}, "col": {"n": "Colima", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 41 C, fracción I", "r": "si", "nota": "Los moteles pagan 5%. La ley menciona a las plataformas digitales por su nombre.", "nota_en": "Motels pay 5%. The law names digital platforms explicitly.", "b": 2}, "cmx": {"n": "Ciudad de México", "t": 5.0, "f": "Código Fiscal de la Ciudad de México, art. 164, párrafo tercero", "r": "si", "nota": "Los hoteles y hostales pagan 3.5%. El 5% aplica justamente a departamentos y casas cuando cobra un intermediario.", "nota_en": "Hotels and hostels pay 3.5%. The 5% applies precisely to apartments and houses when an intermediary collects the payment.", "b": 4}, "dur": {"n": "Durango", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 24", "r": "si", "nota": "Los moteles pagan 5%.", "nota_en": "Motels pay 5%.", "b": 2}, "gua": {"n": "Guanajuato", "t": 4.0, "f": "Ley de Hacienda para el Estado, art. 55", "r": "si", "nota": "El 4% del art. 37-A de la misma ley es el impuesto cedular, un impuesto distinto.", "nota_en": "The 4% in art. 37-A of the same law is the cedular tax, a different tax.", "b": 3}, "gro": {"n": "Guerrero", "t": 5.0, "f": "Ley Número 419 de Hacienda del Estado, arts. 57 y 60", "r": "nv", "nota": "Los hoteles pagan 4%. El 5% aplica al Alojamiento Turístico Eventual, que la ley define como alojamiento en inmuebles no hoteleros, directo o a través de plataformas digitales (art. 57). No confirmamos si la plataforma está obligada a retener.", "nota_en": "Hotels pay 4%. The 5% applies to Occasional Tourist Lodging, which the law defines as lodging in non-hotel properties, provided directly or through digital platforms (art. 57). We could not confirm whether the platform is required to withhold.", "b": 4}, "hid": {"n": "Hidalgo", "t": 2.5, "f": "Ley de Hacienda del Estado, art. 31", "r": "si", "nota": "Con la reforma del 31 de diciembre de 2025 la plataforma quedó como retenedora solidaria y debe darte constancia de la retención.", "nota_en": "Since the reform of 31 December 2025 the platform is a jointly liable withholding agent and must give you a withholding certificate.", "b": 1}, "jal": {"n": "Jalisco", "t": 5.0, "f": "Ley de Ingresos 2026, art. 12, a la que remite el art. 51 de la Ley de Hacienda", "r": "si", "nota": "Varias fuentes publican 4% para Jalisco; la Ley de Ingresos 2026 dice 5.0%.", "nota_en": "Several sources publish 4% for Jalisco; the 2026 Revenue Law says 5.0%.", "b": 4}, "mex": {"n": "Estado de México", "t": 4.0, "f": "Código Financiero del Estado, art. 69 B", "r": "si", "nota": "La obligación de la plataforma no está en el Código sino en reglas administrativas, la Regla B.3.1. Hay un subsidio del 50% para estancias de más de 15 días.", "nota_en": "The platform's obligation is not in the Code but in administrative rules, Rule B.3.1. There is a 50% subsidy for stays longer than 15 days.", "b": 3}, "mic": {"n": "Michoacán", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 14", "r": "si", "nota": "", "nota_en": "", "b": 2}, "mor": {"n": "Morelos", "t": 3.75, "f": "Ley General de Hacienda del Estado, art. 26", "r": "si", "nota": "La plataforma es obligada solidaria del anfitrión, no solo retenedora.", "nota_en": "The platform is jointly liable with the host, not just a withholding agent.", "b": 2}, "nay": {"n": "Nayarit", "t": 5.0, "f": "Ley de Hacienda del Estado, art. 62", "r": "si", "nota": "La plataforma entera el impuesto cuando el pago se cubre a través de ella.", "nota_en": "The platform remits the tax when payment is made through it.", "b": 4}, "nle": {"n": "Nuevo León", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 174", "r": "solidaria", "nota": "Es de los pocos estados sin mandato expreso de retención para plataformas.", "nota_en": "One of the few states with no express withholding mandate for platforms.", "b": 2}, "oax": {"n": "Oaxaca", "t": 5.0, "f": "Ley Estatal de Hacienda, art. 55, párrafo segundo", "r": "si", "nota": "Los hoteles y similares pagan 3%. El 5% para departamentos y casas entró con el decreto del 10 de diciembre de 2025, así que varias fuentes siguen publicando 3% plano.", "nota_en": "Hotels and similar pay 3%. The 5% for apartments and houses came in with the decree of 10 December 2025, so several sources still publish a flat 3%.", "b": 4}, "pue": {"n": "Puebla", "t": 3.0, "f": "Ley de Ingresos 2026, art. 20, a la que remite el art. 27 de la Ley de Hacienda", "r": "si", "nota": "La Ley de Hacienda tiene un apartado completo para plataformas digitales, arts. 30 Bis a 30 Quinquies.", "nota_en": "The Finance Law has a full chapter on digital platforms, arts. 30 Bis to 30 Quinquies.", "b": 2}, "que": {"n": "Querétaro", "t": 5.0, "f": "Ley de Hacienda del Estado, art. 46", "r": "si", "nota": "Los hoteles y el tiempo compartido pagan 3.5%. El 5% aplica a cualquier otro inmueble, que es el caso típico de plataforma. La página de asistencia del propio estado publica 2.5%, cifra desactualizada.", "nota_en": "Hotels and timeshares pay 3.5%. The 5% applies to any other property, which is the typical platform case. The state's own help page publishes 2.5%, an outdated figure.", "b": 4}, "roo": {"n": "Quintana Roo", "t": 6.0, "f": "Ley del Impuesto al Hospedaje del Estado, art. 8", "r": "si", "nota": "Es la tasa más alta del país. El general es 5%; el 6% aplica a departamentos, casas y villas cuando cobra el anfitrión o la plataforma.", "nota_en": "The highest rate in the country. The general rate is 5%; the 6% applies to apartments, houses and villas when the host or the platform collects the payment.", "b": 5}, "slp": {"n": "San Luis Potosí", "t": 3.0, "f": "Ley de Hacienda para el Estado, art. 32, párrafo segundo", "r": "si", "nota": "La tasa general es 4%, pero cuando cobra la plataforma la retención es de 3%. Si no puedes acreditarla, esa retención se vuelve pago definitivo.", "nota_en": "The general rate is 4%, but when the platform collects, the withholding is 3%. If you cannot credit it, that withholding becomes a final payment.", "b": 2}, "sin": {"n": "Sinaloa", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 28", "r": "si", "nota": "El portal de trámites del propio estado publica 2%, texto anterior a la reforma de 2006.", "nota_en": "The state's own procedures portal publishes 2%, text that predates the 2006 reform.", "b": 2}, "son": {"n": "Sonora", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 8", "r": "solidaria", "nota": "La ley no usa la palabra retener: hace a la plataforma responsable solidaria.", "nota_en": "The law does not use the word withhold: it makes the platform jointly liable.", "b": 2}, "tab": {"n": "Tabasco", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 58", "r": "si", "nota": "El artículo fija 3.0% en dos párrafos, uno general y otro expreso para plataformas.", "nota_en": "The article sets 3.0% in two paragraphs, one general and one expressly for platforms.", "b": 2}, "tam": {"n": "Tamaulipas", "t": 3.0, "f": "Ley de Hacienda para el Estado, art. 52 Sexies", "r": "si", "nota": "", "nota_en": "", "b": 2}, "tla": {"n": "Tlaxcala", "t": 2.0, "f": "Código Financiero del Estado y sus Municipios, art. 117", "r": "no", "nota": "Desde diciembre de 2024 el hospedaje por plataforma sí es objeto del impuesto, pero ningún artículo obliga a la plataforma a retener o enterar.", "nota_en": "Since December 2024 platform lodging is subject to the tax, but no article requires the platform to withhold or remit it.", "b": 1}, "ver": {"n": "Veracruz", "t": 2.0, "f": "Código Financiero del Estado, art. 112", "r": "si", "nota": "La retención por el promotor o facilitador está en el art. 106, y hay reglas generales de la SEFIPLAN para plataformas.", "nota_en": "Withholding by the promoter or facilitator is in art. 106, and SEFIPLAN has general rules for platforms.", "b": 1}, "yuc": {"n": "Yucatán", "t": 4.5, "f": "Ley General de Hacienda del Estado, art. 38", "r": "si", "nota": "Bajó de 5% a 4.5% con el decreto 138/2025, publicado el 26 de diciembre de 2025.", "nota_en": "Went down from 5% to 4.5% with Decree 138/2025, published on 26 December 2025.", "b": 4}, "zac": {"n": "Zacatecas", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 49", "r": "si", "nota": "La ley llama retenedor a la plataforma y define qué es un anfitrión.", "nota_en": "The law calls the platform a withholding agent and defines what a host is.", "b": 2}};
+    var ST = {"agu": {"n": "Aguascalientes", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 41", "r": "si", "nota": "", "nota_en": "", "b": 2}, "bcn": {"n": "Baja California", "t": 5.0, "f": "Ley de Ingresos 2026, art. 6, a la que remite el art. 130 de la Ley de Hacienda", "r": "si", "nota": "Los moteles pagan 7%. La tasa la fija la Ley de Ingresos cada año, no la Ley de Hacienda, así que cambia con más facilidad.", "nota_en": "Motels pay 7%. The rate is set each year by the Revenue Law, not by the Finance Law, so it changes more easily.", "b": 4}, "bcs": {"n": "Baja California Sur", "t": 4.0, "f": "Ley de Hacienda del Estado, art. 16", "r": "nv", "nota": "Tasa con alta confianza pero sin confirmar en fuente oficial vigente: el sitio del Congreso de BCS no respondía al momento de la consulta.", "nota_en": "High-confidence rate, but not confirmed in the current official text: the BCS Congress website was not responding when we checked.", "b": 3}, "cam": {"n": "Campeche", "t": 2.0, "f": "Ley de Hacienda del Estado, art. 32", "r": "si", "nota": "La reforma de diciembre de 2023 quitó la mención expresa a plataformas, pero la obligación del intermediario sigue viva en el art. 29.", "nota_en": "The December 2023 reform removed the express mention of platforms, but the intermediary's obligation survives in art. 29.", "b": 1}, "chp": {"n": "Chiapas", "t": 2.0, "f": "Código de la Hacienda Pública del Estado, art. 240, fracción I", "r": "si", "nota": "Los moteles pagan 5%. El hospedaje por plataforma está expresamente en el 2%.", "nota_en": "Motels pay 5%. Platform lodging is expressly placed in the 2% bracket.", "b": 1}, "chh": {"n": "Chihuahua", "t": 4.0, "ef": 4.24, "f": "Ley de Hacienda del Estado, art. 49", "r": "si", "nota": "Encima se causa el impuesto adicional universitario, 6% sobre el impuesto, así que la carga efectiva es 4.24%. La ley obliga a la plataforma a entregar tus datos, incluida la CLABE donde recibes depósitos.", "nota_en": "On top of it there is a university surtax of 6% on the tax itself, so the effective burden is 4.24%. The law requires the platform to hand over your data, including the CLABE where you receive deposits.", "b": 3}, "coa": {"n": "Coahuila", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 36", "r": "si", "nota": "La obligación de retener aplica solo a departamentos, casas, campamentos y paraderos, no a hoteles.", "nota_en": "The withholding obligation applies only to apartments, houses, campsites and rest stops, not to hotels.", "b": 2}, "col": {"n": "Colima", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 41 C, fracción I", "r": "si", "nota": "Los moteles pagan 5%. La ley menciona a las plataformas digitales por su nombre.", "nota_en": "Motels pay 5%. The law names digital platforms explicitly.", "b": 2}, "cmx": {"n": "Ciudad de México", "t": 5.0, "f": "Código Fiscal de la Ciudad de México, art. 164, párrafo tercero", "r": "si", "nota": "Los hoteles y hostales pagan 3.5%. El 5% aplica justamente a departamentos y casas cuando cobra un intermediario.", "nota_en": "Hotels and hostels pay 3.5%. The 5% applies precisely to apartments and houses when an intermediary collects the payment.", "b": 4}, "dur": {"n": "Durango", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 24", "r": "si", "nota": "Los moteles pagan 5%.", "nota_en": "Motels pay 5%.", "b": 2}, "gua": {"n": "Guanajuato", "t": 4.0, "f": "Ley de Hacienda para el Estado, art. 55", "r": "si", "nota": "El 4% del art. 37-A de la misma ley es el impuesto cedular, un impuesto distinto.", "nota_en": "The 4% in art. 37-A of the same law is the cedular tax, a different tax.", "b": 3}, "gro": {"n": "Guerrero", "t": 5.0, "f": "Ley Número 419 de Hacienda del Estado, arts. 57 y 60", "r": "nv", "nota": "Los hoteles pagan 4%. El 5% aplica al Alojamiento Turístico Eventual, que la ley define como alojamiento en inmuebles no hoteleros, directo o a través de plataformas digitales (art. 57). No confirmamos si la plataforma está obligada a retener.", "nota_en": "Hotels pay 4%. The 5% applies to Occasional Tourist Lodging, which the law defines as lodging in non-hotel properties, provided directly or through digital platforms (art. 57). We could not confirm whether the platform is required to withhold.", "b": 4}, "hid": {"n": "Hidalgo", "t": 2.5, "f": "Ley de Hacienda del Estado, art. 31", "r": "si", "nota": "Con la reforma del 31 de diciembre de 2025 la plataforma quedó como retenedora solidaria y debe darte constancia de la retención.", "nota_en": "Since the reform of 31 December 2025 the platform is a jointly liable withholding agent and must give you a withholding certificate.", "b": 1}, "jal": {"n": "Jalisco", "t": 5.0, "f": "Ley de Ingresos 2026, art. 12, a la que remite el art. 51 de la Ley de Hacienda", "r": "si", "nota": "Varias fuentes publican 4% para Jalisco; la Ley de Ingresos 2026 dice 5.0%.", "nota_en": "Several sources publish 4% for Jalisco; the 2026 Revenue Law says 5.0%.", "b": 4}, "mex": {"n": "Estado de México", "t": 4.0, "f": "Código Financiero del Estado, art. 69 B", "r": "si", "nota": "La obligación de la plataforma no está en el Código sino en reglas administrativas, la Regla B.3.1. Hay un subsidio del 50% para estancias de más de 15 días.", "nota_en": "The platform's obligation is not in the Code but in administrative rules, Rule B.3.1. There is a 50% subsidy for stays longer than 15 days.", "b": 3}, "mic": {"n": "Michoacán", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 14", "r": "si", "nota": "", "nota_en": "", "b": 2}, "mor": {"n": "Morelos", "t": 3.75, "f": "Ley General de Hacienda del Estado, art. 26", "r": "si", "nota": "La plataforma es obligada solidaria del anfitrión, no solo retenedora.", "nota_en": "The platform is jointly liable with the host, not just a withholding agent.", "b": 2}, "nay": {"n": "Nayarit", "t": 5.0, "f": "Ley de Hacienda del Estado, art. 62", "r": "si", "nota": "La plataforma entera el impuesto cuando el pago se cubre a través de ella.", "nota_en": "The platform remits the tax when payment is made through it.", "b": 4}, "nle": {"n": "Nuevo León", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 174", "r": "solidaria", "nota": "Es de los pocos estados sin mandato expreso de retención para plataformas.", "nota_en": "One of the few states with no express withholding mandate for platforms.", "b": 2}, "oax": {"n": "Oaxaca", "t": 5.0, "f": "Ley Estatal de Hacienda, art. 55, párrafo segundo", "r": "si", "nota": "Los hoteles y similares pagan 3%. El 5% para departamentos y casas entró con el decreto del 10 de diciembre de 2025, así que varias fuentes siguen publicando 3% plano.", "nota_en": "Hotels and similar pay 3%. The 5% for apartments and houses came in with the decree of 10 December 2025, so several sources still publish a flat 3%.", "b": 4}, "pue": {"n": "Puebla", "t": 3.0, "f": "Ley de Ingresos 2026, art. 20, a la que remite el art. 27 de la Ley de Hacienda", "r": "si", "nota": "La Ley de Hacienda tiene un apartado completo para plataformas digitales, arts. 30 Bis a 30 Quinquies.", "nota_en": "The Finance Law has a full chapter on digital platforms, arts. 30 Bis to 30 Quinquies.", "b": 2}, "que": {"n": "Querétaro", "t": 5.0, "f": "Ley de Hacienda del Estado, art. 46", "r": "si", "nota": "Los hoteles y el tiempo compartido pagan 3.5%. El 5% aplica a cualquier otro inmueble, que es el caso típico de plataforma. La página de asistencia del propio estado publica 2.5%, cifra desactualizada.", "nota_en": "Hotels and timeshares pay 3.5%. The 5% applies to any other property, which is the typical platform case. The state's own help page publishes 2.5%, an outdated figure.", "b": 4}, "roo": {"n": "Quintana Roo", "t": 6.0, "f": "Ley del Impuesto al Hospedaje del Estado, art. 8", "r": "si", "nota": "Es la tasa más alta del país. El general es 5%; el 6% aplica a departamentos, casas y villas cuando cobra el anfitrión o la plataforma.", "nota_en": "The highest rate in the country. The general rate is 5%; the 6% applies to apartments, houses and villas when the host or the platform collects the payment.", "b": 5}, "slp": {"n": "San Luis Potosí", "t": 3.0, "f": "Ley de Hacienda para el Estado, art. 32, párrafo segundo", "r": "si", "nota": "La tasa general es 4%, pero cuando cobra la plataforma la retención es de 3%. Si no puedes acreditarla, esa retención se vuelve pago definitivo.", "nota_en": "The general rate is 4%, but when the platform collects, the withholding is 3%. If you cannot credit it, that withholding becomes a final payment.", "b": 2}, "sin": {"n": "Sinaloa", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 28", "r": "si", "nota": "El portal de trámites del propio estado publica 2%, texto anterior a la reforma de 2006.", "nota_en": "The state's own procedures portal publishes 2%, text that predates the 2006 reform.", "b": 2}, "son": {"n": "Sonora", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 8", "r": "solidaria", "nota": "La ley no usa la palabra retener: hace a la plataforma responsable solidaria.", "nota_en": "The law does not use the word withhold: it makes the platform jointly liable.", "b": 2}, "tab": {"n": "Tabasco", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 58", "r": "si", "nota": "El artículo fija 3.0% en dos párrafos, uno general y otro expreso para plataformas.", "nota_en": "The article sets 3.0% in two paragraphs, one general and one expressly for platforms.", "b": 2}, "tam": {"n": "Tamaulipas", "t": 3.0, "f": "Ley de Hacienda para el Estado, art. 52 Sexies", "r": "si", "nota": "", "nota_en": "", "b": 2}, "tla": {"n": "Tlaxcala", "t": 2.0, "f": "Código Financiero del Estado y sus Municipios, art. 117", "r": "no", "nota": "Desde diciembre de 2024 el hospedaje por plataforma sí es objeto del impuesto, pero ningún artículo obliga a la plataforma a retener o enterar.", "nota_en": "Since December 2024 platform lodging is subject to the tax, but no article requires the platform to withhold or remit it.", "b": 1}, "ver": {"n": "Veracruz", "t": 2.0, "f": "Código Financiero del Estado, art. 112", "r": "si", "nota": "La retención por el promotor o facilitador está en el art. 106, y hay reglas generales de la SEFIPLAN para plataformas.", "nota_en": "Withholding by the promoter or facilitator is in art. 106, and SEFIPLAN has general rules for platforms.", "b": 1}, "yuc": {"n": "Yucatán", "t": 4.5, "f": "Ley General de Hacienda del Estado, art. 38", "r": "si", "nota": "Bajó de 5% a 4.5% con el decreto 138/2025, publicado el 26 de diciembre de 2025.", "nota_en": "Went down from 5% to 4.5% with Decree 138/2025, published on 26 December 2025.", "b": 4}, "zac": {"n": "Zacatecas", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 49", "r": "si", "nota": "La ley llama retenedor a la plataforma y define qué es un anfitrión.", "nota_en": "The law calls the platform a withholding agent and defines what a host is.", "b": 2}};
     var active = null;
     var activeId = null;
+    var montoEl = document.getElementById('mapMonto');
+    if (montoEl) montoEl.addEventListener('input', function () { paintPanel(activeId); });
 
     function fmtPct(v) {
         return (v % 1 === 0 ? v.toFixed(0) : String(v)) + '%';
@@ -2976,10 +3214,21 @@ document.querySelectorAll('.lang-switch .lang-btn').forEach(function(btn) {
             var nota = currentLanguage === 'en' ? d.nota_en : d.nota;
             if (nota) text += ' ' + nota;
         }
-        panel.innerHTML = '<div class="map-panel-name"></div><div class="map-panel-figure"></div><div class="map-panel-text"></div>';
+        panel.innerHTML = '<div class="map-panel-name"></div><div class="map-panel-figure"></div><div class="map-panel-pesos"></div><div class="map-panel-text"></div>';
         panel.querySelector('.map-panel-name').textContent = name;
         panel.querySelector('.map-panel-figure').textContent = figure;
         panel.querySelector('.map-panel-text').textContent = text;
+        // En pesos: sobre el monto del lector, con la tasa efectiva cuando la
+        // hay (Chihuahua suma el adicional universitario, campo ef).
+        var pesos = panel.querySelector('.map-panel-pesos');
+        var monto = Math.max(0, +(montoEl && montoEl.value) || 0);
+        if (id && monto) {
+            var d2 = ST[id], tasa = d2.ef || d2.t;
+            var m = function (n) { return '$' + Math.round(n).toLocaleString('es-MX'); };
+            pesos.textContent = t('map.pesos').replace('{monto}', m(monto)).replace('{imp}', m(monto * tasa / 100)).replace('{tasa}', fmtPct(tasa));
+        } else {
+            panel.removeChild(pesos);
+        }
     }
 
     // La cubeta de color la asigna el dato, no el HTML: asi cambiar una tasa
@@ -3161,7 +3410,23 @@ function renderResults() {
     renderList('sat-visibility-list', risk.visibility);
     document.getElementById('sat-visibility').hidden = risk.visibility.length === 0;
     renderList('obligations-list', risk.obligations);
-    renderList('actions-list', risk.actions);
+    // Los pasos son enlaces: se arman con nodos y textContent, no con HTML.
+    const ul = document.getElementById('actions-list');
+    ul.innerHTML = '';
+    let k = 0;
+    risk.actions.forEach(x => {
+        const li = document.createElement('li');
+        if (x.nota) { li.className = 'paso-nota'; li.textContent = x.nota; ul.appendChild(li); return; }
+        k++;
+        li.className = 'paso';
+        const a = document.createElement('a');
+        a.href = x.url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+        const n = document.createElement('span'); n.className = 'paso-n'; n.textContent = String(k);
+        const b = document.createElement('span'); b.className = 'paso-b';
+        const st = document.createElement('strong'); st.textContent = x.titulo;
+        const d = document.createElement('span'); d.textContent = x.desc;
+        b.appendChild(st); b.appendChild(d); a.appendChild(n); a.appendChild(b); li.appendChild(a); ul.appendChild(li);
+    });
 }
 
 function showResults() {
@@ -3434,44 +3699,39 @@ function calculateRisk() {
         obligations.push(text);
     }
 
-    // --- Acciones ---
-    const action1 = currentLanguage === 'en'
-        ? '<strong>Get your Tax Status Certificate:</strong> Go to the tax authority portal and download it. This document tells you which regime you\'re in (or if you\'re not registered).'
-        : '<strong>Obtén tu Constancia de Situación Fiscal:</strong> Entra al portal del SAT y descárgala. Este documento te dice en qué régimen estás (o si no estás dado de alta).';
-    actions.push(action1);
-
-    if (state.fiscal === 'ninguna') {
-        const text = currentLanguage === 'en'
-            ? '<strong>Schedule an appointment at the tax authority to register:</strong> You can do it at sat.gob.mx. Bring your ID and proof of address. It\'s free.'
-            : '<strong>Agenda cita en el SAT para inscribirte:</strong> Puedes hacerlo en sat.gob.mx. Lleva INE y comprobante de domicilio. Es gratis.';
-        actions.push(text);
+    // --- Pasos ---
+    // Contrato: entran las respuestas; salen pasos en orden, cada uno con el
+    // enlace al tramite. Titulo, descripcion y URL se leen de la rama de
+    // tramites del panel (unica fuente); la factura solo vive aqui porque
+    // solo el diagnostico pregunta por ella. Las notas sin tramite van al final.
+    const PASOS = [];
+    function paso(n, nota) {
+        if (PASOS.some(x => x.n === n)) return;
+        PASOS.push({ n, nota });
     }
-
+    if (state.fiscal === 'ninguna') { paso('01'); paso('02'); paso('05', t('pasos.oblig')); paso('04'); paso('03'); }
+    else if (state.fiscal === 'no_se') { paso('04', t('pasos.revisa')); paso('02', t('pasos.sinPass')); }
+    else if (state.fiscal === 'alta_sin_declarar') { paso('04'); paso('06', 'plazo'); paso('03'); }
+    else if (state.fiscal === 'declaro_parcial') { paso('04'); paso('05', t('pasos.oblig')); paso('06', 'plazo'); }
+    else { if (mensuales) paso('06', 'plazo'); paso('03'); }
+    if (state.factura === 'no' || state.factura === 'no_se' || state.factura === 'algunas') paso('cfdi');
+    PASOS.forEach(x => {
+        let titulo, desc, url;
+        if (x.n === 'cfdi') {
+            titulo = t('pasos.cfdiT'); desc = t('pasos.cfdiD');
+            url = 'https://www.sat.gob.mx/portal/public/tramites/factura-electronica';
+        } else {
+            const a = document.querySelector('#tram-' + x.n + ' a');
+            titulo = t('tram.t' + (+x.n)); desc = t('tram.d' + (+x.n)); url = a ? a.href : '#tramites';
+        }
+        if (x.nota === 'plazo') desc += ' ' + faPlazo.textoMensual();
+        else if (x.nota) desc = x.nota;
+        actions.push({ titulo, desc, url });
+    });
     if (state.fiscal === 'ninguna' || state.fiscal === 'alta_sin_declarar' || state.fiscal === 'no_se') {
-        const text = currentLanguage === 'en'
-            ? '<strong>Consult an accountant:</strong> Your situation needs professional attention. An accountant can help you regularize and calculate any outstanding amounts.'
-            : '<strong>Consulta a un contador:</strong> Tu situación requiere atención profesional. Un contador puede regularizarte y calcular si hay montos pendientes.';
-        actions.push(text);
+        actions.push({ nota: t('pasos.contador') });
     }
-
-    if (state.factura === 'no_se') {
-        const text = currentLanguage === 'en'
-            ? '<strong>Learn to issue tax receipts:</strong> Issuing receipts sounds intimidating but it\'s a free process in the tax authority portal. Search for "how to generate CFDI" tutorials or ask your accountant.'
-            : '<strong>Aprende a facturar:</strong> Facturar suena intimidante pero es un trámite que puedes hacer gratis en el portal del SAT. Busca tutoriales de "generar CFDI en el SAT" o pregúntale a tu contador.';
-        actions.push(text);
-    }
-
-    const action2 = currentLanguage === 'en'
-        ? '<strong>Stay informed before acting:</strong> Subscribe to the Fisco Abierto newsletter to receive the tax changes that affect you.'
-        : '<strong>Infórmate antes de actuar:</strong> Suscríbete al newsletter de Fisco Abierto para recibir los cambios fiscales que te afectan.';
-    actions.push(action2);
-
-    if (state.platforms.size > 2) {
-        const text = currentLanguage === 'en'
-            ? '<strong>Map all your income sources:</strong> With more than two platforms, it\'s helpful to keep a clear record of how much you receive from each for your returns.'
-            : '<strong>Mapea todas tus fuentes de ingreso:</strong> Con más de dos plataformas, conviene tener un registro claro de cuánto recibes de cada una para tu declaración.';
-        actions.push(text);
-    }
+    if (state.platforms.size > 2) actions.push({ nota: t('pasos.mapea') });
 
     // --- Nivel final ---
     // La visibilidad sola no es exposicion: sin brecha de cumplimiento, el nivel es bajo.
@@ -4144,18 +4404,12 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     }
     function n1(v) { return v.toFixed(1); }
 
-    // En telefono la pista es alto-del-panel + un tramo fijo en PIXELES.
-    var RUNWAY = 620;
+    // Solo el escritorio usa pista (la da el CSS). En telefono el panel ya no
+    // se pega arriba: con el traductor mide mas que la pantalla, y un panel
+    // pegado mas alto que la ventana esconde su parte de abajo justo mientras
+    // se dibuja. Ahi el dibujo corre por tiempo (arrancarMovil).
     function sizeStage() {
-        // Con movimiento reducido no hay recorrido que dar. Si se deja la
-        // pista puesta queda un hueco vacio del alto del recorrido, que es
-        // justo lo que se veia como espacio en blanco gigante en telefono.
-        if (mobile && !reduced.matches) {
-            var h = panel.offsetHeight + RUNWAY;
-            if (stage.style.height !== h + 'px') stage.style.height = h + 'px';
-        } else if (stage.style.height) {
-            stage.style.height = '';
-        }
+        if (stage.style.height) stage.style.height = '';
     }
 
     function layout(force) {
@@ -4236,6 +4490,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         ready = true;
         sizeStage();
         paint();
+        if (typeof paintHi === 'function') paintHi();
     }
 
     function draw(path, t) {
@@ -4276,59 +4531,102 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         out.style.transform = 'translateY(' + ((1 - t) * 18).toFixed(1) + 'px)';
     }
 
-    // --- EL SCROLL MANDA, en las dos formas ---
-    // En el telefono el scroll llega a tirones (inercia + eventos agrupados),
-    // asi que el scroll fija un DESTINO y el dibujo lo persigue en su propio
-    // rAF. Se conserva lo que importa: si frenas se frena, si te devuelves se
-    // devuelve; y deja de depender de que los eventos lleguen a tiempo.
-    var target = 0, chase = null, lastTs = 0;
-    function tick(ts) {
-        // El seguidor avanza por TIEMPO, no por frame. Con un factor fijo por
-        // frame, un telefono que baja de fps arrastra el dibujo detras del
-        // dedo: a 60fps converge en medio segundo y a 20fps tarda el triple.
-        // Midiendo el delta real, converge en el mismo tiempo de reloj.
-        var dt = lastTs ? Math.min(64, ts - lastTs) : 16;
-        lastTs = ts;
-        var d = target - progress;
-        if (Math.abs(d) < 0.0009) { progress = target; chase = null; lastTs = 0; paint(); return; }
-        progress += d * (1 - Math.exp(-dt / 110));
-        paint();
-        chase = requestAnimationFrame(tick);
-    }
-    function setProgress(v) {
-        if (mobile) {
-            target = v;
-            if (chase === null) chase = requestAnimationFrame(tick);
-        } else {
-            progress = v;
+    // --- QUIEN MANDA EL DIBUJO ---
+    // En escritorio, el scroll: es continuo y funciona como perilla.
+    // En telefono, el reloj: el scroll es inercia (avientas y decelera) y una
+    // animacion atada a el se consume entera en el frenado. El dibujo arranca
+    // cuando el diagrama entra en pantalla y dura DUR ms, a ritmo fijo.
+    var reloj = null, DUR = 2600;
+    function arrancarMovil() {
+        if (reloj !== null) return;
+        var r = chain.getBoundingClientRect();
+        if (r.top > stableVH() * 0.75 || r.bottom < 0) return;
+        var t0 = null;
+        function avanza(ts) {
+            if (t0 === null) t0 = ts;
+            progress = Math.min(1, (ts - t0) / DUR);
             paint();
+            reloj = progress < 1 ? requestAnimationFrame(avanza) : 'fin';
         }
+        reloj = requestAnimationFrame(avanza);
     }
     function update() {
         ticking = false;
         if (!ready) layout(true);
         if (reduced.matches) { progress = 1; paint(); return; }
         sizeStage();
+        if (mobile) { arrancarMovil(); return; }
         var runway = stage.offsetHeight - panel.offsetHeight;
-        if (runway <= 0) { setProgress(1); return; }
+        if (runway <= 0) { progress = 1; paint(); return; }
         // p = 0 justo cuando el panel se pega arriba (el grow ya termino);
         // p = 1 cuando el panel llega al fondo de su pista.
-        var topPx = mobile ? 12 : stableVH() * 0.04;
-        var d = (topPx - stage.getBoundingClientRect().top) / runway;
-        setProgress(d < 0 ? 0 : (d > 1 ? 1 : d));
+        var d = (stableVH() * 0.04 - stage.getBoundingClientRect().top) / runway;
+        progress = d < 0 ? 0 : (d > 1 ? 1 : d);
+        paint();
     }
     function onScroll() { if (!ticking) { ticking = true; requestAnimationFrame(update); } }
     function relayout() { layout(true); update(); }
 
     // Al pasar, tocar o enfocar una fuente se enciende SU hilo: el diagrama
-    // dice de donde viene cada cosa antes de que le des clic.
-    var hi = -1;
+    // dice de donde viene cada cosa antes de que le des clic. Las fuentes del
+    // tema elegido en el traductor quedan encendidas.
+    var hi = -1, selEls = [];
     function paintHi() {
         for (var i = 0; i < threads.length; i++) {
-            threads[i].style.stroke = (i === hi) ? '#5EEAD4' : '';
-            threads[i].style.strokeWidth = (i === hi) ? '1.8' : '';
+            var on = (i === hi) || selEls.indexOf(seq[i].el) >= 0;
+            threads[i].style.stroke = on ? '#5EEAD4' : '';
+            threads[i].style.strokeWidth = on ? '1.8' : '';
         }
     }
+
+    // EL TRADUCTOR. Contrato: entra el tema elegido; salen la cita literal,
+    // la cifra, lo que significa, el articulo con su enlace, el tramite con
+    // su enlace (leido de la rama de tramites, que es la unica fuente de las
+    // URLs) y las fuentes y el tramite encendidos. Las citas son texto
+    // literal de la ley consultado el 29-sep-2026 (mley.mx); no se traducen.
+    var TR = [
+        { src: [0, 1], tram: '06', fig: '2.5%', cite: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LISR.pdf',
+          lit: 'La retención se deberá efectuar sobre el total de los ingresos que efectivamente perciban las personas físicas por conducto de los citados medios […], sin incluir el impuesto al valor agregado. Esta retención tendrá el carácter de pago provisional.' },
+        { src: [1], tram: '01', fig: '20%', cite: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LISR.pdf',
+          lit: 'En el caso de que los contribuyentes no proporcionen su clave del Registro Federal de Contribuyentes […], se deberá retener el impuesto que corresponda por los ingresos a que se refiere el artículo 113-A de esta Ley, aplicando la tasa del 20% sobre los ingresos referidos.' },
+        { src: [2], tram: '06', fig: '50%', cite: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LIVA.pdf',
+          lit: 'Retener a las personas físicas que enajenen bienes, presten servicios o concedan el uso o goce temporal de bienes, el 50% del impuesto al valor agregado cobrado.' },
+        { src: [1], tram: '05', fig: '$300,000', cite: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/LISR.pdf',
+          lit: 'Cuando únicamente obtengan ingresos a los que se refiere el primer párrafo del artículo 113-A de esta Ley, que en el ejercicio inmediato anterior no hayan excedido de la cantidad de trescientos mil pesos.' },
+        { src: [3], tram: '03', fig: null, cite: 'https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf',
+          lit: '[…] deberán permitir a las autoridades fiscales, en forma permanente, el acceso en línea y en tiempo real únicamente a la información que permita comprobar el debido cumplimiento de las obligaciones fiscales […]' }
+    ];
+    var trTabs = Array.prototype.slice.call(chain.querySelectorAll('.tr-tab'));
+    var srcAll = L.concat(R), trSel = 0;
+    var trLit = document.getElementById('trLit'), trFig = document.getElementById('trFig');
+    var trWhat = document.getElementById('trWhat'), trCite = document.getElementById('trCite'), trGo = document.getElementById('trGo');
+    function pintarTraductor(desdeClic) {
+        if (!trTabs.length || typeof t !== 'function') return;
+        var d = TR[trSel];
+        trTabs.forEach(function (b, j) { b.setAttribute('aria-pressed', j === trSel ? 'true' : 'false'); });
+        trLit.textContent = d.lit;
+        trFig.textContent = d.fig || t('tr.f5');
+        trWhat.textContent = t('tr.w' + (trSel + 1));
+        trCite.textContent = t('tr.c' + (trSel + 1));
+        trCite.href = d.cite;
+        var item = document.getElementById('tram-' + d.tram);
+        var a = item && item.querySelector('a');
+        trGo.textContent = d.tram + ' \u00B7 ' + t('tram.t' + (+d.tram));
+        if (a) trGo.href = a.href;
+        selEls = d.src.map(function (k) { return srcAll[k]; });
+        srcAll.forEach(function (el) { el.classList.toggle('is-sel', selEls.indexOf(el) >= 0); });
+        document.querySelectorAll('.tram-item').forEach(function (li) { li.classList.toggle('is-sel', li.id === 'tram-' + d.tram); });
+        paintHi();
+        // En el carril del telefono, la fuente elegida se trae a la vista.
+        var band = chain.querySelector('.chain-band');
+        if (desdeClic && mobile && band && selEls[0]) {
+            band.scrollTo({ left: selEls[0].offsetLeft - 18, behavior: reduced.matches ? 'auto' : 'smooth' });
+        }
+    }
+    trTabs.forEach(function (b, j) {
+        b.addEventListener('click', function () { trSel = j; pintarTraductor(true); });
+    });
+    pintarTraductor(false);
     L.concat(R).forEach(function(el) {
         function on() {
             for (var i = 0; i < seq.length; i++) { if (seq[i].el === el) { hi = i; break; } }
@@ -4352,6 +4650,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     if (document.fonts && document.fonts.ready) document.fonts.ready.then(relayout);
     if (reduced.addEventListener) reduced.addEventListener('change', relayout);
     // Al cambiar de idioma las pills cambian de ancho: se retrazan los hilos.
+    document.querySelectorAll('.lang-switch .lang-btn').forEach(function (b) { b.addEventListener('click', function () { pintarTraductor(false); }); });
     document.addEventListener('click', function(e) {
         var el = e.target;
         while (el && el.classList) {

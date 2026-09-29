@@ -117,6 +117,9 @@ async function dom() {
         const t = n.textContent.replace(/\s+/g, ' ').trim(); if (!t) continue;
         const el = n.parentElement; if (['SCRIPT', 'STYLE', 'NOSCRIPT'].includes(el.tagName)) continue;
         if (el.closest('#mapPanel')) continue; // el panel se revisa estado por estado
+        // Citas literales de la ley: van en espanol en los dos idiomas porque son
+        // la fuente, y el HTML las marca con lang="es" (el <html> cambia a en).
+        if (el.closest('[lang="es"]') && el.closest('[lang="es"]') !== document.documentElement) continue;
         out.push(t);
       }
       return out;

@@ -1,7 +1,8 @@
-// Goldens de la calculadora de retenciones. Mueve la barra y cambia de
-// actividad en la pagina REAL (Playwright) y compara lo que pinta contra
-// cifras calculadas aqui, por separado, con las tasas escritas a mano.
-// Si las dos cuentas coinciden, el error tendria que estar en las dos.
+// Goldens de la calculadora de retenciones. Mueve la barra, cambia de
+// actividad y de "tiene RFC" en la pagina REAL (Playwright) y compara el
+// recibo que pinta contra cifras calculadas aqui, por separado, con las tasas
+// escritas a mano. Si las dos cuentas coinciden, el error tendria que estar
+// en las dos.
 //
 // Uso, desde web/:   node tools/calc-goldens.js          (pide playwright)
 // Sale con codigo 1 si alguna cifra no coincide.
@@ -17,26 +18,32 @@ const ISR = { venta: 0.025, transporte: 0.021, hospedaje: 0.04 }; // 113-A fr. I
 const ISR_2025_VENTA = 0.01;
 const SIN_RFC = 0.20;   // 113-C fr. IV LISR
 const IVA = 0.16;       // tasa general
-const IVA_RET = 0.5;    // 18-J fr. II a) LIVA
+const IVA_RET = 0.5;    // 18-J fr. II a) LIVA; 100% sin RFC
 const money = n => '$' + Math.round(n).toLocaleString('es-MX');
+const menos = n => '−' + money(n);
+
+function recibo(act, base, rfc) {
+  const iva = base * IVA;
+  const isr = base * (rfc ? ISR[act] : SIN_RFC);
+  const ivaR = iva * (rfc ? IVA_RET : 1);
+  return { cobra: base + iva, isr, ivaR, dep: base + iva - isr - ivaR };
+}
 
 const CASOS = [];
 for (const act of ['venta', 'transporte', 'hospedaje']) {
-  for (const mensual of [5000, 20000, 24000, 26000, 60000]) {
-    const anual = mensual * 12;
-    const rateA = act === 'venta' ? ISR_2025_VENTA : ISR[act];
-    const rateB = act === 'venta' ? ISR[act] : SIN_RFC;
-    CASOS.push({
-      act, mensual,
-      past: money(anual * rateA),
-      now: money(anual * rateB),
-      diff: (anual * (rateB - rateA) > 0 ? '+' : '') + money(anual * (rateB - rateA)),
-      ivaRfc: money(anual * IVA * IVA_RET),
-      ivaSin: money(anual * IVA),
-      totalRfc: money(anual * ISR[act] + anual * IVA * IVA_RET),
-      totalSin: money(anual * SIN_RFC + anual * IVA),
-      umbral: anual > 300000,
-    });
+  for (const rfc of [true, false]) {
+    for (const mensual of [5000, 20000, 24000, 26000, 60000]) {
+      const r = recibo(act, mensual, rfc);
+      const ctx = [];
+      if (!rfc) { const c = recibo(act, mensual, true); ctx.push(money(c.dep), money(c.dep - r.dep)); }
+      else if (act === 'venta') ctx.push(money(mensual * ISR_2025_VENTA), money(mensual * ISR.venta));
+      CASOS.push({
+        act, rfc, mensual,
+        cobra: money(r.cobra), isr: menos(r.isr), ivaR: menos(r.ivaR), dep: money(r.dep),
+        anual: [money(r.isr * 12), money(r.ivaR * 12)], ctx,
+        umbral: mensual * 12 > 300000,
+      });
+    }
   }
 }
 
@@ -50,22 +57,25 @@ for (const act of ['venta', 'transporte', 'hospedaje']) {
   let fallas = 0;
   for (const c of CASOS) {
     await p.click('.act-btn[data-act="' + c.act + '"]');
+    await p.click('.rfc-btn[data-rfc="' + (c.rfc ? 'si' : 'no') + '"]');
     await p.$eval('#calcRange', (el, v) => { el.value = v; el.dispatchEvent(new Event('input')); }, String(c.mensual));
     const got = await p.evaluate(() => ({
-      past: document.getElementById('calcPast').textContent,
-      now: document.getElementById('calcNow').textContent,
-      diff: document.getElementById('calcDiff').textContent,
-      ivaRfc: document.getElementById('calcIvaRfc').textContent,
-      ivaSin: document.getElementById('calcIvaSin').textContent,
-      total: document.getElementById('calcIvaTotal').textContent,
+      cobra: document.getElementById('calcCobra').textContent,
+      isr: document.getElementById('calcIsr').textContent,
+      ivaR: document.getElementById('calcIvaR').textContent,
+      dep: document.getElementById('calcDeposito').textContent,
+      anual: document.getElementById('calcAnual').textContent,
+      ctx: document.getElementById('calcContexto').textContent,
       umbral: document.getElementById('calcVerdict').classList.contains('is-advance'),
+      barra: ['rbDep', 'rbIsr', 'rbIva'].reduce((a, id) => a + parseFloat(document.getElementById(id).style.width), 0),
     }));
-    const esperadoTotal = [c.totalRfc, c.totalSin];
     const errs = [];
-    for (const k of ['past', 'now', 'diff', 'ivaRfc', 'ivaSin']) if (got[k] !== c[k]) errs.push(k + ' esperado ' + c[k] + ' pintado ' + got[k]);
-    for (const e of esperadoTotal) if (!got.total.includes(e)) errs.push('total no contiene ' + e);
+    for (const k of ['cobra', 'isr', 'ivaR', 'dep']) if (got[k] !== c[k]) errs.push(k + ' esperado ' + c[k] + ' pintado ' + got[k]);
+    for (const e of c.anual) if (!got.anual.includes(e)) errs.push('anual no contiene ' + e);
+    for (const e of c.ctx) if (!got.ctx.includes(e)) errs.push('contexto no contiene ' + e);
     if (got.umbral !== c.umbral) errs.push('umbral esperado ' + c.umbral + ' pintado ' + got.umbral);
-    if (errs.length) { fallas++; console.log('  x ' + c.act + ' ' + money(c.mensual) + '/mes: ' + errs.join('; ')); }
+    if (Math.abs(got.barra - 100) > 0.05) errs.push('la barra suma ' + got.barra.toFixed(2) + '%');
+    if (errs.length) { fallas++; console.log('  x ' + c.act + (c.rfc ? ' con RFC ' : ' sin RFC ') + money(c.mensual) + '/mes: ' + errs.join('; ')); }
   }
   errores.forEach(e => { fallas++; console.log('  x error de pagina: ' + e); });
   console.log(CASOS.length + ' casos, ' + fallas + ' fallas');
