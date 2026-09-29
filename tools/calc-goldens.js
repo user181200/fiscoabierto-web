@@ -19,7 +19,6 @@ const SIN_RFC = 0.20;   // 113-C fr. IV LISR
 const IVA = 0.16;       // tasa general
 const IVA_RET = 0.5;    // 18-J fr. II a) LIVA
 const money = n => '$' + Math.round(n).toLocaleString('es-MX');
-const pct = r => { const v = r * 100; return (v % 1 === 0 ? v.toFixed(0) : v.toFixed(1)) + '%'; };
 
 const CASOS = [];
 for (const act of ['venta', 'transporte', 'hospedaje']) {
@@ -34,9 +33,7 @@ for (const act of ['venta', 'transporte', 'hospedaje']) {
       diff: (anual * (rateB - rateA) > 0 ? '+' : '') + money(anual * (rateB - rateA)),
       ivaRfc: money(anual * IVA * IVA_RET),
       ivaSin: money(anual * IVA),
-      totalPctRfc: pct(ISR[act] + IVA * IVA_RET),
       totalRfc: money(anual * ISR[act] + anual * IVA * IVA_RET),
-      totalPctSin: pct(SIN_RFC + IVA),
       totalSin: money(anual * SIN_RFC + anual * IVA),
       umbral: anual > 300000,
     });
@@ -63,7 +60,7 @@ for (const act of ['venta', 'transporte', 'hospedaje']) {
       total: document.getElementById('calcIvaTotal').textContent,
       umbral: document.getElementById('calcVerdict').classList.contains('is-advance'),
     }));
-    const esperadoTotal = [c.totalPctRfc, c.totalRfc, c.totalPctSin, c.totalSin];
+    const esperadoTotal = [c.totalRfc, c.totalSin];
     const errs = [];
     for (const k of ['past', 'now', 'diff', 'ivaRfc', 'ivaSin']) if (got[k] !== c[k]) errs.push(k + ' esperado ' + c[k] + ' pintado ' + got[k]);
     for (const e of esperadoTotal) if (!got.total.includes(e)) errs.push('total no contiene ' + e);

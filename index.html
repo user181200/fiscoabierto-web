@@ -261,7 +261,7 @@
 
         /* Quien pidió menos movimiento no debería recibir nada de esto. */
         @media (prefers-reduced-motion: reduce) {
-            .reveal, .reveal.visible, .stat-number, .stat-number.counting {
+            .reveal, .reveal.visible, .stat-number {
                 transition: none;
                 filter: none;
                 opacity: 1;
@@ -1626,6 +1626,59 @@
         .calc-iva-total { margin: 14px 0 0; font-size: 0.87rem; line-height: 1.65; }
 
         /* --- Mapa del impuesto estatal al hospedaje --- */
+        /* --- Videos explicativos ---
+           Cuatro clips sin audio, renderizados cuadro por cuadro desde las
+           mismas tasas de la calculadora (videos/README en el taller). Un
+           solo <video>; las pestañas cambian el archivo. 16:9 en escritorio,
+           4:5 en teléfono. Sin movimiento reducido no arranca solo: queda el
+           póster, que es el diagrama terminado. */
+        .vid-section { background: var(--color-surface); border-top: 1px solid var(--color-border); }
+        .vid-section .container { max-width: 1080px; }
+        .vid-head { display: flex; justify-content: space-between; align-items: flex-end; gap: 40px; }
+        .vid-title { font-size: 1.7rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.2; max-width: 20ch; margin: 0; }
+        .vid-lead { font-size: 0.95rem; color: var(--color-text-secondary); line-height: 1.65; max-width: 46ch; }
+        .vid-tabs { display: flex; gap: 28px; margin-top: 30px; border-bottom: 1px solid var(--color-border); overflow-x: auto; scrollbar-width: none; }
+        .vid-tabs::-webkit-scrollbar { display: none; }
+        .vid-tab {
+            appearance: none; -webkit-appearance: none; background: none; border: 0; cursor: pointer;
+            padding: 12px 0; margin-bottom: -1px; border-bottom: 2px solid transparent;
+            font-family: inherit; font-size: 0.9rem; font-weight: 600; color: var(--color-text-secondary);
+            display: flex; gap: 8px; align-items: baseline; white-space: nowrap;
+        }
+        .vid-tab .vid-n { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.72rem; color: #78716C; }
+        .vid-tab[aria-pressed="true"] { color: var(--color-text); border-bottom-color: var(--color-accent); }
+        .vid-tab[aria-pressed="true"] .vid-n { color: var(--color-accent); }
+        .vid-tab:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; border-radius: 2px; }
+        .vid-frame { margin-top: 22px; border: 1px solid var(--color-border); border-radius: 14px; overflow: hidden; background: #FAFAF9; aspect-ratio: 16 / 9; }
+        .vid-frame { position: relative; }
+        .vid-frame video { display: block; width: 100%; height: 100%; object-fit: contain; background: #FAFAF9; cursor: pointer; }
+        .vid-progress { position: absolute; left: 0; right: 0; bottom: 0; height: 3px; background: var(--color-border); }
+        .vid-progress span { display: block; height: 100%; width: 0; background: var(--color-accent); }
+        .vid-bar { margin-top: 12px; display: flex; align-items: center; gap: 16px; }
+        .vid-play {
+            appearance: none; -webkit-appearance: none; cursor: pointer;
+            display: inline-flex; align-items: center; gap: 8px;
+            background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 999px;
+            padding: 8px 16px 8px 13px; font-family: inherit; font-size: 0.85rem; font-weight: 600; color: var(--color-text);
+        }
+        .vid-play:hover { border-color: var(--color-accent); }
+        .vid-play:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+        .vid-play svg { width: 13px; height: 13px; fill: var(--color-accent); }
+        .vid-play path { display: none; }
+        .vid-play[data-estado="play"] .i-play, .vid-play[data-estado="pause"] .i-pause, .vid-play[data-estado="replay"] .i-replay { display: inline; }
+        .vid-text { margin-top: 14px; font-size: 0.88rem; color: var(--color-text-secondary); }
+        .vid-text summary { cursor: pointer; font-weight: 600; color: var(--color-text); width: fit-content; }
+        .vid-text p { margin-top: 8px; line-height: 1.7; max-width: 72ch; }
+        @media (max-width: 600px) {
+            .vid-head { display: block; }
+            .vid-lead { margin-top: 10px; }
+            .vid-title { font-size: 1.4rem; max-width: none; }
+            .vid-tabs { display: grid; grid-template-columns: 1fr 1fr; gap: 0 16px; margin-top: 20px; border-bottom: 0; overflow: visible; }
+            .vid-tab { white-space: normal; text-align: left; border-bottom: 1px solid var(--color-border); margin-bottom: 0; padding: 11px 0; }
+            .vid-tab[aria-pressed="true"] { border-bottom: 2px solid var(--color-accent); padding-bottom: 10px; }
+            .vid-frame { aspect-ratio: 4 / 5; }
+        }
+
         .map-section {
             background: var(--color-bg);
             border-top: 1px solid var(--color-border);
@@ -1745,8 +1798,8 @@
 <section class="hero">
     <canvas id="heroCanvas"></canvas>
     <div class="container">
-        <h1><span class="hero-main" data-i18n="hero.title">¿Generas ingresos en plataformas digitales?</span><br><span class="hero-accent" data-i18n="hero.subtitle">El SAT ya lo sabe.</span></h1>
-        <p data-i18n="hero.description">Entiende tu situación fiscal en menos de 2 minutos. Sin pedir tus datos personales, porque entender tus impuestos debería ser gratis.</p>
+        <h1><span class="hero-main" data-i18n="hero.title">¿Generas ingresos en plataformas digitales?</span><br><span class="hero-accent" data-i18n="hero.subtitle">Te decimos cuánto te retienen y qué declarar.</span></h1>
+        <p data-i18n="hero.description">Diagnóstico de tu situación fiscal en unos 2 minutos, gratis y sin pedir datos personales.</p>
         <a href="#diagnostico" class="hero-cta" data-i18n="hero.cta">Hacer mi diagnóstico fiscal</a>
     </div>
 </section>
@@ -1757,9 +1810,9 @@
         <div class="stats-band">
             <div class="stats-aside">
                 <div>
-                    <h2 data-i18n="stats.title">Esto no es teórico. Ya está pasando.</h2>
-                    <p class="section-subtitle" data-i18n="stats.subtitle">Cifras reales sobre la fiscalización de la economía digital en México.</p>
-                    <p class="verif" data-verificado="2026-07-29" data-i18n-js></p>
+                    <h2 data-i18n="stats.title">Cifras de 2026 sobre la economía de plataformas en México</h2>
+                    <p class="section-subtitle" data-i18n="stats.subtitle">Cada cifra lleva su fuente oficial.</p>
+                    <p class="verif" data-verificado="2026-09-29" data-i18n-js></p>
                 </div>
             </div>
             <div class="stats-items">
@@ -1768,14 +1821,14 @@
                      El track de arriba es el recorrido del bloqueo. -->
                 <div class="stats-pin">
                 <div class="stats-item">
-                    <div class="stat-number" data-count="1.66" data-prefix="" data-suffix="M" data-decimals="2">1.66M</div>
-                    <div class="stat-label" data-i18n="stats.stat1">repartidores y conductores de plataformas ya están registrados ante el IMSS. Y son solo una parte de la economía digital.</div>
-                    <div class="stat-source" data-i18n="stats.src1">IMSS y STPS, junio 2026</div>
+                    <div class="stat-number" data-count="1.77" data-prefix="" data-suffix="M" data-decimals="2">1.77M</div>
+                    <div class="stat-label" data-i18n="stats.stat1">repartidores y conductores de plataformas registrados ante el IMSS</div>
+                    <div class="stat-source" data-i18n="stats.src1">IMSS, comunicado 479/2026, cierre de agosto 2026</div>
                 </div>
                 <div class="stats-item">
-                    <div class="stat-number" data-count="278" data-prefix="" data-suffix="" data-decimals="0">278</div>
+                    <div class="stat-number" data-count="289" data-prefix="" data-suffix="" data-decimals="0">289</div>
                     <div class="stat-label" data-i18n="stats.stat2">plataformas digitales extranjeras inscritas en el RFC y obligadas a reportar al SAT</div>
-                    <div class="stat-source" data-i18n="stats.src2">DOF 22-may-2026, corte al 30-abr-2026</div>
+                    <div class="stat-source" data-i18n="stats.src2">DOF 18-sep-2026, corte al 31-ago-2026</div>
                 </div>
                 <div class="stats-item">
                     <div class="stat-number" data-count="2.5" data-prefix="" data-suffix="%" data-decimals="1">2.5%</div>
@@ -1784,22 +1837,22 @@
                 </div>
                 <div class="stats-item">
                     <div class="stat-number" data-count="3" data-prefix="" data-suffix="" data-decimals="0">3</div>
-                    <div class="stat-label" data-i18n="stats.stat4">meses seguidos sin presentar sus declaraciones al SAT y una plataforma puede quedar bloqueada en México. Por eso reportan todo.</div>
-                    <div class="stat-source" data-i18n="stats.src4">Art. 30-B CFF y art. 18-H BIS LIVA</div>
+                    <div class="stat-label" data-i18n="stats.stat4">meses seguidos sin presentar sus declaraciones y una plataforma extranjera puede quedar bloqueada en México</div>
+                    <div class="stat-source" data-i18n="stats.src4">Art. 18-H BIS LIVA</div>
                 </div>
                 <div class="stats-item">
                     <div class="stat-number" data-count="55" data-prefix="" data-suffix="%" data-decimals="0">55%</div>
-                    <div class="stat-label" data-i18n="stats.stat5">de los trabajadores en México son informales. Muchos sin saberlo.</div>
-                    <div class="stat-source" data-i18n="stats.src5">INEGI, ENOE junio 2026</div>
+                    <div class="stat-label" data-i18n="stats.stat5">de los trabajadores en México están en la informalidad</div>
+                    <div class="stat-source" data-i18n="stats.src5">INEGI, ENOE agosto 2026</div>
                 </div>
                 <div class="stats-item">
                     <div class="stat-number" data-count="20" data-prefix="" data-suffix="%" data-decimals="0">20%</div>
-                    <div class="stat-label" data-i18n="stats.stat6">de tus ganancias se van en retención si no tienes RFC. Se puede evitar.</div>
+                    <div class="stat-label" data-i18n="stats.stat6">de tus ingresos por plataformas se retiene si no le das tu RFC a la plataforma</div>
                     <div class="stat-source" data-i18n="stats.src6">Art. 113-C, fr. IV LISR</div>
                 </div>
                 <div class="stats-item">
                     <div class="stats-callout" data-i18n="stats.callout">
-                        <strong>Desde el 1° de abril de 2026</strong>, está en vigor el Art. 30-B del CFF: las plataformas digitales deben dar al SAT acceso en línea y <strong>en tiempo real</strong> a la información que permite comprobar su cumplimiento fiscal. Las reglas cambiaron. Estar informado ya no es opcional.
+                        <strong>Desde el 1° de abril de 2026</strong> está en vigor el Art. 30-B del CFF, que obliga a las plataformas digitales a dar al SAT acceso en línea y <strong>en tiempo real</strong> a la información que permite comprobar su cumplimiento fiscal.
                     </div>
                 </div>
                 </div>
@@ -1812,8 +1865,8 @@
 <section class="calc-section">
     <div class="container blk-head-wrap">
         <div class="blk-head">
-            <h2 class="blk-title reveal"><span data-i18n="calc.titleA">La retención que te toca depende de lo que haces.</span> <span class="mark-hl" data-i18n="calc.titleMark">Y solo una subió en 2026.</span></h2>
-            <p class="blk-lead reveal reveal-delay-1" data-i18n="calc.lead">El 113-A de la Ley del ISR tiene tres tasas distintas según lo que hagas, y la Ley de Ingresos de 2026 solo cambió una de las tres. Elige tu actividad y mueve la barra.</p>
+            <h2 class="blk-title reveal"><span data-i18n="calc.titleA">Retención de ISR en plataformas</span> <span class="mark-hl" data-i18n="calc.titleMark">según tu actividad</span></h2>
+            <p class="blk-lead reveal reveal-delay-1" data-i18n="calc.lead">El art. 113-A de la Ley del ISR fija tres tasas según lo que hagas. Para 2026, la Ley de Ingresos sustituyó solo una de ellas. Elige tu actividad y mueve la barra.</p>
         </div>
     </div>
     <div class="container">
@@ -1853,28 +1906,58 @@
 
         <div class="calc-verdict" id="calcVerdict" data-i18n-js></div>
 
-        <p class="calc-caveat" data-i18n="calc.caveat">La tasa la fija la Ley de Ingresos año con año. Si la de 2027 no repite el 2.5%, vuelve a 1% el 1 de enero.</p>
+        <p class="calc-caveat" data-i18n="calc.caveat">El 1% lo fija la Ley del ISR (art. 113-A, párrafo tercero, fracción III). El 2.5% viene de la Ley de Ingresos 2026, que solo rige ese año. La iniciativa de Ley de Ingresos 2027, presentada el 8 de septiembre de 2026, propone repetirlo en su art. 25 y está en discusión en la Cámara de Diputados. Si la ley que se apruebe no lo repite, el 1 de enero vuelve el 1%.</p>
 
         <div class="calc-iva">
-            <p class="calc-iva-title" data-i18n="calc.ivaTitle">Y aparte del ISR, el IVA.</p>
-            <p class="calc-iva-lead" data-i18n="calc.ivaLead">La plataforma también retiene parte del IVA que cobras: la mitad si tiene tu RFC, todo si no.</p>
+            <p class="calc-iva-title" data-i18n="calc.ivaTitle">Retención de IVA</p>
+            <p class="calc-iva-lead" data-i18n="calc.ivaLead">La plataforma también retiene el IVA que cobras encima de tu precio. Retiene la mitad si le diste tu RFC y todo si no.</p>
             <dl class="calc-iva-rows">
                 <div><dt data-i18n="calc.ivaRfc">Con RFC, 8% de lo que te pagan</dt><dd id="calcIvaRfc">$19,200</dd></div>
                 <div><dt data-i18n="calc.ivaSin">Sin RFC, 16%</dt><dd id="calcIvaSin">$38,400</dd></div>
             </dl>
-            <p class="calc-iva-total" id="calcIvaTotal" data-i18n-js>Sumando ISR e IVA, con RFC la plataforma se queda con 10.5% de lo que te pagan ($25,200 al año); sin RFC, con 36% ($86,400).</p>
+            <p class="calc-iva-total" id="calcIvaTotal" data-i18n-js>Sumando ISR e IVA, con RFC la plataforma retiene y entera al SAT $25,200 al año; sin RFC, $86,400. El IVA retenido sale del IVA que cobras encima de tu precio; el ISR retenido sí se descuenta de lo que te pagan.</p>
         </div>
 
         <p class="blk-foot" data-i18n="calc.foot">Art. 113-A, párrafo tercero, fracción III LISR (1%) · Art. 25, fracción VI de la LIF 2026, DOF 07-nov-2025 (2.5%) · Art. 113-C, fracción IV LISR (20% sin RFC) · Umbral del Art. 113-B LISR, medido sobre el ejercicio anterior · Art. 18-J, fracción II, inciso a) LIVA (50% del IVA; 100% sin RFC), con IVA a la tasa general de 16% · Sobre ingresos brutos sin IVA</p>
-        <p class="verif" data-verificado="2026-07-29" data-i18n-js></p>
+        <p class="verif" data-verificado="2026-09-29" data-i18n-js></p>
+    </div>
+</section>
+
+<!-- VIDEOS EXPLICATIVOS -->
+<section class="vid-section" id="videos">
+    <div class="container">
+        <div class="vid-head">
+            <h2 class="vid-title" data-i18n="vid.title">Retenciones y reportes al SAT, en video</h2>
+            <p class="vid-lead" data-i18n="vid.lead">Cuatro animaciones cortas y sin audio. Las cifras salen de las mismas tasas que usa la calculadora, y cada video cierra con los artículos que lo sostienen.</p>
+        </div>
+        <div class="vid-tabs" role="group" aria-label="Videos" data-i18n-aria="vid.group">
+            <button type="button" class="vid-tab" data-vid="como-te-retienen" aria-pressed="true"><span class="vid-n">01</span><span data-i18n="vid.tab1">Cómo te retienen</span></button>
+            <button type="button" class="vid-tab" data-vid="con-rfc-sin-rfc" aria-pressed="false"><span class="vid-n">02</span><span data-i18n="vid.tab2">Con RFC y sin RFC</span></button>
+            <button type="button" class="vid-tab" data-vid="que-ve-el-sat" aria-pressed="false"><span class="vid-n">03</span><span data-i18n="vid.tab3">Qué ve el SAT</span></button>
+            <button type="button" class="vid-tab" data-vid="pago-definitivo-o-anticipo" aria-pressed="false"><span class="vid-n">04</span><span data-i18n="vid.tab4">Pago definitivo o anticipo</span></button>
+        </div>
+        <div class="vid-frame">
+            <video id="vidPlayer" muted playsinline preload="none" aria-describedby="vidText"></video>
+            <div class="vid-progress" aria-hidden="true"><span id="vidProgress"></span></div>
+        </div>
+        <div class="vid-bar">
+            <button type="button" class="vid-play" id="vidPlay" aria-controls="vidPlayer" data-estado="play">
+                <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path class="i-play" d="M4 2.5v11l9-5.5z"/><path class="i-pause" d="M4 2.5h3v11H4zM9 2.5h3v11H9z"/><path class="i-replay" d="M8 2.5a5.5 5.5 0 1 1-5.2 3.7l1.4.5A4 4 0 1 0 8 4v2L4.8 3.2 8 .5z"/></svg>
+                <span id="vidPlayLabel" data-i18n-js>Reproducir</span>
+            </button>
+        </div>
+        <details class="vid-text">
+            <summary data-i18n="vid.textLabel">Texto del video</summary>
+            <p id="vidText" data-i18n-js></p>
+        </details>
     </div>
 </section>
 
 <!-- MAPA: INFORMALIDAD POR ESTADO -->
 <section class="map-section">
     <div class="container">
-        <h2 class="blk-title reveal"><span data-i18n="map.titleA">Si rentas por Airbnb, tu estado te cobra un impuesto aparte del SAT.</span> <span class="num-hl" data-i18n="map.titleMark">Va del 2% al 6%.</span></h2>
-        <p class="blk-lead reveal reveal-delay-2" data-i18n="map.lead">El impuesto sobre hospedaje es estatal, no federal, y cada congreso fija su propia tasa. En 27 de las 32 entidades la plataforma está obligada a retenerlo o enterarlo, así que probablemente ya lo estás pagando sin saberlo. Y en varios estados la tasa para departamentos y casas es más alta que la de los hoteles. Toca tu estado.</p>
+        <h2 class="blk-title reveal"><span data-i18n="map.titleA">Impuesto estatal sobre hospedaje por entidad,</span> <span class="num-hl" data-i18n="map.titleMark">del 2% al 6%</span></h2>
+        <p class="blk-lead reveal reveal-delay-2" data-i18n="map.lead">El impuesto sobre hospedaje es estatal, no federal, y cada congreso fija su propia tasa. En 27 de las 32 entidades la plataforma está obligada a retenerlo o enterarlo, así que probablemente ya lo estás pagando. En varios estados la tasa para departamentos y casas es más alta que la de los hoteles. Toca tu estado.</p>
 
         <svg class="mxmap reveal reveal-delay-3" viewBox="0 0 793 498" xmlns="http://www.w3.org/2000/svg" role="group" aria-label="Mapa de México: impuesto estatal sobre hospedaje por entidad federativa" data-i18n-aria="map.aria">
             <g id="mxStates">
@@ -1888,7 +1971,7 @@
                 <path class="mx-st b2" data-st="col" tabindex="0" role="button" aria-label="Colima: 3%" d="m 372.56786,382.21244 -2.47,2.24 -1.02,-0.31 -0.38,0.28 0.03,1.79 -1.86,1.18 -0.68,1.7 0,0 -5.51,-4.36 -5.18,-2.77 -4.02,-1.36 0.14,-0.84 0.46,-0.05 0.15,-0.62 -0.45,-0.52 -1.1,-0.6 -1.84,0.94 -0.25,-0.63 -1.75,-0.74 -4.53,-1.21 0.33,-0.44 0.62,0.41 0.18,-0.26 -0.59,-0.22 0,0 1.92,0.05 1.48,-1.79 1.14,0.48 0.56,-0.11 0.48,-0.84 0.87,-0.58 0.55,0.4 3.77,-0.88 1.27,0.38 1.13,-0.29 3.1,-2.32 3.25,0.32 1.41,-0.21 3.22,-1.68 2.51,-2.41 0.61,0.13 0.48,2.89 -0.16,1.02 0.97,0.83 0.21,0.78 1.07,0.48 -0.5,1.8 0.07,3.12 -0.56,1.32 0.82,1.54 z"/>
                 <path class="mx-st b2" data-st="dur" tabindex="0" role="button" aria-label="Durango: 3%" d="m 280.78786,200.80244 0.32,-0.65 2.31,-0.78 0.31,1.32 1.08,0.66 1.6,-0.22 0.52,0.86 2.01,0.33 0.67,1.21 0.64,0.28 1.23,-1.61 3.53,-2.72 2.12,-3.42 -0.61,-1.9 -0.97,-1.56 1.72,-3.99 0.92,-0.26 -0.36,-2.14 0.41,-0.36 1,0.16 0,-1.36 0.86,-0.87 1.98,-0.87 0.33,-0.58 0.03,-1.07 -1.12,-0.5 -0.15,-0.46 0.9,-1.53 -0.03,-1.6 0.9,-3.39 0.63,-0.47 -0.05,-1.84 1.76,-0.57 0.21,-1.29 0.77,-0.54 0.67,0.89 1.27,0.06 1.91,1.23 1.06,0.23 0.96,1.94 1.26,0.71 0.28,0.58 1.94,0.23 1.58,1.36 0.98,0 0.76,1.09 1.64,-0.29 1.1,1.89 1.27,-0.25 1.56,0.47 0.23,0.6 1.68,-0.96 0.41,0.54 0.57,-0.09 0.52,-0.58 1.6,-0.7 0.01,-1.08 0.54,0.04 0.74,0.68 1.22,0.33 2.54,-0.24 1.95,1.89 1.72,1.19 0.98,0.21 1.74,-0.91 1.71,0.2 0.44,-0.24 0.25,-0.77 -0.24,-1.34 1.89,-3.08 1.51,-0.54 1.15,-1.52 2.5,-0.39 0.07,-1 -1.54,-0.12 -0.48,-0.66 0.31,-0.74 0.73,-0.32 1.38,0.89 1.43,0.24 0.68,1 1.43,0.28 0.88,-0.81 1.51,0.57 3.21,-1.05 0.79,0.12 -0.44,0.72 0.28,0.17 0.51,-0.68 1.15,0.86 1.1,-0.24 0,0 0.72,0.63 2.98,0.79 1.22,1.18 0.82,1.21 2.3,2.13 1.38,3.97 -0.44,2.93 0.17,1.39 1.68,3.95 -0.41,2.28 0.18,1.99 1.2,4.47 -1.2,3.11 -1.06,0.81 -1.4,2.15 -0.09,0.86 0.67,0.82 1.34,0.26 0.8,1.23 -2.26,0.45 -1.36,1.36 0.63,3.15 1.77,2.12 0.6,1.74 2.43,1.93 0.54,3.12 0.62,0.86 1.3,1.2 3.42,1.59 2.78,0.16 2.1,1.35 0.69,-0.21 0.28,-0.52 -0.5,-1.72 0.51,-2.14 0.58,-1.01 3.05,-2.03 0,0 0.35,0.52 0.04,1.65 0.75,0.34 0.36,1.1 1.53,0.71 0.8,0.94 -0.81,4.9 1.21,0.45 1.02,4 -0.97,0.52 -0.02,0.41 0.5,0.37 -0.12,0.68 -6.07,0.58 -1.68,-0.23 -0.76,0.91 -2.66,-0.87 -1,-0.7 -1.12,-0.1 -2.25,0.8 -2.23,-0.7 -3.9,-0.27 -1.71,1.37 -0.47,1.34 -2.4,1.82 -2.07,2.83 -2.26,2.14 -2.4,0.72 -0.23,1.32 0.78,0.51 0.37,1.65 -0.31,1.68 0.37,1.89 -0.45,1.2 0.89,4.27 -2.8,2.42 -2.32,2.89 -0.09,1.88 -1.29,5.77 -0.61,0.37 -1.37,2.73 -0.08,1.28 0.85,3.09 -0.16,5.55 -0.25,0.63 -3.21,1.42 -1.01,1.51 -1.16,3.05 0,0 -2.94,1.3 -0.4,1.38 -0.48,0.03 -1.82,-1.11 -0.95,-2.07 -2.49,-2.39 -1.71,-0.43 -1.39,-1.76 -1.35,2.56 -0.81,0.85 -0.69,-0.03 -2.2,-4.58 1.69,-1.76 1.7,-0.87 0.6,-0.89 -0.12,-1.24 -1.15,0.03 -0.52,-0.37 -0.58,-2.46 -2.09,-0.16 -1.33,-0.6 -1.53,-1.75 -0.54,-0.03 -0.91,1.31 -1.68,0.35 -2.2,-2.64 0,0 -2.12,-2.18 -0.6,-0.06 -0.85,0.6 -2.04,-0.15 -0.61,-1.28 -0.13,-2.26 -1.22,-1.34 -0.74,-1.74 0.27,-0.93 -1.05,-2.92 -0.44,-2.81 -1.72,-1.65 -0.9,-1.98 -1.08,-1.21 -0.63,-2.95 -0.71,-1.06 -0.79,-2.59 0.26,-0.9 -1.03,-0.93 -0.09,-2.2 -1.74,-2.27 -0.14,-1.07 -1.08,-0.26 -0.89,-1.38 -1.45,-0.96 -4.04,-1.17 -0.67,1.04 -2.79,2.12 -1.33,0.19 -0.69,0.55 -0.7,-0.49 -0.84,0.18 -0.59,-1.96 -0.98,-1.41 -0.81,-4.12 -0.2,-0.25 -0.57,0.42 -0.57,-0.2 -1.21,-4.47 -1.32,-0.31 -0.89,-2.61 -2.3,-0.22 -0.53,0.44 -1.2,-0.96 0.33,-1.44 -1.2,-2.38 -0.75,-0.65 -0.48,-1.82 -1.01,-0.61 0.51,-1.96 0.09,-5.12 1.33,-3.21 -0.08,-0.68 -0.47,0.08 -0.6,-0.72 1.73,-2.22 1.19,-0.77 -0.15,-0.73 -0.73,0.16 z"/>
                 <path class="mx-st b3" data-st="gua" tabindex="0" role="button" aria-label="Guanajuato: 4%" d="m 465.44786,314.42244 0.5,0.49 -0.11,2.06 -1.15,1.91 2.48,0.61 -0.04,1.17 -0.71,1.44 -1.45,0.67 -0.56,1.03 -1.1,0.17 -1.73,-1.75 -1.52,0.56 -2.25,3.34 0.1,1.45 -0.67,1.6 -0.82,-0.48 -0.22,1.1 -0.66,0.4 -2.72,-0.38 -1.5,0.71 -4.58,0.28 -0.72,1.41 -0.65,3.8 0.14,0.76 0.96,0.71 0.65,1.74 -0.01,2.71 1.09,1.86 2.02,1.41 0.72,1.67 0,0 -0.43,1.09 0.6,1.18 0.1,1.32 -0.51,1.75 0.67,0.05 -0.08,0.99 -1.18,1.15 -2.06,0.28 -0.73,0.79 -0.48,1.4 -0.62,0.18 0.33,-1.5 -0.5,-0.24 -1.94,0.48 -1.38,1.02 -3.44,-0.17 -2.58,-0.91 -1.3,-0.14 -0.61,0.29 -0.26,-0.1 0.21,-0.47 -0.46,-2.34 -2.21,0.6 -1.39,-0.44 -0.66,0.58 0.33,0.82 -1.22,0.52 -1.8,-0.74 -2.54,-0.24 -0.47,-0.5 -0.02,-3.24 -0.45,-1.73 1.04,0.52 0.63,-0.27 -1.34,-1.8 -1.09,-0.75 -1.43,0.24 -0.63,-0.39 -2.1,0.69 -2.01,2.8 -0.91,-0.3 -2.21,0.14 -0.48,-0.43 -1.18,0.7 -0.81,-0.09 -0.44,-0.45 -0.68,-2.85 0.36,-0.4 -0.57,-0.49 -0.55,0.07 -0.33,-0.54 -0.86,-0.05 0,0 0.38,-2.77 1.79,-3.43 -1.57,-2.87 -1.65,-0.43 -0.55,-1.31 2.01,-1.96 0.12,-0.83 1.81,-1.5 1.91,-3.95 2.49,-1.91 1.12,-2.71 -0.11,-0.65 0.52,-0.74 1.47,-0.09 0.43,-0.37 0.67,-1.37 -0.81,-0.47 0.58,-2.19 -0.7,-0.12 1.52,-5.53 -0.12,-0.7 1.2,-1.36 -0.74,-0.83 1.22,-1.29 0,0 0.97,0.63 0.81,-0.94 0,0 1.16,0.67 2.91,0.31 1.26,0.73 4.63,1.06 1.23,0.75 1.07,-0.04 4.97,3.72 2.74,1.43 2.75,-0.03 1.52,-0.61 -0.15,-1.12 0.62,-1.83 1.08,-0.73 3.89,1.28 3.15,2 0.27,0.69 0.48,-0.09 1.7,2.13 1.81,-0.17 0.39,-0.54 0.68,0.84 1.61,0.04 z"/>
-                <path class="mx-st b3" data-st="gro" tabindex="0" role="button" aria-label="Guerrero: 4%" d="m 449.47786,379.54244 0.3,2.94 -1.05,1.92 -0.74,4.23 0.37,1.6 1.75,0.76 0.1,1.19 -0.25,0.72 -1.66,1.81 0.65,0.66 1.33,-0.27 1.51,0.33 0.22,1.08 1.57,1.96 0.04,-0.43 0.62,0.03 0.34,-0.39 0.19,0.37 1.98,-2.18 2.47,-0.58 -0.69,-1.38 0.35,-0.6 1.02,-0.49 0.79,0.43 3.51,-0.23 0.29,-0.58 0.88,-0.42 0.85,0.29 0.44,-1.56 1.76,-0.32 -0.36,-1.72 0.81,-0.05 0.91,1.08 1.98,0.67 0.82,-0.49 0.81,0.13 0,0 0.51,0.84 -0.65,1.12 0.44,0.35 1.08,-0.23 1.12,0.46 2.02,2.67 5.51,0.7 2.3,2.33 0,0 -0.05,1.23 1.35,1.18 1.34,0.62 1.22,2.25 2.99,-0.2 0.22,0.8 -0.83,0.97 4.21,1.78 0.12,1.07 1.4,-0.3 0.47,0.27 0.86,-0.86 1.55,-0.14 1.61,1.98 1.61,0.8 0,0 -1.74,3.95 -0.17,1.41 2.73,6.06 0.6,4.58 -0.92,0.83 -0.18,2.06 0.56,0.52 2.3,0.78 0.45,1.17 -0.11,1.91 0.27,0.59 1.16,0.25 0.42,0.54 0.36,1.56 -0.92,2.88 -0.91,0.92 -1.22,0.23 -0.93,0.67 -0.18,1.35 -4.11,3.59 -0.46,2.02 -4.64,3.54 0,0 -3.56,-3.61 -1.93,-2.51 -1.69,0.16 -0.33,0.56 -1.28,-0.19 -10.62,-3.2 -3.11,-0.65 -4,-0.04 -1.63,-0.53 -2.08,-1.09 -1.81,-1.48 -0.99,-0.26 0.62,-0.64 -0.23,-0.44 -0.98,0.04 0.19,0.43 -0.57,0.25 -1.11,-1.73 -0.88,-0.44 -26.59,-9.48 0.13,-0.58 -0.51,-0.64 -2.49,-1.75 -0.76,-0.98 -6.24,-2.63 0.23,-0.84 -0.91,-1.08 -0.81,-0.57 -2.18,-0.28 -0.1,-0.54 -1.05,-0.38 -0.76,-1.89 -1.86,-1.33 -1.37,-2.35 -3.81,-2.12 -2.2,-0.68 -1.37,0.18 -0.74,0.82 -0.53,-0.32 0,0 -0.82,-1.26 0.11,-3.93 0.76,-0.63 2.64,-0.82 0.86,0.25 1.46,-0.64 0.76,-0.77 1.62,0.37 0.82,-0.28 0.18,-0.32 -1.84,0.03 0.33,-0.9 -0.11,-1.23 -0.65,-1.41 0.58,-1.1 -0.63,-1.23 0.13,-0.34 0.64,-0.03 -0.47,-0.79 0.68,-0.39 0.62,0.14 -0.21,-0.46 0.56,-0.11 0.53,0.82 0.48,-0.77 -0.33,-0.41 1.06,-0.33 0.06,1.05 0.6,-0.38 0.29,0.38 0.15,-0.67 0.67,-0.24 1.13,0.03 1.21,1.9 2,0.91 3.46,-0.51 0.21,-0.46 2.03,-0.46 1.72,0.04 0.47,0.49 2.03,0.47 1.57,-0.19 1.13,0.28 1.18,1.66 0.08,0.82 0.64,0.13 1.42,-1.1 0.62,0.57 1.44,0.23 0.4,0.79 1.49,0.85 0.34,-0.42 0.4,0.3 0.27,1.06 0.81,-0.03 0.77,-1.01 -2.83,-3.79 -0.3,-3.14 -1.22,-4.24 0.47,-1.03 1.1,-0.85 0.42,0.04 0.57,1.57 2.44,-2.92 0.93,-0.53 1.09,-2.45 2.22,-1.41 z m 4.64,18.75 0.07,0.32 0.38,-0.34 -0.45,0.02 z"/>
+                <path class="mx-st b4" data-st="gro" tabindex="0" role="button" aria-label="Guerrero: 5%" d="m 449.47786,379.54244 0.3,2.94 -1.05,1.92 -0.74,4.23 0.37,1.6 1.75,0.76 0.1,1.19 -0.25,0.72 -1.66,1.81 0.65,0.66 1.33,-0.27 1.51,0.33 0.22,1.08 1.57,1.96 0.04,-0.43 0.62,0.03 0.34,-0.39 0.19,0.37 1.98,-2.18 2.47,-0.58 -0.69,-1.38 0.35,-0.6 1.02,-0.49 0.79,0.43 3.51,-0.23 0.29,-0.58 0.88,-0.42 0.85,0.29 0.44,-1.56 1.76,-0.32 -0.36,-1.72 0.81,-0.05 0.91,1.08 1.98,0.67 0.82,-0.49 0.81,0.13 0,0 0.51,0.84 -0.65,1.12 0.44,0.35 1.08,-0.23 1.12,0.46 2.02,2.67 5.51,0.7 2.3,2.33 0,0 -0.05,1.23 1.35,1.18 1.34,0.62 1.22,2.25 2.99,-0.2 0.22,0.8 -0.83,0.97 4.21,1.78 0.12,1.07 1.4,-0.3 0.47,0.27 0.86,-0.86 1.55,-0.14 1.61,1.98 1.61,0.8 0,0 -1.74,3.95 -0.17,1.41 2.73,6.06 0.6,4.58 -0.92,0.83 -0.18,2.06 0.56,0.52 2.3,0.78 0.45,1.17 -0.11,1.91 0.27,0.59 1.16,0.25 0.42,0.54 0.36,1.56 -0.92,2.88 -0.91,0.92 -1.22,0.23 -0.93,0.67 -0.18,1.35 -4.11,3.59 -0.46,2.02 -4.64,3.54 0,0 -3.56,-3.61 -1.93,-2.51 -1.69,0.16 -0.33,0.56 -1.28,-0.19 -10.62,-3.2 -3.11,-0.65 -4,-0.04 -1.63,-0.53 -2.08,-1.09 -1.81,-1.48 -0.99,-0.26 0.62,-0.64 -0.23,-0.44 -0.98,0.04 0.19,0.43 -0.57,0.25 -1.11,-1.73 -0.88,-0.44 -26.59,-9.48 0.13,-0.58 -0.51,-0.64 -2.49,-1.75 -0.76,-0.98 -6.24,-2.63 0.23,-0.84 -0.91,-1.08 -0.81,-0.57 -2.18,-0.28 -0.1,-0.54 -1.05,-0.38 -0.76,-1.89 -1.86,-1.33 -1.37,-2.35 -3.81,-2.12 -2.2,-0.68 -1.37,0.18 -0.74,0.82 -0.53,-0.32 0,0 -0.82,-1.26 0.11,-3.93 0.76,-0.63 2.64,-0.82 0.86,0.25 1.46,-0.64 0.76,-0.77 1.62,0.37 0.82,-0.28 0.18,-0.32 -1.84,0.03 0.33,-0.9 -0.11,-1.23 -0.65,-1.41 0.58,-1.1 -0.63,-1.23 0.13,-0.34 0.64,-0.03 -0.47,-0.79 0.68,-0.39 0.62,0.14 -0.21,-0.46 0.56,-0.11 0.53,0.82 0.48,-0.77 -0.33,-0.41 1.06,-0.33 0.06,1.05 0.6,-0.38 0.29,0.38 0.15,-0.67 0.67,-0.24 1.13,0.03 1.21,1.9 2,0.91 3.46,-0.51 0.21,-0.46 2.03,-0.46 1.72,0.04 0.47,0.49 2.03,0.47 1.57,-0.19 1.13,0.28 1.18,1.66 0.08,0.82 0.64,0.13 1.42,-1.1 0.62,0.57 1.44,0.23 0.4,0.79 1.49,0.85 0.34,-0.42 0.4,0.3 0.27,1.06 0.81,-0.03 0.77,-1.01 -2.83,-3.79 -0.3,-3.14 -1.22,-4.24 0.47,-1.03 1.1,-0.85 0.42,0.04 0.57,1.57 2.44,-2.92 0.93,-0.53 1.09,-2.45 2.22,-1.41 z m 4.64,18.75 0.07,0.32 0.38,-0.34 -0.45,0.02 z"/>
                 <path class="mx-st b1" data-st="hid" tabindex="0" role="button" aria-label="Hidalgo: 2.5%" d="m 496.62786,317.19244 0.84,0.17 0.3,0.75 -0.3,2.66 1.83,1.71 1.26,0.66 1.31,0.07 0.86,-0.9 2.03,0.62 2.53,3.42 -1.86,2.46 -0.63,2.21 0.56,1.06 -0.26,0.63 -1.45,0.23 -1.34,-1.39 -0.46,0 -2.39,2.16 -0.32,0.86 -0.65,0.54 -0.33,3.66 -0.58,1.3 -0.25,2.08 1.17,2.59 0.88,1.08 0.5,-0.22 1.33,-1.55 2.48,-1.16 1.88,-2.23 1.6,-0.73 2.14,-2.33 0.83,-0.35 1.46,0.95 0,0 0.07,3 -2.86,2.52 -0.91,1.38 -3.62,1.85 0.7,1.41 2.12,-0.48 0.46,2.19 -0.81,4.8 -1.54,3.08 0.7,4.73 0,0 -2.38,-0.5 -0.82,1.47 -1.45,1.21 -2.09,0.28 -1,-0.23 -5.01,1.71 0,0 -0.2,-1.41 1.84,-4.15 -0.17,-1.74 -5.81,0.61 -1.72,2.58 -0.24,0.21 -0.65,-0.32 0.02,-0.9 -0.87,-1.77 0.2,-0.52 0.91,-0.53 0.85,-0.08 1.11,-4.28 -0.47,-1.34 -0.6,-0.07 -2.73,1.39 -3.88,1.07 -0.53,3.75 -0.69,0.76 -2.13,-1.01 -0.17,2.24 -1.21,0.99 0.1,-2.49 -0.4,-1.34 -0.69,-0.65 -0.34,-1.25 -1.22,-1.26 0.7,-0.99 -1.51,-3.13 -0.64,-0.25 -0.13,-0.58 -4.65,-0.69 -2.63,-1.49 -1.18,-1.39 0,0 1.01,-6.54 1.58,-0.49 0.91,-0.68 2.93,-0.72 2.32,-1.61 -0.63,-2.02 1.15,-2.56 1.16,-0.42 0.81,-1.2 0.47,-2.21 0.83,-1.56 -0.27,-1.11 1.65,-1.43 1.21,0.71 4.11,-1.29 1.28,-3.13 0,0 2.26,-0.75 1.14,2.4 1.34,1.1 1.08,-0.04 1.35,-2.38 0.92,1.31 1.33,-2.96 1.58,-1.84 z"/>
                 <path class="mx-st b4" data-st="jal" tabindex="0" role="button" aria-label="Jalisco: 5%" d="m 390.52786,309.79244 2.05,-1.12 4.21,0.38 1.74,1.41 2.17,1.02 1.26,-0.06 3.02,-1.04 0.72,-0.5 2.55,-3.55 4.28,-1.97 -1.96,-2.14 0.24,-1.6 -0.26,-0.59 0,0 3.54,0.91 2.13,1.14 2.67,2.35 2.09,0.75 0.28,0.39 0,0 -1.22,1.29 0.74,0.83 -1.2,1.36 0.12,0.7 -1.52,5.53 0.7,0.12 -0.58,2.19 0.81,0.47 -0.67,1.37 -0.43,0.37 -1.47,0.09 -0.52,0.74 0.11,0.65 -1.12,2.71 -2.49,1.91 -1.91,3.95 -1.81,1.5 -0.12,0.83 -2.01,1.96 0.55,1.31 1.65,0.43 1.57,2.87 -1.79,3.43 -0.38,2.77 0,0 -2.8,0.01 -2.14,1.04 -1.71,-0.17 -1.33,0.46 -1.68,-0.13 -1.07,0.34 -2.06,1.64 -1.06,-0.08 -1.01,1.05 -0.94,0.33 -0.28,1.43 -2.97,0.73 -0.23,0.81 -0.44,0.04 -1.05,-1.3 -2.47,-0.45 -0.3,1.15 -0.93,-0.2 -0.36,0.27 -0.02,2.35 -0.89,1.51 0.5,0.84 0.5,0.05 0.45,-0.56 2.27,0.28 3.21,0.94 0.66,0.64 0.61,2.21 -0.33,0.81 -0.93,0.74 1.91,4.2 -0.63,2.59 3.36,-0.07 0.61,0.68 0.06,1.56 -2.36,2.5 -0.85,2.31 -2.31,-0.58 -1.37,0.72 -4.02,3.58 -2.2,1.21 -1.59,1.74 -0.29,0.09 -1.26,-1.76 -0.53,-0.1 -2.22,1.7 -1.55,-0.3 -1.66,0.41 0,0 -0.05,-1.96 -0.82,-1.54 0.56,-1.32 -0.07,-3.12 0.5,-1.8 -1.07,-0.48 -0.21,-0.78 -0.97,-0.83 0.16,-1.02 -0.48,-2.89 -0.61,-0.13 -2.51,2.41 -3.22,1.68 -1.41,0.21 -3.25,-0.32 -3.1,2.32 -1.13,0.29 -1.27,-0.38 -3.77,0.88 -0.55,-0.4 -0.87,0.58 -0.48,0.84 -0.56,0.11 -1.14,-0.48 -1.48,1.79 -1.92,-0.05 0,0 -0.56,-0.53 -0.63,0.09 -0.08,-0.51 -0.66,0.26 -0.49,-0.3 -0.85,0.13 0.01,-0.64 0.51,-0.55 -0.13,-0.46 -0.89,-0.29 -0.23,0.43 -0.93,0.19 -2,-1.07 -1.89,-1.72 0.36,-0.72 -0.37,-0.73 -0.84,-0.47 0.09,-0.85 -0.45,-0.22 -0.22,-1.49 -0.76,-0.74 -0.84,-0.03 0.04,-0.36 -2.83,-2.11 -0.26,-0.73 -1.43,-1.51 -0.4,-1.11 -3.92,-5.33 -1.12,-2.32 0.21,-2.21 -0.34,-1.22 -0.68,-0.24 -0.13,-0.6 -2.24,-2.34 -0.46,-1.65 1.05,-0.51 0.95,-1.13 7.41,-1.16 1.5,-1.1 0.66,-1.61 -0.31,-0.97 -1.28,-1.06 0,0 4.45,-5.62 1.17,-0.45 2.33,0.47 3.19,-2.44 1.25,-0.21 1.5,0.73 1.21,1.43 3.08,0.78 2.66,3.01 1.08,0.56 2.3,2.12 0.67,0.78 0.5,1.55 0.51,0.32 0.03,-1.46 -1.18,-1.46 0.29,-0.35 -0.73,-0.75 -0.37,-1.53 0.45,-0.64 0.82,-0.18 1.5,-8.51 4.04,-0.23 0.95,-0.4 0.97,-0.97 1.71,-0.28 2.25,-1.28 0.4,-0.82 0.4,-4.22 -0.24,-1.48 -1.39,-1.24 -1.74,-4.29 -4.5,-0.6 -0.85,-1.61 -0.11,-2.72 -0.53,-0.48 -1.11,-0.09 -1.2,-1.16 -1.65,0.52 -0.46,-3.02 1.24,-4.89 -0.18,-0.48 0,0 1.08,-1.21 1.35,0.34 0.36,-3.03 3.1,-1.17 0.53,0.37 -1.05,3.24 0.27,0.49 1.8,-1.14 1.03,-1.18 -0.16,-1.43 -1.74,-3.84 0.11,-0.79 2.16,-1.53 2.66,-0.38 1.81,1.01 -0.17,0.91 -1.1,0.82 -1.45,1.87 -1.69,4.22 -0.04,3.32 1.21,1.78 1.16,0.17 0.38,-1.16 0,-7.04 0.63,-0.57 3.43,-0.67 1.42,0.51 1.4,1.32 0.6,1.93 -0.04,1.16 -3.78,6.17 -0.09,0.45 0.58,0.66 1.93,0.02 0.69,-0.8 1.27,0.2 0.71,0.52 0.9,-0.44 0.93,-1.73 2.39,-1.89 -1.24,-1.03 0.31,-1.87 1.88,-0.73 2.17,0.17 0.41,0.86 -0.76,1.51 0.5,0.44 2.15,0.14 0.51,0.38 -0.7,3.47 -1.19,2.91 -0.74,0.69 -1.26,0.2 -3.28,1.68 -1.77,1.73 -2.92,2.07 0.18,1.79 -0.33,2.47 -1.62,1.88 -1.79,0.46 0.85,2.48 0.93,0.54 1.02,-0.49 0.67,0.14 0.34,0.58 -0.1,1.02 -1.17,1.12 -4.04,1.81 0.17,0.5 2.5,0.62 0.75,0.81 0.75,1.7 0.94,0.49 2.26,-0.19 2.9,1.61 0.99,-0.48 0.88,0.07 0.22,-0.56 1.34,-0.26 1.71,0.43 0.11,-0.37 1.47,-0.52 0.33,-2.02 0.63,-0.54 1.37,-0.49 1.52,0.5 3.58,-2.91 2.29,-1.4 0.96,-1.31 0.48,-2.69 -2.78,-1.78 -0.65,-1.85 z"/>
                 <path class="mx-st b4" data-st="cmx" tabindex="0" role="button" aria-label="Ciudad de México: 5%" d="m 488.38786,379.24244 -0.95,-0.02 -2.35,0.75 -0.91,-0.8 -0.63,0.12 -1.3,1.09 -1.33,-1.17 -1.33,0.24 0,0 -2.63,-4.38 -0.09,-0.98 3.17,-2.75 0.55,-1.98 2.24,-2.46 0.33,0.36 -0.05,1.06 1.57,1.92 0.48,1.55 2.14,1.79 0.32,1.48 0.47,-0.38 0.23,0.49 0.35,1.58 -0.47,1.67 z"/>
@@ -1935,7 +2018,7 @@
     <div class="container trust-wrap">
         <div class="trust-stage">
             <div class="trust-panel">
-                <p class="trust-kicker" data-i18n="trust.title">¿Por qué confiar en Fisco Abierto?</p>
+                <p class="trust-kicker" data-i18n="trust.title">Fuentes oficiales que cita Fisco Abierto</p>
 
                 <div class="trust-chain" id="trust-chain">
                     <svg class="chain-threads" aria-hidden="true" focusable="false"></svg>
@@ -1981,7 +2064,7 @@
 <section id="diagnostico">
     <div class="container diag-wrap">
         <div class="diag-intro">
-            <h2 data-i18n="diag.title">Diagnóstico fiscal express</h2>
+            <h2 data-i18n="diag.title">Diagnóstico fiscal</h2>
             <p class="section-subtitle" data-i18n="diag.intro">Selecciona tus plataformas e ingresos aproximados. No pedimos datos personales (ni nombre, ni RFC, ni correo). Todo se procesa en tu navegador.</p>
         </div>
 
@@ -2057,8 +2140,8 @@
 
             <!-- PASO 3: Situación fiscal + facturación -->
             <div class="diag-step" data-step="3">
-                <p class="diag-question" data-i18n="diag.step3.question">Casi listo. Dos preguntas finales para afinar tu diagnóstico.</p>
-                <p class="diag-hint" data-i18n="diag.step3.hint">No hay respuesta incorrecta. Si no sabes, hay opción para eso.</p>
+                <p class="diag-question" data-i18n="diag.step3.question">Dos preguntas sobre tu cumplimiento</p>
+                <p class="diag-hint" data-i18n="diag.step3.hint">Cada pregunta tiene una opción para cuando no sabes.</p>
 
                 <div class="q-block" id="qFiscal">
                 <p class="q-label" data-i18n="diag.step3.fiscal">Tu situación ante el SAT:</p>
@@ -2111,7 +2194,7 @@
                         <ul id="sat-visibility-list"></ul>
                     </div>
                     <div class="result-section" id="obligations">
-                        <h3 data-i18n="results.obligations">Obligaciones que probablemente tienes (y quizá no conoces)</h3>
+                        <h3 data-i18n="results.obligations">Obligaciones que probablemente tienes</h3>
                         <ul id="obligations-list"></ul>
                     </div>
                     <div class="result-section" id="actions">
@@ -2136,7 +2219,7 @@
                     <span class="faq-arrow">▼</span>
                 </button>
                 <div class="faq-answer">
-                    <div class="faq-answer-inner" data-i18n="faq.a1">No. El diagnóstico funciona completamente en tu navegador. No se envía ningún dato a ningún servidor. No hay registros, no hay cookies de rastreo, no hay forma de que alguien sepa que lo usaste. Es como usar una calculadora en tu computadora.</div>
+                    <div class="faq-answer-inner" data-i18n="faq.a1">No. El diagnóstico corre completo en tu navegador, tus respuestas no se envían a ningún servidor y el sitio no usa analítica ni cookies propias. Como cualquier página, al abrirla tu navegador se conecta con GitHub Pages, que aloja el sitio y guarda la IP de cada visita por seguridad, con Google Fonts, que sirve las tipografías, y con Substack, que muestra el formulario de la newsletter. Ninguno recibe tus respuestas.</div>
                 </div>
             </div>
             <div class="faq-item">
@@ -2145,7 +2228,7 @@
                     <span class="faq-arrow">▼</span>
                 </button>
                 <div class="faq-answer">
-                    <div class="faq-answer-inner" data-i18n="faq.a2">Depende. Si generas ingresos y no estás registrado, técnicamente estás incumpliendo una obligación fiscal. Las multas van de $5,070 a $15,200 MXN solo por no inscribirte (Art. 80 CFF, Anexo 5 RMF 2026). Sin embargo, regularizarte voluntariamente antes de que el SAT te requiera generalmente reduce las consecuencias. Consulta a un contador para tu caso específico.</div>
+                    <div class="faq-answer-inner" data-i18n="faq.a2">Si te inscribes por tu cuenta, antes de que el SAT descubra la omisión o te requiera, no hay multa por la inscripción tardía (arts. 73 y 79, fracción I CFF). La multa de $5,070 a $15,200 (art. 80, fracción I CFF, montos del Anexo 5 RMF 2026) aplica cuando el SAT descubre la omisión o te inscribes después de un requerimiento. Inscribirte por tu cuenta no borra los impuestos que no pagaste; esos se pagan con actualización y recargos (art. 21 CFF). Consulta a un contador para tu caso.</div>
                 </div>
             </div>
             <div class="faq-item">
@@ -2154,7 +2237,7 @@
                     <span class="faq-arrow">▼</span>
                 </button>
                 <div class="faq-answer">
-                    <div class="faq-answer-inner" data-i18n="faq.a3">Solo si tus ingresos por plataformas del año pasado no excedieron $300,000 MXN y presentaste el aviso para que las retenciones sean tu pago definitivo (el aviso se presenta dentro de los 30 días siguientes a tu primer ingreso). Tener además sueldo o intereses no te saca de esa opción, aunque sí puede obligarte a declarar por esos otros ingresos. Si rebasas el umbral, pierdes la opción de forma permanente y las retenciones vuelven a ser un anticipo, no el pago completo.</div>
+                    <div class="faq-answer-inner" data-i18n="faq.a3">Solo si tus ingresos por plataformas del año pasado no excedieron $300,000 MXN y presentaste el aviso para que las retenciones de ISR e IVA sean tu pago definitivo (el aviso se presenta dentro de los 30 días siguientes a tu primer ingreso; Art. 113-B LISR y art. 18-M LIVA). Tener además sueldo o intereses no te saca de esa opción, aunque sí puede obligarte a declarar por esos otros ingresos. Si rebasas el umbral, pierdes la opción de forma permanente y las retenciones vuelven a ser un anticipo, no el pago completo.</div>
                 </div>
             </div>
             <div class="faq-item">
@@ -2181,7 +2264,7 @@
                     <span class="faq-arrow">▼</span>
                 </button>
                 <div class="faq-answer">
-                    <div class="faq-answer-inner" data-i18n="faq.a6">No hay truco. Fisco Abierto es un proyecto de utilidad pública, no un negocio. No vendemos cursos, no ofrecemos "asesoría premium", no monetizamos tus datos (no los tenemos). El proyecto existe como portafolio profesional y porque creemos que la información fiscal básica debería ser accesible para todos.</div>
+                    <div class="faq-answer-inner" data-i18n="faq.a6">No hay costo. Fisco Abierto no vende cursos ni asesoría, y el diagnóstico no pide ni envía datos personales. Es un proyecto de portafolio profesional.</div>
                 </div>
             </div>
         </div>
@@ -2193,7 +2276,7 @@
     <div class="container">
         <div class="newsletter-box reveal">
             <h2 data-i18n="newsletter.title">Newsletter</h2>
-            <p data-i18n="newsletter.description">Lo que cambió en el SAT, explicado para personas normales. Gratis.</p>
+            <p data-i18n="newsletter.description">Los cambios fiscales que afectan a quien gana dinero en plataformas, explicados sin tecnicismos.</p>
             <div id="substack-embed">
                 <iframe class="substack-frame" src="https://fiscoabierto.substack.com/embed" title="Suscripción al newsletter de Fisco Abierto en Substack" height="150" loading="lazy"></iframe>
             </div>
@@ -2231,27 +2314,27 @@ const translations = {
         'meta.title': 'Fisco Abierto | Tu situación fiscal en la economía digital mexicana',
         'verif.line': 'Verificado contra la ley el {fecha}',
         'hero.title': '¿Generas ingresos en plataformas digitales?',
-        'hero.subtitle': 'El SAT ya lo sabe.',
-        'hero.description': 'Entiende tu situación fiscal en menos de 2 minutos. Sin pedir tus datos personales, porque entender tus impuestos debería ser gratis.',
+        'hero.subtitle': 'Te decimos cuánto te retienen y qué declarar.',
+        'hero.description': 'Diagnóstico de tu situación fiscal en unos 2 minutos, gratis y sin pedir datos personales.',
         'hero.cta': 'Hacer mi diagnóstico fiscal',
-        'stats.title': 'Esto no es teórico. Ya está pasando.',
-        'stats.subtitle': 'Cifras reales sobre la fiscalización de la economía digital en México.',
-        'stats.stat1': 'repartidores y conductores de plataformas ya están registrados ante el IMSS. Y son solo una parte de la economía digital.',
+        'stats.title': 'Cifras de 2026 sobre la economía de plataformas en México',
+        'stats.subtitle': 'Cada cifra lleva su fuente oficial.',
+        'stats.stat1': 'repartidores y conductores de plataformas registrados ante el IMSS',
         'stats.stat2': 'plataformas digitales extranjeras inscritas en el RFC y obligadas a reportar al SAT',
         'stats.stat3': 'es la retención de ISR por venta o servicio en plataformas durante 2026 (antes era 1%)',
-        'stats.stat4': 'meses seguidos sin presentar sus declaraciones al SAT y una plataforma puede quedar bloqueada en México. Por eso reportan todo.',
-        'stats.stat5': 'de los trabajadores en México son informales. Muchos sin saberlo.',
-        'stats.stat6': 'de tus ganancias se van en retención si no tienes RFC. Se puede evitar.',
-        'stats.src1': 'IMSS y STPS, junio 2026',
-        'stats.src2': 'DOF 22-may-2026, corte al 30-abr-2026',
+        'stats.stat4': 'meses seguidos sin presentar sus declaraciones y una plataforma extranjera puede quedar bloqueada en México',
+        'stats.stat5': 'de los trabajadores en México están en la informalidad',
+        'stats.stat6': 'de tus ingresos por plataformas se retiene si no le das tu RFC a la plataforma',
+        'stats.src1': 'IMSS, comunicado 479/2026, cierre de agosto 2026',
+        'stats.src2': 'DOF 18-sep-2026, corte al 31-ago-2026',
         'stats.src3': 'LIF 2026, art. 25, fr. VI (vigencia anual)',
-        'stats.src4': 'Art. 30-B CFF y art. 18-H BIS LIVA',
-        'stats.src5': 'INEGI, ENOE junio 2026',
+        'stats.src4': 'Art. 18-H BIS LIVA',
+        'stats.src5': 'INEGI, ENOE agosto 2026',
         'stats.src6': 'Art. 113-C, fr. IV LISR',
-        'stats.callout': '<strong>Desde el 1° de abril de 2026</strong>, está en vigor el Art. 30-B del CFF: las plataformas digitales deben dar al SAT acceso en línea y <strong>en tiempo real</strong> a la información que permite comprobar su cumplimiento fiscal. Las reglas cambiaron. Estar informado ya no es opcional.',
-        'calc.titleA': 'La retención que te toca depende de lo que haces.',
-        'calc.titleMark': 'Y solo una subió en 2026.',
-        'calc.lead': 'El 113-A de la Ley del ISR tiene tres tasas distintas según lo que hagas, y la Ley de Ingresos de 2026 solo cambió una de las tres. Elige tu actividad y mueve la barra.',
+        'stats.callout': '<strong>Desde el 1° de abril de 2026</strong> está en vigor el Art. 30-B del CFF, que obliga a las plataformas digitales a dar al SAT acceso en línea y <strong>en tiempo real</strong> a la información que permite comprobar su cumplimiento fiscal.',
+        'calc.titleA': 'Retención de ISR en plataformas',
+        'calc.titleMark': 'según tu actividad',
+        'calc.lead': 'El art. 113-A de la Ley del ISR fija tres tasas según lo que hagas. Para 2026, la Ley de Ingresos sustituyó solo una de ellas. Elige tu actividad y mueve la barra.',
         'calc.activityGroup': 'Tipo de actividad',
         'calc.sliderLabel': 'Lo que te pagan al mes, sin IVA',
         'calc.actVenta': 'Venta de bienes o servicios',
@@ -2262,34 +2345,49 @@ const translations = {
         'calc.rowDiff': 'Lo que te retienen de más cada año',
         'calc.rowConRfc': 'Con RFC, retención de {rate}',
         'calc.rowSinRfc': 'Sin RFC, retención de 20%',
-        'calc.rowDiffRfc': 'Lo que pierdes cada año si no das tu RFC',
-        'calc.caveat': 'La tasa la fija la Ley de Ingresos año con año. Si la de 2027 no repite el 2.5%, vuelve a 1% el 1 de enero.',
-        'calc.ivaTitle': 'Y aparte del ISR, el IVA.',
-        'calc.ivaLead': 'La plataforma también retiene parte del IVA que cobras: la mitad si tiene tu RFC, todo si no.',
+        'calc.rowDiffRfc': 'Retención adicional al año sin RFC',
+        'calc.caveat': 'El 1% lo fija la Ley del ISR (art. 113-A, párrafo tercero, fracción III). El 2.5% viene de la Ley de Ingresos 2026, que solo rige ese año. La iniciativa de Ley de Ingresos 2027, presentada el 8 de septiembre de 2026, propone repetirlo en su art. 25 y está en discusión en la Cámara de Diputados. Si la ley que se apruebe no lo repite, el 1 de enero vuelve el 1%.',
+        'calc.ivaTitle': 'Retención de IVA',
+        'calc.ivaLead': 'La plataforma también retiene el IVA que cobras encima de tu precio. Retiene la mitad si le diste tu RFC y todo si no.',
         'calc.ivaRfc': 'Con RFC, 8% de lo que te pagan',
         'calc.ivaSin': 'Sin RFC, 16%',
-        'calc.ivaTotal': 'Sumando ISR e IVA, con RFC la plataforma se queda con {pctRfc} de lo que te pagan ({totRfc} al año); sin RFC, con {pctSin} ({totSin}).',
+        'calc.ivaTotal': 'Sumando ISR e IVA, con RFC la plataforma retiene y entera al SAT {totRfc} al año; sin RFC, {totSin}. El IVA retenido sale del IVA que cobras encima de tu precio; el ISR retenido sí se descuenta de lo que te pagan.',
         'calc.foot': 'Art. 113-A, párrafo tercero, fracción III LISR (1%) · Art. 25, fracción VI de la LIF 2026, DOF 07-nov-2025 (2.5%) · Art. 113-C, fracción IV LISR (20% sin RFC) · Umbral del Art. 113-B LISR, medido sobre el ejercicio anterior · Art. 18-J, fracción II, inciso a) LIVA (50% del IVA; 100% sin RFC), con IVA a la tasa general de 16% · Sobre ingresos brutos sin IVA',
-        'calc.rateUp': 'Tu tasa subió de 1% a 2.5% en 2026: son {diff} más al año.',
-        'calc.rateSame': 'Tu tasa no cambió en 2026: la Ley de Ingresos solo sustituyó la fracción III del 113-A y a ti te aplica la fracción {frac}, que sigue en {rate}. El dato que sí te pega es otro: si la plataforma no tiene tu RFC, te retiene el 20% (Art. 113-C, fracción IV LISR). Dar tu RFC te ahorra {diff} al año.',
-        'calc.thFinal': 'Y con lo que te pagan no rebasas los $300,000 al año, así que puedes optar por que la retención sea tu pago definitivo de ISR. Si ejerces esa opción, lo retenido no se recupera en abril: es tu impuesto.',
-        'calc.thAdvance': 'Y con lo que te pagan rebasas los $300,000 al año, así que la retención es un anticipo que acreditas en tu declaración anual: te pega al flujo de efectivo, no al impuesto final.',
-        'map.titleA': 'Si rentas por Airbnb, tu estado te cobra un impuesto aparte del SAT.',
-        'map.titleMark': 'Va del 2% al 6%.',
-        'map.lead': 'El impuesto sobre hospedaje es estatal, no federal, y cada congreso fija su propia tasa. En 27 de las 32 entidades la plataforma está obligada a retenerlo o enterarlo, así que probablemente ya lo estás pagando sin saberlo. Y en varios estados la tasa para departamentos y casas es más alta que la de los hoteles. Toca tu estado.',
+        'calc.rateUp': 'Tu tasa subió de 1% a 2.5% en 2026, lo que suma {diff} más de retención al año.',
+        'calc.rateSame': 'Tu tasa no cambió en 2026. La Ley de Ingresos solo sustituyó la tasa de la fracción III del 113-A, y a ti te aplica la fracción {frac}, que sigue en {rate}. Si la plataforma no tiene tu RFC, la retención sube a 20% (Art. 113-C, fracción IV LISR); con tu RFC te retienen {diff} menos al año.',
+        'calc.thFinal': 'Con lo que te pagan no rebasas los $300,000 al año. Si el año pasado tampoco los rebasaste, puedes optar por que la retención sea tu pago definitivo de ISR; en ese caso lo retenido es tu impuesto y no se recupera en abril.',
+        'calc.thAdvance': 'Con lo que te pagan rebasas los $300,000 al año. La opción de pago definitivo se mide con lo que ganaste el año anterior, así que rebasar el umbral este año te impide usarla el siguiente; si ya la tenías, la pierdes y no puedes volver a ella (Art. 113-B LISR). Sin esa opción, la retención es un anticipo que acreditas en tu declaración.',
+        'vid.title': 'Retenciones y reportes al SAT, en video',
+        'vid.lead': 'Cuatro animaciones cortas y sin audio. Las cifras salen de las mismas tasas que usa la calculadora, y cada video cierra con los artículos que lo sostienen.',
+        'vid.group': 'Videos',
+        'vid.tab1': 'Cómo te retienen',
+        'vid.tab2': 'Con RFC y sin RFC',
+        'vid.tab3': 'Qué ve el SAT',
+        'vid.tab4': 'Pago definitivo o anticipo',
+        'vid.play': 'Reproducir',
+        'vid.pause': 'Pausa',
+        'vid.replay': 'Repetir',
+        'vid.textLabel': 'Texto del video',
+        'vid.tx1': 'Vendes algo en una plataforma y el cliente paga en la app. Paga $1,000 del precio más $160 de IVA, y la plataforma cobra todo. Antes de pagarte, retiene $25 de ISR y $80 de IVA, y los entera al SAT. A ti te deposita $1,055, antes de restar su comisión. Cada mes le informa al SAT cuánto vendiste y te da un comprobante de lo retenido. Lo que retiene la plataforma cuenta a tu favor como anticipo de tus impuestos, o como pago definitivo si optas por el régimen del Art. 113-B LISR.',
+        'vid.tx2': 'Una venta de $1,000 más $160 de IVA. La plataforma cobra $1,160. Si le diste tu RFC, retiene 2.5% de ISR y 50% del IVA. Si no se lo diste, retiene 20% de ISR y todo el IVA. Sin RFC te retienen $255 más por cada $1,000 que vendes. La tasa depende de que le hayas dado tu RFC a la plataforma, aunque ya estés inscrito en el SAT.',
+        'vid.tx3': 'Desde el 1 de abril de 2026, las plataformas deben dar al SAT acceso en línea y en tiempo real. El acceso se limita a la información de sus sistemas que sirve para comprobar el cumplimiento fiscal. Además, cada mes le informan al SAT sobre cada persona que vende o presta servicios a través de ellas. Con esos datos, el SAT puede comparar lo que reporta la plataforma con lo que tú declaras. Lo que la plataforma registra de tus operaciones llega al SAT cada mes, y con el Art. 30-B el SAT puede consultarlo en línea.',
+        'vid.tx4': 'Lo que retiene la plataforma puede ser tu pago definitivo o un anticipo. Depende de cuánto ganaste por plataformas el año anterior. Si no pasaste de $300,000, puedes optar por que la retención sea tu pago definitivo. Si pasaste, la retención es un anticipo y declaras cada mes. Si un año rebasas el umbral, la opción se cierra desde el año siguiente. Con el pago definitivo no presentas declaraciones mensuales por esos ingresos, pero lo retenido ya no se recupera. Si ya tenías la opción y la pierdes, no puedes volver a ella.',
+        'map.titleA': 'Impuesto estatal sobre hospedaje por entidad,',
+        'map.titleMark': 'del 2% al 6%',
+        'map.lead': 'El impuesto sobre hospedaje es estatal, no federal, y cada congreso fija su propia tasa. En 27 de las 32 entidades la plataforma está obligada a retenerlo o enterarlo, así que probablemente ya lo estás pagando. En varios estados la tasa para departamentos y casas es más alta que la de los hoteles. Toca tu estado.',
         'map.aria': 'Mapa de México: impuesto estatal sobre hospedaje por entidad federativa',
         'map.l1': '2% a 2.5%', 'map.l2': '3% a 3.75%', 'map.l3': '4%', 'map.l4': '4.5% a 5%', 'map.l5': '6%',
         'map.lPartial': 'confirmación parcial',
         'map.creditPre': 'Geometría:',
         'map.creditMid': 'de',
         'map.panelNatName': 'Las 32 entidades cobran impuesto sobre hospedaje',
-        'map.panelNatText': 'Ninguna se salva, pero la tasa cambia mucho según dónde esté el inmueble. Toca tu estado para ver la tuya, quién la retiene y el artículo que la fija.',
+        'map.panelNatText': 'La tasa cambia según la entidad donde esté el inmueble. Toca tu estado para ver la tuya, quién la retiene y el artículo que la fija.',
         'map.basis': 'Fundamento: {f}.',
         'map.ret_si': 'La plataforma está obligada a retenerlo o enterarlo, así que probablemente ya viene descontado de lo que te depositan.',
         'map.ret_solidaria': 'La ley no obliga a la plataforma a retenerlo, pero la hace responsable solidaria del pago. Revisa si te lo están descontando.',
         'map.ret_no': 'La ley no obliga a la plataforma a retenerlo ni a enterarlo. Si aplica, el pago te toca a ti.',
         'map.ret_nv': 'No pudimos confirmar si la plataforma está obligada a retenerlo. No asumas que ya está pagado.',
-        'trust.title': '¿Por qué confiar en Fisco Abierto?',
+        'trust.title': 'Fuentes oficiales que cita Fisco Abierto',
         'trust.src1': 'Diario Oficial',
         'trust.src1s': 'reformas y decretos',
         'trust.src2': 'Ley del ISR',
@@ -2306,7 +2404,7 @@ const translations = {
         'trust.nodeSub': 'traduce y cita el artículo',
         'trust.outWhat': 'retención de ISR si vendes en línea',
         'trust.outCite': 'Art. 25, fr. VI, LIF 2026 · DOF 07-nov-2025',
-        'diag.title': 'Diagnóstico fiscal express',
+        'diag.title': 'Diagnóstico fiscal',
         'diag.intro': 'Selecciona tus plataformas e ingresos aproximados. No pedimos datos personales (ni nombre, ni RFC, ni correo). Todo se procesa en tu navegador.',
         'diag.step1.question': '¿En qué plataformas generas ingresos?',
         'diag.step1.hint': 'Puedes seleccionar varias.',
@@ -2320,8 +2418,8 @@ const translations = {
         'diag.step2.income4': 'Entre $50,000 y $150,000 MXN al mes',
         'diag.step2.income5': 'Más de $150,000 MXN al mes',
         'diag.step2.indicator': 'Paso 2 de 3',
-        'diag.step3.question': 'Casi listo. Dos preguntas finales para afinar tu diagnóstico.',
-        'diag.step3.hint': 'No hay respuesta incorrecta. Si no sabes, hay opción para eso.',
+        'diag.step3.question': 'Dos preguntas sobre tu cumplimiento',
+        'diag.step3.hint': 'Cada pregunta tiene una opción para cuando no sabes.',
         'diag.step3.fiscal': 'Tu situación ante el SAT:',
         'diag.step3.fiscal1': 'No estoy dado de alta en el SAT',
         'diag.step3.fiscal2': 'Estoy dado de alta pero no he declarado',
@@ -2340,7 +2438,7 @@ const translations = {
         'diag.step1.other': 'Otra plataforma',
         'results.riskLabel': 'Nivel de exposición ante el SAT',
         'results.visibility': 'Lo que el SAT puede ver sobre tus operaciones',
-        'results.obligations': 'Obligaciones que probablemente tienes (y quizá no conoces)',
+        'results.obligations': 'Obligaciones que probablemente tienes',
         'results.actions': 'Pasos que puedes tomar',
         'results.cta': '¿Quieres estar al día con los cambios del SAT?',
         'results.newsletter': 'Suscríbete al newsletter',
@@ -2348,19 +2446,19 @@ const translations = {
         'faq.title': 'Preguntas frecuentes',
         'faq.subtitle': 'Lo que la mayoría se pregunta antes de usar la herramienta.',
         'faq.q1': '¿El SAT se va a enterar de que usé esta herramienta?',
-        'faq.a1': 'No. El diagnóstico funciona completamente en tu navegador. No se envía ningún dato a ningún servidor. No hay registros, no hay cookies de rastreo, no hay forma de que alguien sepa que lo usaste. Es como usar una calculadora en tu computadora.',
+        'faq.a1': 'No. El diagnóstico corre completo en tu navegador, tus respuestas no se envían a ningún servidor y el sitio no usa analítica ni cookies propias. Como cualquier página, al abrirla tu navegador se conecta con GitHub Pages, que aloja el sitio y guarda la IP de cada visita por seguridad, con Google Fonts, que sirve las tipografías, y con Substack, que muestra el formulario de la newsletter. Ninguno recibe tus respuestas.',
         'faq.q2': '¿Me van a multar si no estoy dado de alta en el SAT?',
-        'faq.a2': 'Depende. Si generas ingresos y no estás registrado, técnicamente estás incumpliendo una obligación fiscal. Las multas van de $5,070 a $15,200 MXN solo por no inscribirte (Art. 80 CFF, Anexo 5 RMF 2026). Sin embargo, regularizarte voluntariamente antes de que el SAT te requiera generalmente reduce las consecuencias. Consulta a un contador para tu caso específico.',
+        'faq.a2': 'Si te inscribes por tu cuenta, antes de que el SAT descubra la omisión o te requiera, no hay multa por la inscripción tardía (arts. 73 y 79, fracción I CFF). La multa de $5,070 a $15,200 (art. 80, fracción I CFF, montos del Anexo 5 RMF 2026) aplica cuando el SAT descubre la omisión o te inscribes después de un requerimiento. Inscribirte por tu cuenta no borra los impuestos que no pagaste; esos se pagan con actualización y recargos (art. 21 CFF). Consulta a un contador para tu caso.',
         'faq.q3': 'Si las plataformas ya me retienen impuestos, ¿ya cumplí?',
-        'faq.a3': 'Solo si tus ingresos por plataformas del año pasado no excedieron $300,000 MXN y presentaste el aviso para que las retenciones sean tu pago definitivo (el aviso se presenta dentro de los 30 días siguientes a tu primer ingreso). Tener además sueldo o intereses no te saca de esa opción, aunque sí puede obligarte a declarar por esos otros ingresos. Si rebasas el umbral, pierdes la opción de forma permanente y las retenciones vuelven a ser un anticipo, no el pago completo.',
+        'faq.a3': 'Solo si tus ingresos por plataformas del año pasado no excedieron $300,000 MXN y presentaste el aviso para que las retenciones de ISR e IVA sean tu pago definitivo (el aviso se presenta dentro de los 30 días siguientes a tu primer ingreso; Art. 113-B LISR y art. 18-M LIVA). Tener además sueldo o intereses no te saca de esa opción, aunque sí puede obligarte a declarar por esos otros ingresos. Si rebasas el umbral, pierdes la opción de forma permanente y las retenciones vuelven a ser un anticipo, no el pago completo.',
         'faq.q4': '¿Fisco Abierto es asesoría fiscal?',
         'faq.a4': 'No. Fisco Abierto es una herramienta informativa. Traducimos la ley y las reformas a un lenguaje que cualquier persona pueda entender, pero no sustituimos a un contador público o abogado fiscalista. Siempre recomendamos consultar a un profesional antes de tomar decisiones sobre tu situación fiscal.',
         'faq.q5': '¿Qué pasa con las criptomonedas? ¿El SAT sabe si tengo crypto?',
         'faq.a5': 'Si usas exchanges mexicanos como Bitso, sí, reportan al SAT. Si usas exchanges extranjeros como Binance, el SAT no tiene acceso directo, pero puede ver los depósitos que llegan a tu cuenta bancaria mexicana. En México no existe un régimen fiscal especial para criptomonedas; las ganancias se tratan como enajenación de bienes y son ingresos acumulables para ISR.',
         'faq.q6': '¿Esto de verdad es gratis? ¿Cuál es el truco?',
-        'faq.a6': 'No hay truco. Fisco Abierto es un proyecto de utilidad pública, no un negocio. No vendemos cursos, no ofrecemos "asesoría premium", no monetizamos tus datos (no los tenemos). El proyecto existe como portafolio profesional y porque creemos que la información fiscal básica debería ser accesible para todos.',
+        'faq.a6': 'No hay costo. Fisco Abierto no vende cursos ni asesoría, y el diagnóstico no pide ni envía datos personales. Es un proyecto de portafolio profesional.',
         'newsletter.title': 'Newsletter',
-        'newsletter.description': 'Lo que cambió en el SAT, explicado para personas normales. Gratis.',
+        'newsletter.description': 'Los cambios fiscales que afectan a quien gana dinero en plataformas, explicados sin tecnicismos.',
         'footer.disclaimer': 'Fisco Abierto es una herramienta informativa. No constituye asesoría fiscal, legal ni contable. Consulta a un profesional antes de tomar decisiones sobre tu situación fiscal.',
         'footer.copy': '© MMXXVI Fisco Abierto™. Hecho en México.',
         'footer.mark': 'Marca en trámite ante el IMPI, expediente 3592372',
@@ -2372,27 +2470,27 @@ const translations = {
         'meta.title': 'Fisco Abierto | Your tax situation in Mexico\'s digital economy',
         'verif.line': 'Checked against the law on {fecha}',
         'hero.title': 'Do you earn income on digital platforms in Mexico?',
-        'hero.subtitle': "The tax authority already knows.",
-        'hero.description': 'Understand your Mexican tax situation in less than 2 minutes. No personal data required, because understanding your taxes should be free.',
+        'hero.subtitle': 'We tell you how much is withheld and what to file.',
+        'hero.description': 'A diagnostic of your Mexican tax situation in about 2 minutes, free and without asking for personal data.',
         'hero.cta': 'Get my tax diagnostic',
-        'stats.title': "This isn't theoretical. It's already happening in Mexico.",
-        'stats.subtitle': 'Real figures on how the Mexican tax authority is cracking down on digital economy workers.',
-        'stats.stat1': 'delivery workers and drivers are now registered with Mexico\'s social security system. And that\'s only part of the digital economy.',
+        'stats.title': '2026 figures on Mexico\'s platform economy',
+        'stats.subtitle': 'Each figure lists its official source.',
+        'stats.stat1': 'delivery workers and drivers registered with Mexico\'s social security system (IMSS)',
         'stats.stat2': 'foreign digital platforms are registered with Mexico\'s tax authority and required to report',
         'stats.stat3': 'is the 2026 income tax (ISR) withholding on platform sales and services (was 1%)',
-        'stats.stat4': 'consecutive months of missed filings and a platform can be blocked in Mexico. That\'s why they report everything.',
-        'stats.stat5': 'of Mexican workers are informally employed. Many without knowing it.',
-        'stats.stat6': 'of your earnings go to withholding tax if you lack a tax ID (RFC). It can be avoided.',
-        'stats.src1': 'IMSS and STPS, June 2026',
-        'stats.src2': 'Official Gazette 22-May-2026, data as of 30-Apr-2026',
-        'stats.src3': '2026 Revenue Law, art. 25, section VI (renewed yearly)',
-        'stats.src4': 'Federal Tax Code art. 30-B and VAT Law art. 18-H BIS',
-        'stats.src5': 'INEGI, ENOE June 2026',
+        'stats.stat4': 'consecutive months of missed filings and a foreign platform can be blocked in Mexico',
+        'stats.stat5': 'of workers in Mexico are in informal employment',
+        'stats.stat6': 'of your platform income is withheld if you don\'t give the platform your RFC (tax ID)',
+        'stats.src1': 'IMSS, release 479/2026, end of August 2026',
+        'stats.src2': 'Official Gazette 18-Sep-2026, data as of 31-Aug-2026',
+        'stats.src3': '2026 Revenue Law, art. 25, section VI (in force for 2026 only)',
+        'stats.src4': 'VAT Law art. 18-H BIS',
+        'stats.src5': 'INEGI, ENOE August 2026',
         'stats.src6': 'Income Tax Law art. 113-C, section IV',
-        'stats.callout': '<strong>Since April 1, 2026</strong>, Article 30-B of Mexico\'s Federal Tax Code (CFF) is in effect: digital platforms must give the tax authority online, <strong>real-time access</strong> to the information needed to verify their tax compliance. The rules changed. Staying informed is no longer optional.',
-        'calc.titleA': 'The withholding that applies to you depends on what you do.',
-        'calc.titleMark': 'And only one of them went up in 2026.',
-        'calc.lead': 'Article 113-A of the Income Tax Law has three different rates depending on what you do, and the 2026 Revenue Law only changed one of the three. Pick your activity and move the slider.',
+        'stats.callout': '<strong>Since April 1, 2026</strong>, Article 30-B of Mexico\'s Federal Tax Code (CFF) requires digital platforms to give the tax authority online, <strong>real-time access</strong> to the information needed to verify their tax compliance.',
+        'calc.titleA': 'Income tax withholding on platforms',
+        'calc.titleMark': 'by activity',
+        'calc.lead': 'Article 113-A of the Income Tax Law sets three rates depending on what you do. For 2026, the Revenue Law replaced only one of them. Pick your activity and move the slider.',
         'calc.activityGroup': 'Type of activity',
         'calc.sliderLabel': 'What you get paid monthly, before VAT',
         'calc.actVenta': 'Selling goods or services',
@@ -2403,34 +2501,49 @@ const translations = {
         'calc.rowDiff': 'Extra withheld from you each year',
         'calc.rowConRfc': 'With an RFC on file, {rate} withholding',
         'calc.rowSinRfc': 'Without an RFC, 20% withholding',
-        'calc.rowDiffRfc': 'What you lose each year without an RFC',
-        'calc.caveat': 'The rate is set by the Revenue Law year by year. If the 2027 one does not repeat the 2.5%, it goes back to 1% on January 1.',
-        'calc.ivaTitle': 'And besides income tax, VAT.',
-        'calc.ivaLead': 'The platform also withholds part of the VAT you charge: half of it if it has your RFC, all of it if not.',
+        'calc.rowDiffRfc': 'Extra withheld per year without an RFC',
+        'calc.caveat': 'The 1% is set by the Income Tax Law (art. 113-A, third paragraph, section III). The 2.5% comes from the 2026 Revenue Law, which only covers that year. The 2027 Revenue Law bill, submitted on 8 September 2026, proposes keeping it in its art. 25 and is under discussion in the Chamber of Deputies. If the law that passes does not repeat it, the rate returns to 1% on January 1.',
+        'calc.ivaTitle': 'VAT withholding',
+        'calc.ivaLead': 'The platform also withholds the VAT you charge on top of your price. It withholds half if you gave it your RFC and all of it if you did not.',
         'calc.ivaRfc': 'With an RFC, 8% of what you get paid',
         'calc.ivaSin': 'Without an RFC, 16%',
-        'calc.ivaTotal': 'Adding income tax and VAT, with an RFC the platform keeps {pctRfc} of what you get paid ({totRfc} a year); without one, {pctSin} ({totSin}).',
+        'calc.ivaTotal': 'Adding income tax and VAT, with an RFC the platform withholds and pays the tax authority {totRfc} a year; without one, {totSin}. The VAT withheld comes out of the VAT charged on top of your price; the income tax withheld comes out of what you get paid.',
         'calc.foot': 'Income Tax Law art. 113-A, third paragraph, section III (1%) · 2026 Revenue Law art. 25, section VI, published 07-Nov-2025 (2.5%) · Income Tax Law art. 113-C, section IV (20% without an RFC) · Income Tax Law art. 113-B threshold, measured on the preceding tax year · VAT Law art. 18-J, section II, item a) (50% of the VAT; 100% without an RFC), assuming the general 16% VAT rate · On gross income before VAT',
-        'calc.rateUp': 'Your rate went from 1% to 2.5% in 2026: that is {diff} more per year.',
-        'calc.rateSame': 'Your rate did not change in 2026: the Revenue Law only replaced section III of article 113-A, and you fall under section {frac}, still at {rate}. The figure that does hit you is different: if the platform does not have your RFC (tax ID), it withholds 20% (Income Tax Law art. 113-C, section IV). Providing your RFC saves you {diff} a year.',
-        'calc.thFinal': 'And at what you get paid you stay under 300,000 pesos a year, so you can elect to have the withholding be your final income tax payment. If you make that election, what is withheld is not recovered in April: it is your tax.',
-        'calc.thAdvance': 'And at what you get paid you go over 300,000 pesos a year, so the withholding is an advance you credit in your annual return: it hits your cash flow, not your final tax bill.',
-        'map.titleA': 'If you rent on Airbnb, your state charges a tax on top of the federal one.',
-        'map.titleMark': 'It ranges from 2% to 6%.',
-        'map.lead': 'The lodging tax is set by each state, not by the federal government, and every state congress picks its own rate. In 27 of the 32 states the platform is required to withhold or remit it, so you are probably already paying it without knowing. And in several states the rate for apartments and houses is higher than the hotel rate. Tap your state.',
-        'map.aria': 'Map of Mexico: state lodging tax by state',
+        'calc.rateUp': 'Your rate went from 1% to 2.5% in 2026, which adds {diff} of withholding per year.',
+        'calc.rateSame': 'Your rate did not change in 2026. The Revenue Law only replaced the rate in section III of article 113-A, and you fall under section {frac}, still at {rate}. If the platform does not have your RFC (tax ID), withholding rises to 20% (Income Tax Law art. 113-C, section IV); with your RFC, {diff} less is withheld per year.',
+        'calc.thFinal': 'At what you get paid you stay under 300,000 pesos a year. If you also stayed under it last year, you can elect to have the withholding be your final income tax payment; in that case what is withheld is your tax and is not recovered in April.',
+        'calc.thAdvance': 'At what you get paid you go over 300,000 pesos a year. The final-payment election depends on what you earned the year before, so going over the threshold this year keeps you from using it next year; if you already had it, you lose it and cannot elect it again (Income Tax Law art. 113-B). Without that election, the withholding is an advance you credit in your tax return.',
+        'vid.title': 'Withholding and reporting to the SAT, on video',
+        'vid.lead': 'Four short animations without sound. The figures come from the same rates the calculator uses, and each video ends with the articles behind it.',
+        'vid.group': 'Videos',
+        'vid.tab1': 'How withholding works',
+        'vid.tab2': 'With and without an RFC',
+        'vid.tab3': 'What the SAT sees',
+        'vid.tab4': 'Final payment or advance',
+        'vid.play': 'Play',
+        'vid.pause': 'Pause',
+        'vid.replay': 'Replay',
+        'vid.textLabel': 'Video transcript',
+        'vid.tx1': 'You sell something on a platform and the customer pays in the app. They pay $1,000 for the item plus $160 of VAT, and the platform collects it all. Before paying you, it withholds $25 of income tax and $80 of VAT and pays them to the SAT. It deposits $1,055 to you, before taking its fee. Each month it reports your sales to the SAT and gives you a receipt for what it withheld. What the platform withholds counts toward your taxes as an advance payment, or as your final payment if you elect the Income Tax Law art. 113-B option.',
+        'vid.tx2': 'A sale of $1,000 plus $160 of VAT. The platform collects $1,160. If you gave it your RFC, it withholds 2.5% income tax and 50% of the VAT. If you did not, it withholds 20% income tax and all of the VAT. Without an RFC, $255 more is withheld for every $1,000 you sell. The rate depends on whether you gave the platform your RFC, even if you are already registered with the SAT.',
+        'vid.tx3': 'Since April 1, 2026, platforms must give the SAT online, real-time access. Access is limited to information in their systems that serves to verify tax compliance. On top of that, each month they report to the SAT on every person who sells or provides services through them. With that data, the SAT can compare what the platform reports with what you file. What the platform records about your transactions reaches the SAT every month, and under article 30-B the SAT can look it up online.',
+        'vid.tx4': 'What the platform withholds can be your final payment or an advance. It depends on how much you earned on platforms the year before. If you stayed under 300,000 pesos, you can elect to make the withholding your final payment. If you went over, the withholding is an advance and you file every month. If you go over the threshold in a year, the option closes from the next year on. With the final payment you do not file monthly returns for that income, but what is withheld is not recovered. If you had the option and lose it, you cannot elect it again.',
+        'map.titleA': 'Lodging tax in Mexico\'s 32 federal entities,',
+        'map.titleMark': 'from 2% to 6%',
+        'map.lead': 'The lodging tax is set by each state, not by the federal government, and each state congress picks its own rate. In 27 of Mexico\'s 32 federal entities (31 states and Mexico City) the platform is required to withhold or remit it, so you are probably already paying it. In several states the rate for apartments and houses is higher than the hotel rate. Tap your state.',
+        'map.aria': 'Map of Mexico: state lodging tax by federal entity',
         'map.l1': '2% to 2.5%', 'map.l2': '3% to 3.75%', 'map.l3': '4%', 'map.l4': '4.5% to 5%', 'map.l5': '6%',
         'map.lPartial': 'partially confirmed',
         'map.creditPre': 'Map geometry:',
         'map.creditMid': 'by',
-        'map.panelNatName': 'All 32 states levy a lodging tax',
-        'map.panelNatText': 'None of them skips it, but the rate varies a lot depending on where the property is. Tap your state to see your rate, who withholds it, and the article that sets it.',
+        'map.panelNatName': 'All 32 federal entities levy a lodging tax',
+        'map.panelNatText': 'The rate depends on where the property is. Tap your state to see your rate, who withholds it, and the article that sets it.',
         'map.basis': 'Legal basis: {f}.',
         'map.ret_si': 'The platform is required to withhold or remit it, so it is probably already deducted from what they pay you.',
         'map.ret_solidaria': 'The law does not require the platform to withhold it, but makes it jointly liable for payment. Check whether it is being deducted.',
         'map.ret_no': 'The law does not require the platform to withhold or remit it. If it applies, paying it is on you.',
         'map.ret_nv': 'We could not confirm whether the platform is required to withhold it. Do not assume it is already paid.',
-        'trust.title': 'Why trust Fisco Abierto?',
+        'trust.title': 'Official sources Fisco Abierto cites',
         'trust.src1': 'Official Gazette',
         'trust.src1s': 'amendments and decrees',
         'trust.src2': 'Income Tax Law',
@@ -2447,7 +2560,7 @@ const translations = {
         'trust.nodeSub': 'translates it and cites the article',
         'trust.outWhat': 'income tax withheld if you sell online',
         'trust.outCite': '2026 Revenue Law art. 25, section VI · published 07-Nov-2025',
-        'diag.title': 'Quick tax diagnostic',
+        'diag.title': 'Tax diagnostic',
         'diag.intro': 'Select your platforms and approximate income. We don\'t ask for personal data (no name, tax ID, or email). Everything is processed in your browser.',
         'diag.step1.question': 'Which platforms do you earn income on?',
         'diag.step1.hint': 'You can select multiple.',
@@ -2461,8 +2574,8 @@ const translations = {
         'diag.step2.income4': 'Between $50,000 and $150,000 MXN per month',
         'diag.step2.income5': 'More than $150,000 MXN per month',
         'diag.step2.indicator': 'Step 2 of 3',
-        'diag.step3.question': 'Almost done. Two final questions to refine your diagnostic.',
-        'diag.step3.hint': "There's no wrong answer. If you don't know, there's an option for that.",
+        'diag.step3.question': 'Two questions about your compliance',
+        'diag.step3.hint': 'Each question has an option for when you don\'t know.',
         'diag.step3.fiscal': 'Your status with the tax authority (SAT):',
         'diag.step3.fiscal1': 'I\'m not registered with the tax authority',
         'diag.step3.fiscal2': 'I\'m registered but haven\'t filed returns',
@@ -2481,7 +2594,7 @@ const translations = {
         'diag.step1.other': 'Another platform',
         'results.riskLabel': 'Exposure level with the tax authority (SAT)',
         'results.visibility': 'What the tax authority can see about your operations',
-        'results.obligations': 'Obligations you probably have (and maybe don\'t know)',
+        'results.obligations': 'Obligations you probably have',
         'results.actions': 'Steps you can take',
         'results.cta': 'Want to stay updated on tax authority (SAT) changes?',
         'results.newsletter': 'Subscribe to the newsletter',
@@ -2489,19 +2602,19 @@ const translations = {
         'faq.title': 'Frequently asked questions',
         'faq.subtitle': 'What most people ask before using the tool.',
         'faq.q1': 'Will the tax authority know I used this tool?',
-        'faq.a1': 'No. The diagnostic works entirely in your browser. No data is sent to any server. No logs, no tracking cookies, no way anyone knows you used it. It\'s like using a calculator on your computer.',
+        'faq.a1': 'No. The diagnostic runs entirely in your browser, your answers are not sent to any server, and the site uses no analytics and sets no cookies of its own. As with any web page, opening it connects your browser to GitHub Pages, which hosts the site and logs visitor IP addresses for security, to Google Fonts, which serves the typefaces, and to Substack, which shows the newsletter form. None of them receives your answers.',
         'faq.q2': 'Will I be fined if I\'m not registered with the tax authority?',
-        'faq.a2': 'It depends. If you earn income and aren\'t registered, you\'re technically violating a tax obligation. Fines range from about $290 to $875 USD just for not registering (Article 80 of the Federal Tax Code, Annex 5 RMF 2026). However, voluntarily regularizing your situation before the tax authority requires it generally reduces consequences. Consult an accountant about your specific situation.',
+        'faq.a2': 'If you register on your own, before the tax authority discovers the omission or sends you a request, there is no fine for late registration (Federal Tax Code arts. 73 and 79, section I). The fine of 5,070 to 15,200 pesos (about 285 to 850 US dollars at the Bank of Mexico FIX rate of 28 September 2026; art. 80, section I, amounts from Annex 5 RMF 2026) applies when the tax authority discovers the omission or you register after a request. Registering on your own does not cancel taxes you did not pay; those are paid with inflation adjustment and late-payment surcharges (art. 21). Consult an accountant about your case.',
         'faq.q3': 'If platforms already withhold taxes from me, am I compliant?',
-        'faq.a3': 'Only if your platform income last year didn\'t exceed $300,000 MXN and you filed the notice electing withholdings as your final payment (the notice is due within 30 days of your first platform income). Having a salary or interest income too doesn\'t disqualify you, though it may still require you to file for that other income. If you go over the threshold, you lose the election permanently and withholdings go back to being an advance, not the full payment.',
+        'faq.a3': 'Only if your platform income last year didn\'t exceed $300,000 MXN and you filed the notice electing income tax and VAT withholdings as your final payment (the notice is due within 30 days of your first platform income; Income Tax Law art. 113-B and VAT Law art. 18-M). Having a salary or interest income too doesn\'t disqualify you, though it may still require you to file for that other income. If you go over the threshold, you lose the election permanently and withholdings go back to being an advance, not the full payment.',
         'faq.q4': 'Is Fisco Abierto tax advice?',
         'faq.a4': 'No. Fisco Abierto is an informational tool. We translate the law and reforms into language anyone can understand, but we don\'t replace a professional accountant or tax attorney. We always recommend consulting a professional before making decisions about your tax situation.',
         'faq.q5': 'What about cryptocurrency? Does the tax authority know if I have crypto?',
         'faq.a5': 'If you use Mexican exchanges like Bitso, yes, they report to the tax authority. If you use foreign exchanges like Binance, the tax authority doesn\'t have direct access, but can see deposits arriving in your Mexican bank account. Mexico has no special tax regime for cryptocurrency; gains are treated as asset sales and count as taxable income.',
         'faq.q6': 'Is this really free? What\'s the catch?',
-        'faq.a6': 'No catch. Fisco Abierto is a public utility project, not a business. We don\'t sell courses, don\'t offer "premium advice," don\'t monetize your data (we don\'t have any). The project exists as a professional portfolio and because we believe basic tax information should be accessible to everyone.',
+        'faq.a6': 'There is no cost. Fisco Abierto does not sell courses or advice, and the diagnostic neither asks for nor sends personal data. It is a professional portfolio project.',
         'newsletter.title': 'Newsletter',
-        'newsletter.description': 'What changed at Mexico\'s tax authority, explained for normal people. Free.',
+        'newsletter.description': 'Tax changes that affect people who earn on platforms, explained without jargon.',
         'footer.disclaimer': 'Fisco Abierto is an informational tool about Mexican tax law. It does not constitute tax, legal, or accounting advice. Consult a professional before making decisions about your tax situation.',
         'footer.copy': '© MMXXVI Fisco Abierto™. Made in Mexico.',
         'footer.mark': 'Trademark application pending before IMPI, file 3592372',
@@ -2599,9 +2712,9 @@ document.querySelectorAll('.lang-switch .lang-btn').forEach(function(btn) {
 })();
 
 // ==================== RETENCION EN PESOS ====================
-// El punto del bloque: 1% contra 2.5% no dice nada, pesos si. Y el reveal
-// es que la subida es impuesto real justo para quien esta debajo del umbral
-// (puede optar por pago definitivo) y solo flujo para quien esta arriba.
+// El punto del bloque: 1% contra 2.5% no dice nada, pesos si. El umbral
+// del 113-B se mide con el ejercicio anterior; la calculadora solo conoce el
+// ingreso de este año, asi que el veredicto condiciona al lector al suyo.
 (function() {
     var range = document.getElementById('calcRange');
     if (!range) return;
@@ -2680,16 +2793,15 @@ document.querySelectorAll('.lang-switch .lang-btn').forEach(function(btn) {
         verdict.textContent = rateLine + ' ' + t(overThreshold ? 'calc.thAdvance' : 'calc.thFinal');
 
         // IVA: sobre la misma base anual. Con RFC se retiene la mitad del IVA
-        // (8% de la base); sin RFC, todo (16%). El total suma la tasa de ISR
-        // vigente de la actividad con la porcion de IVA retenida.
+        // (8% de la base); sin RFC, todo (16%). El total suma lo que la
+        // plataforma retiene y entera de ISR y de IVA; no se expresa como
+        // porcentaje de la base porque el IVA se cobra encima de ella.
         var ivaRfc = annual * IVA * IVA_RET;
         var ivaSin = annual * IVA;
         ivaRfcEl.textContent = money(ivaRfc);
         ivaSinEl.textContent = money(ivaSin);
         ivaTotalEl.textContent = t('calc.ivaTotal')
-            .replace('{pctRfc}', pct(rates.now + IVA * IVA_RET))
             .replace('{totRfc}', money(annual * rates.now + ivaRfc))
-            .replace('{pctSin}', pct(SIN_RFC + IVA))
             .replace('{totSin}', money(annual * SIN_RFC + ivaSin));
     }
 
@@ -2723,7 +2835,7 @@ document.querySelectorAll('.lang-switch .lang-btn').forEach(function(btn) {
     var panel = document.getElementById('mapPanel');
     if (!group || !panel) return;
 
-    var ST = {"agu": {"n": "Aguascalientes", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 41", "r": "si", "nota": "", "nota_en": "", "b": 2}, "bcn": {"n": "Baja California", "t": 5.0, "f": "Ley de Ingresos 2026, art. 6, a la que remite el art. 130 de la Ley de Hacienda", "r": "si", "nota": "Los moteles pagan 7%. La tasa la fija la Ley de Ingresos cada año, no la Ley de Hacienda, así que cambia con más facilidad.", "nota_en": "Motels pay 7%. The rate is set each year by the Revenue Law, not by the Finance Law, so it changes more easily.", "b": 4}, "bcs": {"n": "Baja California Sur", "t": 4.0, "f": "Ley de Hacienda del Estado, art. 16", "r": "nv", "nota": "Tasa con alta confianza pero sin confirmar en fuente oficial vigente: el sitio del Congreso de BCS no respondía al momento de la consulta.", "nota_en": "High-confidence rate, but not confirmed in the current official text: the BCS Congress website was not responding when we checked.", "b": 3}, "cam": {"n": "Campeche", "t": 2.0, "f": "Ley de Hacienda del Estado, art. 32", "r": "si", "nota": "La reforma de diciembre de 2023 quitó la mención expresa a plataformas, pero la obligación del intermediario sigue viva en el art. 29.", "nota_en": "The December 2023 reform removed the express mention of platforms, but the intermediary's obligation survives in art. 29.", "b": 1}, "chp": {"n": "Chiapas", "t": 2.0, "f": "Código de la Hacienda Pública del Estado, art. 240, fracción I", "r": "si", "nota": "Los moteles pagan 5%. El hospedaje por plataforma está expresamente en el 2%.", "nota_en": "Motels pay 5%. Platform lodging is expressly placed in the 2% bracket.", "b": 1}, "chh": {"n": "Chihuahua", "t": 4.0, "f": "Ley de Hacienda del Estado, art. 49", "r": "si", "nota": "Encima se causa el impuesto adicional universitario, 6% sobre el impuesto, así que la carga efectiva es 4.24%. La ley obliga a la plataforma a entregar tus datos, incluida la CLABE donde recibes depósitos.", "nota_en": "On top of it there is a university surtax of 6% on the tax itself, so the effective burden is 4.24%. The law requires the platform to hand over your data, including the CLABE where you receive deposits.", "b": 3}, "coa": {"n": "Coahuila", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 36", "r": "si", "nota": "La obligación de retener aplica solo a departamentos, casas, campamentos y paraderos, no a hoteles.", "nota_en": "The withholding obligation applies only to apartments, houses, campsites and rest stops, not to hotels.", "b": 2}, "col": {"n": "Colima", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 41 C, fracción I", "r": "si", "nota": "Los moteles pagan 5%. La ley menciona a las plataformas digitales por su nombre.", "nota_en": "Motels pay 5%. The law names digital platforms explicitly.", "b": 2}, "cmx": {"n": "Ciudad de México", "t": 5.0, "f": "Código Fiscal de la Ciudad de México, art. 164, párrafo tercero", "r": "si", "nota": "Los hoteles y hostales pagan 3.5%. El 5% aplica justamente a departamentos y casas cuando cobra un intermediario.", "nota_en": "Hotels and hostels pay 3.5%. The 5% applies precisely to apartments and houses when an intermediary collects the payment.", "b": 4}, "dur": {"n": "Durango", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 24", "r": "si", "nota": "Los moteles pagan 5%.", "nota_en": "Motels pay 5%.", "b": 2}, "gua": {"n": "Guanajuato", "t": 4.0, "f": "Ley de Hacienda para el Estado, art. 55", "r": "si", "nota": "Ojo con no confundirlo: el 4% del art. 37-A de la misma ley es el impuesto cedular, que es otro impuesto.", "nota_en": "Do not confuse it: the 4% in art. 37-A of the same law is the cedular tax, which is a different tax.", "b": 3}, "gro": {"n": "Guerrero", "t": 4.0, "f": "Ley Número 419 de Hacienda del Estado, art. 60", "r": "nv", "nota": "La ley prevé 5% para Alojamiento Turístico Eventual, que probablemente cubre el caso Airbnb, pero el texto consultado no define ese término. Tampoco confirmamos si la plataforma está obligada a retener.", "nota_en": "The law sets 5% for Occasional Tourist Lodging, which probably covers the Airbnb case, but the text we consulted does not define that term. We also could not confirm whether the platform is required to withhold.", "b": 3}, "hid": {"n": "Hidalgo", "t": 2.5, "f": "Ley de Hacienda del Estado, art. 31", "r": "si", "nota": "Con la reforma del 31 de diciembre de 2025 la plataforma quedó como retenedora solidaria y debe darte constancia de la retención.", "nota_en": "Since the reform of 31 December 2025 the platform is a jointly liable withholding agent and must give you a withholding certificate.", "b": 1}, "jal": {"n": "Jalisco", "t": 5.0, "f": "Ley de Ingresos 2026, art. 12, a la que remite el art. 51 de la Ley de Hacienda", "r": "si", "nota": "Varias fuentes publican 4% para Jalisco. Es incorrecto: la Ley de Ingresos 2026 dice 5.0%.", "nota_en": "Several sources publish 4% for Jalisco. That is wrong: the 2026 Revenue Law says 5.0%.", "b": 4}, "mex": {"n": "Estado de México", "t": 4.0, "f": "Código Financiero del Estado, art. 69 B", "r": "si", "nota": "La obligación de la plataforma no está en el Código sino en reglas administrativas, la Regla B.3.1. Hay un subsidio del 50% para estancias de más de 15 días.", "nota_en": "The platform's obligation is not in the Code but in administrative rules, Rule B.3.1. There is a 50% subsidy for stays longer than 15 days.", "b": 3}, "mic": {"n": "Michoacán", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 14", "r": "si", "nota": "", "nota_en": "", "b": 2}, "mor": {"n": "Morelos", "t": 3.75, "f": "Ley General de Hacienda del Estado, art. 26", "r": "si", "nota": "La plataforma es obligada solidaria del anfitrión, no solo retenedora.", "nota_en": "The platform is jointly liable with the host, not just a withholding agent.", "b": 2}, "nay": {"n": "Nayarit", "t": 5.0, "f": "Ley de Hacienda del Estado, art. 62", "r": "si", "nota": "La redacción es condicional: la plataforma entera el impuesto si se cubre a través de ella.", "nota_en": "The wording is conditional: the platform remits the tax if payment goes through it.", "b": 4}, "nle": {"n": "Nuevo León", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 174", "r": "solidaria", "nota": "Es de los pocos estados sin mandato expreso de retención para plataformas.", "nota_en": "One of the few states with no express withholding mandate for platforms.", "b": 2}, "oax": {"n": "Oaxaca", "t": 5.0, "f": "Ley Estatal de Hacienda, art. 55, párrafo segundo", "r": "si", "nota": "Los hoteles y similares pagan 3%. El 5% para departamentos y casas entró con el decreto del 10 de diciembre de 2025, así que varias fuentes siguen publicando 3% plano.", "nota_en": "Hotels and similar pay 3%. The 5% for apartments and houses came in with the decree of 10 December 2025, so several sources still publish a flat 3%.", "b": 4}, "pue": {"n": "Puebla", "t": 3.0, "f": "Ley de Ingresos 2026, art. 20, a la que remite el art. 27 de la Ley de Hacienda", "r": "si", "nota": "La Ley de Hacienda tiene un apartado completo para plataformas digitales, arts. 30 Bis a 30 Quinquies.", "nota_en": "The Finance Law has a full chapter on digital platforms, arts. 30 Bis to 30 Quinquies.", "b": 2}, "que": {"n": "Querétaro", "t": 5.0, "f": "Ley de Hacienda del Estado, art. 46", "r": "si", "nota": "Los hoteles y el tiempo compartido pagan 3.5%. El 5% aplica a cualquier otro inmueble, que es el caso típico de plataforma. La página de asistencia del propio estado publica 2.5%, cifra desactualizada.", "nota_en": "Hotels and timeshares pay 3.5%. The 5% applies to any other property, which is the typical platform case. The state's own help page publishes 2.5%, an outdated figure.", "b": 4}, "roo": {"n": "Quintana Roo", "t": 6.0, "f": "Ley del Impuesto al Hospedaje del Estado, art. 8", "r": "si", "nota": "Es la tasa más alta del país. El general es 5%; el 6% aplica a departamentos, casas y villas cuando cobra el anfitrión o la plataforma.", "nota_en": "The highest rate in the country. The general rate is 5%; the 6% applies to apartments, houses and villas when the host or the platform collects the payment.", "b": 5}, "slp": {"n": "San Luis Potosí", "t": 3.0, "f": "Ley de Hacienda para el Estado, art. 32, párrafo segundo", "r": "si", "nota": "La tasa general es 4%, pero cuando cobra la plataforma la retención es de 3%. Si no puedes acreditarla, esa retención se vuelve pago definitivo.", "nota_en": "The general rate is 4%, but when the platform collects, the withholding is 3%. If you cannot credit it, that withholding becomes a final payment.", "b": 2}, "sin": {"n": "Sinaloa", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 28", "r": "si", "nota": "El portal de trámites del propio estado publica 2%, texto anterior a la reforma de 2006.", "nota_en": "The state's own procedures portal publishes 2%, text that predates the 2006 reform.", "b": 2}, "son": {"n": "Sonora", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 8", "r": "solidaria", "nota": "La ley no usa la palabra retener: hace a la plataforma responsable solidaria.", "nota_en": "The law does not use the word withhold: it makes the platform jointly liable.", "b": 2}, "tab": {"n": "Tabasco", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 58", "r": "si", "nota": "El artículo fija 3.0% en dos párrafos, uno general y otro expreso para plataformas.", "nota_en": "The article sets 3.0% in two paragraphs, one general and one expressly for platforms.", "b": 2}, "tam": {"n": "Tamaulipas", "t": 3.0, "f": "Ley de Hacienda para el Estado, art. 52 Sexies", "r": "si", "nota": "", "nota_en": "", "b": 2}, "tla": {"n": "Tlaxcala", "t": 2.0, "f": "Código Financiero del Estado y sus Municipios, art. 117", "r": "no", "nota": "Desde diciembre de 2024 el hospedaje por plataforma sí es objeto del impuesto, pero ningún artículo obliga a la plataforma a retener o enterar.", "nota_en": "Since December 2024 platform lodging is subject to the tax, but no article requires the platform to withhold or remit it.", "b": 1}, "ver": {"n": "Veracruz", "t": 2.0, "f": "Código Financiero del Estado, art. 112", "r": "si", "nota": "La retención por el promotor o facilitador está en el art. 106, y hay reglas generales de la SEFIPLAN para plataformas.", "nota_en": "Withholding by the promoter or facilitator is in art. 106, and SEFIPLAN has general rules for platforms.", "b": 1}, "yuc": {"n": "Yucatán", "t": 4.5, "f": "Ley General de Hacienda del Estado, art. 38", "r": "si", "nota": "Subió a 4.5% con el decreto del 26 de diciembre de 2025.", "nota_en": "Rose to 4.5% with the decree of 26 December 2025.", "b": 4}, "zac": {"n": "Zacatecas", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 49", "r": "si", "nota": "La ley llama retenedor a la plataforma y define qué es un anfitrión.", "nota_en": "The law calls the platform a withholding agent and defines what a host is.", "b": 2}};
+    var ST = {"agu": {"n": "Aguascalientes", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 41", "r": "si", "nota": "", "nota_en": "", "b": 2}, "bcn": {"n": "Baja California", "t": 5.0, "f": "Ley de Ingresos 2026, art. 6, a la que remite el art. 130 de la Ley de Hacienda", "r": "si", "nota": "Los moteles pagan 7%. La tasa la fija la Ley de Ingresos cada año, no la Ley de Hacienda, así que cambia con más facilidad.", "nota_en": "Motels pay 7%. The rate is set each year by the Revenue Law, not by the Finance Law, so it changes more easily.", "b": 4}, "bcs": {"n": "Baja California Sur", "t": 4.0, "f": "Ley de Hacienda del Estado, art. 16", "r": "nv", "nota": "Tasa con alta confianza pero sin confirmar en fuente oficial vigente: el sitio del Congreso de BCS no respondía al momento de la consulta.", "nota_en": "High-confidence rate, but not confirmed in the current official text: the BCS Congress website was not responding when we checked.", "b": 3}, "cam": {"n": "Campeche", "t": 2.0, "f": "Ley de Hacienda del Estado, art. 32", "r": "si", "nota": "La reforma de diciembre de 2023 quitó la mención expresa a plataformas, pero la obligación del intermediario sigue viva en el art. 29.", "nota_en": "The December 2023 reform removed the express mention of platforms, but the intermediary's obligation survives in art. 29.", "b": 1}, "chp": {"n": "Chiapas", "t": 2.0, "f": "Código de la Hacienda Pública del Estado, art. 240, fracción I", "r": "si", "nota": "Los moteles pagan 5%. El hospedaje por plataforma está expresamente en el 2%.", "nota_en": "Motels pay 5%. Platform lodging is expressly placed in the 2% bracket.", "b": 1}, "chh": {"n": "Chihuahua", "t": 4.0, "f": "Ley de Hacienda del Estado, art. 49", "r": "si", "nota": "Encima se causa el impuesto adicional universitario, 6% sobre el impuesto, así que la carga efectiva es 4.24%. La ley obliga a la plataforma a entregar tus datos, incluida la CLABE donde recibes depósitos.", "nota_en": "On top of it there is a university surtax of 6% on the tax itself, so the effective burden is 4.24%. The law requires the platform to hand over your data, including the CLABE where you receive deposits.", "b": 3}, "coa": {"n": "Coahuila", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 36", "r": "si", "nota": "La obligación de retener aplica solo a departamentos, casas, campamentos y paraderos, no a hoteles.", "nota_en": "The withholding obligation applies only to apartments, houses, campsites and rest stops, not to hotels.", "b": 2}, "col": {"n": "Colima", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 41 C, fracción I", "r": "si", "nota": "Los moteles pagan 5%. La ley menciona a las plataformas digitales por su nombre.", "nota_en": "Motels pay 5%. The law names digital platforms explicitly.", "b": 2}, "cmx": {"n": "Ciudad de México", "t": 5.0, "f": "Código Fiscal de la Ciudad de México, art. 164, párrafo tercero", "r": "si", "nota": "Los hoteles y hostales pagan 3.5%. El 5% aplica justamente a departamentos y casas cuando cobra un intermediario.", "nota_en": "Hotels and hostels pay 3.5%. The 5% applies precisely to apartments and houses when an intermediary collects the payment.", "b": 4}, "dur": {"n": "Durango", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 24", "r": "si", "nota": "Los moteles pagan 5%.", "nota_en": "Motels pay 5%.", "b": 2}, "gua": {"n": "Guanajuato", "t": 4.0, "f": "Ley de Hacienda para el Estado, art. 55", "r": "si", "nota": "El 4% del art. 37-A de la misma ley es el impuesto cedular, un impuesto distinto.", "nota_en": "The 4% in art. 37-A of the same law is the cedular tax, a different tax.", "b": 3}, "gro": {"n": "Guerrero", "t": 5.0, "f": "Ley Número 419 de Hacienda del Estado, arts. 57 y 60", "r": "nv", "nota": "Los hoteles pagan 4%. El 5% aplica al Alojamiento Turístico Eventual, que la ley define como alojamiento en inmuebles no hoteleros, directo o a través de plataformas digitales (art. 57). No confirmamos si la plataforma está obligada a retener.", "nota_en": "Hotels pay 4%. The 5% applies to Occasional Tourist Lodging, which the law defines as lodging in non-hotel properties, provided directly or through digital platforms (art. 57). We could not confirm whether the platform is required to withhold.", "b": 4}, "hid": {"n": "Hidalgo", "t": 2.5, "f": "Ley de Hacienda del Estado, art. 31", "r": "si", "nota": "Con la reforma del 31 de diciembre de 2025 la plataforma quedó como retenedora solidaria y debe darte constancia de la retención.", "nota_en": "Since the reform of 31 December 2025 the platform is a jointly liable withholding agent and must give you a withholding certificate.", "b": 1}, "jal": {"n": "Jalisco", "t": 5.0, "f": "Ley de Ingresos 2026, art. 12, a la que remite el art. 51 de la Ley de Hacienda", "r": "si", "nota": "Varias fuentes publican 4% para Jalisco; la Ley de Ingresos 2026 dice 5.0%.", "nota_en": "Several sources publish 4% for Jalisco; the 2026 Revenue Law says 5.0%.", "b": 4}, "mex": {"n": "Estado de México", "t": 4.0, "f": "Código Financiero del Estado, art. 69 B", "r": "si", "nota": "La obligación de la plataforma no está en el Código sino en reglas administrativas, la Regla B.3.1. Hay un subsidio del 50% para estancias de más de 15 días.", "nota_en": "The platform's obligation is not in the Code but in administrative rules, Rule B.3.1. There is a 50% subsidy for stays longer than 15 days.", "b": 3}, "mic": {"n": "Michoacán", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 14", "r": "si", "nota": "", "nota_en": "", "b": 2}, "mor": {"n": "Morelos", "t": 3.75, "f": "Ley General de Hacienda del Estado, art. 26", "r": "si", "nota": "La plataforma es obligada solidaria del anfitrión, no solo retenedora.", "nota_en": "The platform is jointly liable with the host, not just a withholding agent.", "b": 2}, "nay": {"n": "Nayarit", "t": 5.0, "f": "Ley de Hacienda del Estado, art. 62", "r": "si", "nota": "La plataforma entera el impuesto cuando el pago se cubre a través de ella.", "nota_en": "The platform remits the tax when payment is made through it.", "b": 4}, "nle": {"n": "Nuevo León", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 174", "r": "solidaria", "nota": "Es de los pocos estados sin mandato expreso de retención para plataformas.", "nota_en": "One of the few states with no express withholding mandate for platforms.", "b": 2}, "oax": {"n": "Oaxaca", "t": 5.0, "f": "Ley Estatal de Hacienda, art. 55, párrafo segundo", "r": "si", "nota": "Los hoteles y similares pagan 3%. El 5% para departamentos y casas entró con el decreto del 10 de diciembre de 2025, así que varias fuentes siguen publicando 3% plano.", "nota_en": "Hotels and similar pay 3%. The 5% for apartments and houses came in with the decree of 10 December 2025, so several sources still publish a flat 3%.", "b": 4}, "pue": {"n": "Puebla", "t": 3.0, "f": "Ley de Ingresos 2026, art. 20, a la que remite el art. 27 de la Ley de Hacienda", "r": "si", "nota": "La Ley de Hacienda tiene un apartado completo para plataformas digitales, arts. 30 Bis a 30 Quinquies.", "nota_en": "The Finance Law has a full chapter on digital platforms, arts. 30 Bis to 30 Quinquies.", "b": 2}, "que": {"n": "Querétaro", "t": 5.0, "f": "Ley de Hacienda del Estado, art. 46", "r": "si", "nota": "Los hoteles y el tiempo compartido pagan 3.5%. El 5% aplica a cualquier otro inmueble, que es el caso típico de plataforma. La página de asistencia del propio estado publica 2.5%, cifra desactualizada.", "nota_en": "Hotels and timeshares pay 3.5%. The 5% applies to any other property, which is the typical platform case. The state's own help page publishes 2.5%, an outdated figure.", "b": 4}, "roo": {"n": "Quintana Roo", "t": 6.0, "f": "Ley del Impuesto al Hospedaje del Estado, art. 8", "r": "si", "nota": "Es la tasa más alta del país. El general es 5%; el 6% aplica a departamentos, casas y villas cuando cobra el anfitrión o la plataforma.", "nota_en": "The highest rate in the country. The general rate is 5%; the 6% applies to apartments, houses and villas when the host or the platform collects the payment.", "b": 5}, "slp": {"n": "San Luis Potosí", "t": 3.0, "f": "Ley de Hacienda para el Estado, art. 32, párrafo segundo", "r": "si", "nota": "La tasa general es 4%, pero cuando cobra la plataforma la retención es de 3%. Si no puedes acreditarla, esa retención se vuelve pago definitivo.", "nota_en": "The general rate is 4%, but when the platform collects, the withholding is 3%. If you cannot credit it, that withholding becomes a final payment.", "b": 2}, "sin": {"n": "Sinaloa", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 28", "r": "si", "nota": "El portal de trámites del propio estado publica 2%, texto anterior a la reforma de 2006.", "nota_en": "The state's own procedures portal publishes 2%, text that predates the 2006 reform.", "b": 2}, "son": {"n": "Sonora", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 8", "r": "solidaria", "nota": "La ley no usa la palabra retener: hace a la plataforma responsable solidaria.", "nota_en": "The law does not use the word withhold: it makes the platform jointly liable.", "b": 2}, "tab": {"n": "Tabasco", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 58", "r": "si", "nota": "El artículo fija 3.0% en dos párrafos, uno general y otro expreso para plataformas.", "nota_en": "The article sets 3.0% in two paragraphs, one general and one expressly for platforms.", "b": 2}, "tam": {"n": "Tamaulipas", "t": 3.0, "f": "Ley de Hacienda para el Estado, art. 52 Sexies", "r": "si", "nota": "", "nota_en": "", "b": 2}, "tla": {"n": "Tlaxcala", "t": 2.0, "f": "Código Financiero del Estado y sus Municipios, art. 117", "r": "no", "nota": "Desde diciembre de 2024 el hospedaje por plataforma sí es objeto del impuesto, pero ningún artículo obliga a la plataforma a retener o enterar.", "nota_en": "Since December 2024 platform lodging is subject to the tax, but no article requires the platform to withhold or remit it.", "b": 1}, "ver": {"n": "Veracruz", "t": 2.0, "f": "Código Financiero del Estado, art. 112", "r": "si", "nota": "La retención por el promotor o facilitador está en el art. 106, y hay reglas generales de la SEFIPLAN para plataformas.", "nota_en": "Withholding by the promoter or facilitator is in art. 106, and SEFIPLAN has general rules for platforms.", "b": 1}, "yuc": {"n": "Yucatán", "t": 4.5, "f": "Ley General de Hacienda del Estado, art. 38", "r": "si", "nota": "Bajó de 5% a 4.5% con el decreto 138/2025, publicado el 26 de diciembre de 2025.", "nota_en": "Went down from 5% to 4.5% with Decree 138/2025, published on 26 December 2025.", "b": 4}, "zac": {"n": "Zacatecas", "t": 3.0, "f": "Ley de Hacienda del Estado, art. 49", "r": "si", "nota": "La ley llama retenedor a la plataforma y define qué es un anfitrión.", "nota_en": "The law calls the platform a withholding agent and defines what a host is.", "b": 2}};
     var active = null;
     var activeId = null;
 
@@ -2830,7 +2942,8 @@ document.querySelectorAll('.income-btn[data-fiscal]').forEach(btn => {
             qf.style.height = '0px';
             qf.classList.remove('q-hidden');
             qf.style.height = qf.scrollHeight + 'px';
-            qf.addEventListener('transitionend', function fin(e) {
+            if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) qf.style.height = 'auto';
+            else qf.addEventListener('transitionend', function fin(e) {
                 if (e.propertyName !== 'height') return;
                 qf.style.height = 'auto';
                 qf.removeEventListener('transitionend', fin);
@@ -2927,6 +3040,7 @@ function renderResults() {
     }));
 
     renderList('sat-visibility-list', risk.visibility);
+    document.getElementById('sat-visibility').hidden = risk.visibility.length === 0;
     renderList('obligations-list', risk.obligations);
     renderList('actions-list', risk.actions);
 }
@@ -2938,7 +3052,7 @@ function showResults() {
     const results = document.getElementById('results');
     results.classList.add('active');
     renderResults();
-    window.scrollTo({ top: results.getBoundingClientRect().top + window.scrollY - 80, behavior: 'smooth' });
+    window.scrollTo({ top: results.getBoundingClientRect().top + window.scrollY - 80, behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
 }
 
 // El diagnostico se arma en JS, asi que el barrido de data-i18n no lo alcanza
@@ -3034,8 +3148,8 @@ function calculateRisk() {
     // --- Visibilidad por plataforma ---
     if (categories.has('marketplace')) {
         const text = currentLanguage === 'en'
-            ? '<strong>Your marketplace sales:</strong> Mercado Libre and Amazon report every transaction directly to the tax authority, including amounts, dates, and withholdings applied (Income Tax Law Article 113-C).'
-            : '<strong>Tus ventas en marketplaces:</strong> Mercado Libre y Amazon reportan directamente al SAT cada operación, incluyendo montos, fechas y retenciones aplicadas (Art. 113-C LISR).';
+            ? '<strong>Your marketplace sales:</strong> Mercado Libre and Amazon report to the tax authority every month how much you sold through them, along with your RFC and bank account (CLABE) (Income Tax Law art. 113-C, section III; VAT Law art. 18-J, section III).'
+            : '<strong>Tus ventas en marketplaces:</strong> Mercado Libre y Amazon le informan al SAT cada mes cuánto vendiste a través de ellas, junto con tu RFC y tu CLABE (Art. 113-C, fr. III LISR y art. 18-J, fr. III LIVA).';
         visibility.push(text);
         riskScore += 3;
     }
@@ -3055,8 +3169,8 @@ function calculateRisk() {
     }
     if (categories.has('hospedaje')) {
         const text = currentLanguage === 'en'
-            ? '<strong>Your rental income:</strong> Airbnb reports to the tax authority and withholds taxes. If your property is in a state with a local accommodation tax, there\'s an additional layer.'
-            : '<strong>Tus rentas de hospedaje:</strong> Airbnb reporta al SAT y retiene impuestos. Si tu inmueble está en un estado con impuesto local de hospedaje, hay una capa adicional.';
+            ? '<strong>Your rental income:</strong> Airbnb reports to the tax authority and withholds taxes. On top of that there is the state lodging tax, which all 32 federal entities levy at 2% to 6% depending on where your property is.'
+            : '<strong>Tus rentas de hospedaje:</strong> Airbnb reporta al SAT y retiene impuestos. Aparte está el impuesto estatal sobre hospedaje, que cobran las 32 entidades con tasas de 2% a 6% según dónde esté tu inmueble.';
         visibility.push(text);
         riskScore += 3;
     }
@@ -3069,8 +3183,8 @@ function calculateRisk() {
     }
     if (categories.has('freelance')) {
         const text = currentLanguage === 'en'
-            ? '<strong>Your freelance payments:</strong> If you receive payments via bank transfer or payment platforms, the tax authority can detect unreported income by cross-checking with banks (Federal Tax Code Article 55).'
-            : '<strong>Tus pagos de freelance:</strong> Si recibes por transferencia bancaria o plataformas de pago, el SAT puede detectar ingresos no declarados al cruzar información con los bancos (Art. 55 CFF).';
+            ? '<strong>Your freelance payments:</strong> If you receive payments via bank transfer or payment platforms, the tax authority can detect unreported income by cross-checking with banks (Federal Tax Code art. 59, section III).'
+            : '<strong>Tus pagos de freelance:</strong> Si recibes por transferencia bancaria o plataformas de pago, el SAT puede detectar ingresos no declarados al cruzar información con los bancos (Art. 59, fr. III CFF).';
         visibility.push(text);
         riskScore += 2;
     }
@@ -3096,11 +3210,17 @@ function calculateRisk() {
     else if (state.income === 'medio') riskScore += 2;
     else riskScore += 1;
 
-    // Alerta de umbral $300K
-    if (state.income === 'umbral' || state.income === 'alto' || state.income === 'muy_alto') {
+    // Umbral de $300,000 del Art. 113-B LISR. La opcion se mide con el
+    // ejercicio anterior; rebasar el umbral este ano la cierra desde el siguiente.
+    if (state.income === 'alto' || state.income === 'muy_alto') {
         const text = currentLanguage === 'en'
-            ? '<strong>You exceed (or are close to exceeding) the $300,000 annual threshold:</strong> Platform withholdings cannot be your final payment. You must calculate and pay the ISR and IVA difference monthly (Income Tax Law Article 113-A).'
-            : '<strong>Rebasas (o estás cerca de rebasar) el umbral de $300,000 anuales:</strong> Las retenciones de las plataformas no pueden ser tu pago definitivo. Debes calcular y pagar la diferencia de ISR e IVA mensualmente (Art. 113-A LISR).';
+            ? '<strong>Income above 300,000 pesos a year:</strong> If you were also above it last year, withholdings cannot be your final payment. If you were not, going above it this year closes that option from next year on. Without the option you file income tax and VAT monthly and credit what was withheld (Income Tax Law art. 113-B).'
+            : '<strong>Ingresos arriba de $300,000 al año:</strong> Si el año pasado también rebasaste esa cifra, las retenciones no pueden ser tu pago definitivo. Si no la rebasaste, hacerlo este año te cierra la opción desde el siguiente. Sin esa opción declaras ISR e IVA cada mes y acreditas lo retenido (Art. 113-B LISR).';
+        obligations.push(text);
+    } else if (state.income === 'umbral') {
+        const text = currentLanguage === 'en'
+            ? '<strong>Close to the 300,000-peso annual threshold:</strong> The final-payment election depends on your platform income last year. If it did not exceed 300,000 pesos you can elect it; if it did, you file monthly. Going over the threshold this year closes the option from next year on (Income Tax Law art. 113-B).'
+            : '<strong>Cerca del umbral de $300,000 al año:</strong> La opción de pago definitivo se mide con lo que ganaste por plataformas el año pasado. Si no pasó de $300,000, puedes optar; si pasó, declaras cada mes. Rebasar el umbral este año te cierra la opción desde el siguiente (Art. 113-B LISR).';
         obligations.push(text);
     }
 
@@ -3108,8 +3228,8 @@ function calculateRisk() {
     if (state.fiscal === 'ninguna') {
         riskScore += 4;
         const text = currentLanguage === 'en'
-            ? '<strong>Register with the tax authority (SAT):</strong> If you earn income, you\'re required to register for a tax ID (RFC) and choose a tax regime. This is not optional.'
-            : '<strong>Darte de alta en el SAT:</strong> Si generas ingresos, estás obligado a inscribirte en el RFC y elegir un régimen fiscal. Esto no es opcional.';
+            ? '<strong>Register with the tax authority (SAT):</strong> If you earn income, you\'re required to register for a tax ID (RFC) and choose a tax regime.'
+            : '<strong>Darte de alta en el SAT:</strong> Si generas ingresos, estás obligado a inscribirte en el RFC y elegir un régimen fiscal.';
         obligations.push(text);
     }
     if (state.fiscal === 'alta_sin_declarar') {
@@ -3146,27 +3266,40 @@ function calculateRisk() {
         riskScore += 1;
         const text = currentLanguage === 'en'
             ? '<strong>Issue tax receipts for all income:</strong> If you only issue for some, the tax authority can detect the difference by comparing platform reports vs your receipts. Regularizing helps.'
-            : '<strong>Facturar todos tus ingresos:</strong> Si solo facturas algunos, el SAT puede detectar la diferencia al cruzar lo que las plataformas reportan vs lo que tu facturas. Conviene regularizar.';
+            : '<strong>Facturar todos tus ingresos:</strong> Si solo facturas algunos, el SAT puede detectar la diferencia al cruzar lo que las plataformas reportan vs lo que tú facturas. Conviene regularizar.';
         obligations.push(text);
     }
 
     // --- Obligaciones por tipo (con el matiz del pago definitivo 113-B) ---
     const excedeUmbral = (state.income === 'umbral' || state.income === 'alto' || state.income === 'muy_alto');
     const plataformasRegimen = categories.has('marketplace') || categories.has('transporte') || categories.has('hospedaje') || categories.has('delivery');
-    if (plataformasRegimen && !excedeUmbral) {
+    // El 113-B solo admite ingresos de plataformas mas sueldo (cap. I) e
+    // intereses (cap. VI). Cripto (enajenacion) y creadores quedan fuera.
+    const otrosIngresosExcluyen = categories.has('crypto') || categories.has('contenido');
+    if (plataformasRegimen && !excedeUmbral && otrosIngresosExcluyen) {
         const text = currentLanguage === 'en'
-            ? '<strong>Digital platform tax regime:</strong> If your platform income last year didn\'t exceed $300,000 MXN, you can opt for platform withholdings to be your <strong>final payment</strong> (Income Tax Law Article 113-B) by filing a notice with the tax authority within 30 days of your first platform income. If you take that option, withholdings settle your platform income tax and you don\'t file monthly returns for that income. If you don\'t, you file monthly and withholdings count as advance payments.'
-            : '<strong>Régimen de plataformas digitales:</strong> Si tus ingresos por plataformas del año pasado no excedieron $300,000 MXN, puedes optar por que las retenciones sean tu <strong>pago definitivo</strong> (Art. 113-B LISR) presentando el aviso ante el SAT dentro de los 30 días siguientes a tu primer ingreso. Si ejerces esa opción, las retenciones cierran tu ISR de plataformas y no presentas pagos mensuales por esos ingresos. Si no la ejerces, sí declaras mensualmente y las retenciones cuentan como anticipo.';
+            ? '<strong>Final-payment election for platform income:</strong> Not available to you. Income Tax Law art. 113-B requires that your only income come from platforms, a salary or interest; with other kinds of income, withholdings count as an advance.'
+            : '<strong>Pago definitivo por plataformas:</strong> No te aplica. El Art. 113-B LISR exige que tus únicos ingresos sean de plataformas, sueldo o intereses; con ingresos de otro tipo, las retenciones cuentan como anticipo.';
+        obligations.push(text);
+    } else if (plataformasRegimen && !excedeUmbral) {
+        const text = currentLanguage === 'en'
+            ? '<strong>Digital platform tax regime:</strong> If last year your only income came from platforms (or also from a salary or interest) and your platform income did not exceed 300,000 pesos, you can elect to have the income tax and VAT withholdings be your <strong>final payment</strong> (Income Tax Law art. 113-B; VAT Law art. 18-M), filing the notice within 30 days of your first platform income. If you take that option, withholdings settle your platform taxes and you don\'t file monthly returns for that income. If you don\'t, you file monthly and withholdings count as advance payments.'
+            : '<strong>Régimen de plataformas digitales:</strong> Si el año pasado solo tuviste ingresos por plataformas (o, además, sueldo o intereses) y los de plataformas no pasaron de $300,000, puedes optar por que las retenciones de ISR e IVA sean tu <strong>pago definitivo</strong> (Art. 113-B LISR y art. 18-M LIVA), con aviso al SAT dentro de los 30 días siguientes a tu primer ingreso por plataformas. Si ejerces esa opción, las retenciones cierran tus impuestos de plataformas y no presentas pagos mensuales por esos ingresos. Si no la ejerces, sí declaras mensualmente y las retenciones cuentan como anticipo.';
         obligations.push(text);
     }
-    if (excedeUmbral || categories.has('contenido') || categories.has('freelance') || categories.has('pagos') || categories.has('crypto') || categories.has('otro')) {
+    // Cripto de persona fisica fuera de actividad empresarial es enajenacion
+    // de bienes (pago por operacion, Art. 126 LISR), no pagos mensuales.
+    const mensuales = excedeUmbral || ['contenido', 'freelance', 'pagos', 'otro'].some(c => categories.has(c));
+    if (mensuales) {
         const text1 = currentLanguage === 'en'
             ? '<strong>Monthly returns:</strong> Income tax (ISR) and value-added tax (IVA) are declared every month (by the 17th) for income not covered by a definitive withholding.'
             : '<strong>Declaraciones mensuales:</strong> ISR e IVA se declaran cada mes (a más tardar el día 17) por los ingresos que no estén cubiertos por una retención definitiva.';
-        const text2 = currentLanguage === 'en'
-            ? '<strong>Annual return:</strong> Every April you must file your annual income tax (ISR) return, including all income from all sources.'
-            : '<strong>Declaración anual:</strong> En abril de cada año debes presentar tu declaración anual de ISR, incluyendo todos los ingresos de todas tus fuentes.';
         obligations.push(text1);
+    }
+    if (mensuales || categories.has('crypto')) {
+        const text2 = currentLanguage === 'en'
+            ? '<strong>Annual return:</strong> Every April you file your annual income tax (ISR) return with the year\'s income, except income already settled by a final withholding.'
+            : '<strong>Declaración anual:</strong> En abril presentas tu declaración anual de ISR con los ingresos del año, salvo los que ya quedaron cubiertos por una retención definitiva.';
         obligations.push(text2);
     }
     if ((categories.has('contenido') || categories.has('freelance') || categories.has('pagos')) && state.factura === 'si_todas') {
@@ -3205,7 +3338,7 @@ function calculateRisk() {
     if (state.factura === 'no_se') {
         const text = currentLanguage === 'en'
             ? '<strong>Learn to issue tax receipts:</strong> Issuing receipts sounds intimidating but it\'s a free process in the tax authority portal. Search for "how to generate CFDI" tutorials or ask your accountant.'
-            : '<strong>Aprende a facturar:</strong> Facturar suena intimidante pero es un tramite que puedes hacer gratis en el portal del SAT. Busca tutoriales de "generar CFDI en el SAT" o preguntale a tu contador.';
+            : '<strong>Aprende a facturar:</strong> Facturar suena intimidante pero es un trámite que puedes hacer gratis en el portal del SAT. Busca tutoriales de "generar CFDI en el SAT" o pregúntale a tu contador.';
         actions.push(text);
     }
 
@@ -3214,7 +3347,7 @@ function calculateRisk() {
         : '<strong>Infórmate antes de actuar:</strong> Suscríbete al newsletter de Fisco Abierto para recibir los cambios fiscales que te afectan.';
     actions.push(action2);
 
-    if (categories.size > 2) {
+    if (state.platforms.size > 2) {
         const text = currentLanguage === 'en'
             ? '<strong>Map all your income sources:</strong> With more than two platforms, it\'s helpful to keep a clear record of how much you receive from each for your returns.'
             : '<strong>Mapea todas tus fuentes de ingreso:</strong> Con más de dos plataformas, conviene tener un registro claro de cuánto recibes de cada una para tu declaración.';
@@ -3222,8 +3355,11 @@ function calculateRisk() {
     }
 
     // --- Nivel final ---
+    // La visibilidad sola no es exposicion: sin brecha de cumplimiento, el nivel es bajo.
+    const sinBrecha = state.fiscal === 'al_corriente' && state.factura === 'si_todas';
     let level;
-    if (riskScore >= 8) level = 'alto';
+    if (sinBrecha) level = 'bajo';
+    else if (riskScore >= 8) level = 'alto';
     else if (riskScore >= 5) level = 'medio';
     else level = 'bajo';
 
@@ -3245,86 +3381,18 @@ document.querySelectorAll('.faq-question').forEach(btn => {
 // ==================== SMOOTH SCROLL ====================
 document.querySelectorAll('a[href^="#"]').forEach(a => {
     a.addEventListener('click', e => {
+        const href = a.getAttribute('href');
+        const target = href === '#' ? document.body : document.querySelector(href);
+        if (!target) return;
         e.preventDefault();
-        const target = document.querySelector(a.getAttribute('href'));
-        if (target) target.scrollIntoView({ behavior: 'smooth' });
+        const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        target.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+        if (href !== '#') {
+            if (!target.hasAttribute('tabindex')) target.setAttribute('tabindex', '-1');
+            target.focus({ preventScroll: true });
+        }
     });
 });
-
-// ==================== COUNT-UP ANIMATION ====================
-(function() {
-    var counters = document.querySelectorAll('.stat-number[data-count]');
-    if (!counters.length) return;
-    var animated = false;
-
-    function easeOutExpo(t) {
-        return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
-    }
-
-    function animateCounter(el) {
-        var target = parseFloat(el.getAttribute('data-count'));
-        var prefix = el.getAttribute('data-prefix') || '';
-        var suffix = el.getAttribute('data-suffix') || '';
-        var decimals = parseInt(el.getAttribute('data-decimals')) || 0;
-        var duration = 1200; // antes 2000ms; con easeOutExpo el 90% del valor aparece pronto igual, pero el número "vivo" deja de repintarse antes
-        var start = null;
-
-        function step(timestamp) {
-            if (!start) start = timestamp;
-            var progress = Math.min((timestamp - start) / duration, 1);
-            var eased = easeOutExpo(progress);
-            var current = eased * target;
-
-            if (decimals > 0) {
-                el.textContent = prefix + current.toFixed(decimals) + suffix;
-            } else {
-                el.textContent = prefix + Math.floor(current).toLocaleString('es-MX') + suffix;
-            }
-
-            if (progress < 1) {
-                requestAnimationFrame(step);
-            } else {
-                el.textContent = prefix + (decimals > 0 ? target.toFixed(decimals) : target.toLocaleString('es-MX')) + suffix;
-            }
-        }
-
-        requestAnimationFrame(step);
-    }
-
-    // Cada cifra lleva su propio disparador de un solo uso. Con la pantalla
-    // trabada las siete fichas estan en el viewport a la vez, asi que contarlas
-    // todas al entrar dejaba la quinta ya terminada antes de que llegaras a
-    // verla: ahora la pide la ficha que toma el foco (lo llama el script del
-    // BLOQUEO). Sin bloqueo se conserva el comportamiento de siempre.
-    function arranca(el) {
-        if (!el || el.__contada) return;
-        el.__contada = true;
-        el.textContent = (el.getAttribute('data-prefix') || '') + '0';
-        el.classList.add('counting');
-        animateCounter(el);
-    }
-    for (var c = 0; c < counters.length; c++) counters[c].__cuenta = arranca;
-
-    var statsObserver = new IntersectionObserver(function(entries) {
-        entries.forEach(function(entry) {
-            if (!entry.isIntersecting || animated) return;
-            animated = true;
-            if (document.querySelector('.stats-items.cuenta-por-foco')) {
-                arranca(counters[0]);   // las demas las pide el foco
-            } else {
-                for (var i = 0; i < counters.length; i++) {
-                    (function (el, k) {
-                        setTimeout(function () { arranca(el); }, k * 100);
-                    })(counters[i], i);
-                }
-            }
-            statsObserver.disconnect();
-        });
-    }, { threshold: 0.05 });
-
-    var statsSection = document.querySelector('.stats-section');
-    if (statsSection) statsObserver.observe(statsSection);
-})();
 
 // ==================== SCROLL REVEAL ====================
 (function() {
@@ -3350,6 +3418,96 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     // elemento, así el contenido no va "detrás" del scroll.
     }, { threshold: 0.08, rootMargin: '0px 0px -20px 0px' });
     reveals.forEach(function(el) { observer.observe(el); });
+})();
+</script>
+
+<!-- VIDEOS EXPLICATIVOS -->
+<script>
+(function () {
+    var player = document.getElementById('vidPlayer');
+    if (!player) return;
+    var section = document.getElementById('videos');
+    var tabs = document.querySelectorAll('.vid-tab');
+    var textEl = document.getElementById('vidText');
+    var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var narrow = window.matchMedia('(max-width: 600px)');
+    var TX = { 'como-te-retienen': 'vid.tx1', 'con-rfc-sin-rfc': 'vid.tx2', 'que-ve-el-sat': 'vid.tx3', 'pago-definitivo-o-anticipo': 'vid.tx4' };
+    var actual = 'como-te-retienen';
+    var cargado = false, visible = false, pausadoPorScroll = false;
+    // t() y currentLanguage vienen del script principal; se leen en cada uso.
+    function texto(k) { return typeof t === 'function' ? t(k) : ''; }
+    function idioma() { return typeof currentLanguage === 'string' ? currentLanguage : 'es'; }
+
+    function reproducir() {
+        var p = player.play();
+        if (p && p.catch) p.catch(function () {});
+    }
+    // Un archivo por video, idioma y formato: videos/<video>-<es|en>[-m].mp4
+    function cargar(correr) {
+        var base = 'videos/' + actual + '-' + idioma() + (narrow.matches ? '-m' : '');
+        player.poster = base + '-poster.webp';
+        player.src = base + '.mp4';
+        cargado = true;
+        if (correr && visible && !reduced.matches) reproducir();
+    }
+    var boton = document.getElementById('vidPlay');
+    var botonTexto = document.getElementById('vidPlayLabel');
+    var barra = document.getElementById('vidProgress');
+    function pintarTexto() { textEl.textContent = texto(TX[actual]); pintarBoton(); }
+    // El boton dice lo que va a hacer: reproducir, pausar o repetir.
+    function pintarBoton() {
+        var estado = player.ended ? 'replay' : (player.paused ? 'play' : 'pause');
+        boton.dataset.estado = estado;
+        botonTexto.textContent = texto('vid.' + estado);
+    }
+    function alternar() {
+        if (!cargado) cargar(false);
+        if (player.paused || player.ended) { pausadoPorScroll = false; reproducir(); } else player.pause();
+    }
+    boton.addEventListener('click', alternar);
+    player.addEventListener('click', alternar);
+    ['play', 'pause', 'ended', 'emptied'].forEach(function (ev) { player.addEventListener(ev, pintarBoton); });
+    player.addEventListener('timeupdate', function () {
+        barra.style.width = (player.duration ? player.currentTime / player.duration * 100 : 0) + '%';
+    });
+    player.addEventListener('emptied', function () { barra.style.width = '0%'; });
+
+    tabs.forEach(function (btn) {
+        btn.addEventListener('click', function () {
+            actual = btn.dataset.vid;
+            tabs.forEach(function (b) { b.setAttribute('aria-pressed', b === btn ? 'true' : 'false'); });
+            pintarTexto();
+            cargar(true);
+        });
+    });
+    // Corre despues de setLanguage: el mismo clic ya cambio currentLanguage.
+    document.querySelectorAll('.lang-switch .lang-btn').forEach(function (b) {
+        b.addEventListener('click', function () {
+            pintarTexto();
+            if (cargado) cargar(!player.paused);
+        });
+    });
+    if (narrow.addEventListener) narrow.addEventListener('change', function () { if (cargado) cargar(!player.paused); });
+    pintarTexto();
+
+    if (!('IntersectionObserver' in window)) { cargar(false); return; }
+    // El poster y el video se piden cerca del viewport, no en la carga inicial.
+    new IntersectionObserver(function (es) {
+        if (es[0].isIntersecting && !cargado) cargar(false);
+    }, { rootMargin: '600px 0px' }).observe(section);
+    // Arranca solo la primera vez que se ve, y se pausa si sales a media reproduccion.
+    new IntersectionObserver(function (es) {
+        visible = es[0].isIntersecting;
+        if (!visible && !cargado) return;
+        if (!cargado) cargar(false);
+        if (visible) {
+            if (reduced.matches) return;
+            if (pausadoPorScroll || (player.paused && player.currentTime === 0)) { pausadoPorScroll = false; reproducir(); }
+        } else if (!player.paused) {
+            pausadoPorScroll = true;
+            player.pause();
+        }
+    }, { threshold: 0.6 }).observe(player);
 })();
 </script>
 
@@ -3535,6 +3693,9 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         if (results.classList.contains('active')) { build(); }
     });
     mo.observe(results, { attributes: true, attributeFilter: ['class'] });
+    document.querySelectorAll('.lang-switch .lang-btn').forEach(function(b) {
+        b.addEventListener('click', function() { if (results.classList.contains('active')) build(); });
+    });
 })();
 </script>
 
@@ -4067,15 +4228,11 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         t = t < 0 ? 0 : (t > 1 ? 1 : t);
         return t * t * (3 - 2 * t);
     }
-    // La ficha que toma el centro pide su propia cifra. Antes esto tambien
-    // encendia una marca de avance; las marcas se retiraron (pedido de Jose:
-    // eran el unico elemento suelto de color en la seccion), el disparo del
-    // contador no.
+    // La ficha que toma el centro. Antes disparaba el contador de su cifra;
+    // el contador se retiro el 29-sep-2026 (canon de abril: sin count-ups).
     function tomaElFoco(activo) {
         if (activo === ultimoActivo) return;
         ultimoActivo = activo;
-        var cifra = items[activo] && items[activo].querySelector('.stat-number[data-count]');
-        if (cifra && cifra.__cuenta) cifra.__cuenta(cifra);
     }
     function paint() {
         if (reduced.matches || forma() === 'deck') return;
@@ -4147,10 +4304,6 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         var f = forma();
         // pin-on es lo que apaga el respaldo "sin JS, todo visible". Solo debe
         // estar puesta cuando el JS de verdad va a escribir opacidades.
-        // El contador lo maneja el foco siempre que haya foco: en pin con
-        // movimiento, y en deck SIEMPRE (deslizar funciona igual con movimiento
-        // reducido). Solo pin+reducido se queda con el escalonado del observer.
-        track.classList.toggle('cuenta-por-foco', f === 'deck' || !reduced.matches);
         if (f === 'pin' && !reduced.matches) track.classList.add('pin-on');
         else {
             track.classList.remove('pin-on');
@@ -4198,6 +4351,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     let mouse = { x: -999, y: -999 };
     let isVisible = true;
     let animId = null;
+    const reducedHero = window.matchMedia('(prefers-reduced-motion: reduce)');
 
     function resize() {
         const hero = canvas.parentElement;
@@ -4279,7 +4433,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
             if (p.y < 0 || p.y > h) p.vy *= -1;
         }
 
-        if (isVisible) animId = requestAnimationFrame(draw);
+        if (isVisible && !reducedHero.matches) animId = requestAnimationFrame(draw);
     }
 
     // mouse tracking on hero (desktop only)
@@ -4296,7 +4450,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     // pause animation when hero is out of view (fixes mobile scroll jank)
     var heroObserver = new IntersectionObserver(function(entries) {
         isVisible = entries[0].isIntersecting;
-        if (isVisible && !animId) {
+        if (isVisible && !animId && !reducedHero.matches) {
             animId = requestAnimationFrame(draw);
         } else if (!isVisible) {
             if (animId) cancelAnimationFrame(animId);
@@ -4312,7 +4466,7 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         if (window.innerWidth !== lastWidth) {
             lastWidth = window.innerWidth;
             clearTimeout(resizeTimer);
-            resizeTimer = setTimeout(function() { resize(); createParticles(); }, 200);
+            resizeTimer = setTimeout(function() { resize(); createParticles(); if (reducedHero.matches) draw(); }, 200);
         }
     });
     resize();
