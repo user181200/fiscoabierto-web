@@ -1753,16 +1753,52 @@
 
         /* --- Mapa del impuesto estatal al hospedaje --- */
         /* --- Videos explicativos ---
-           Ayuda en video para el público: sin encabezado visible, el video al
-           frente y debajo cuatro capítulos. Cada capítulo lleva una barra que se
-           llena mientras corre su video; al terminar pasa solo al siguiente, así
-           los cuatro se leen como una presentación. Arranca solo al verse y se
-           pausa al salir. Con movimiento reducido no arranca solo ni hay fundido:
-           queda el póster, que es el diagrama terminado. 16:9 en escritorio, 4:5
-           en teléfono. Los clips se rehacen en videos/ (README). */
+           Ayuda en video para el público. Arriba va el título del capítulo en
+           curso con su número, y debajo cuatro barras, una por capítulo, que
+           se llenan mientras corre su video; al terminar pasa solo al
+           siguiente y el título cambia con un fundido corto, así los cuatro se
+           leen como una presentación con secciones. El nombre de cada capítulo
+           vive en el título; las barras lo llevan solo para lectores de
+           pantalla, para no repetirlo en la misma vista. Arranca solo al verse
+           y se pausa al salir. Con movimiento reducido no arranca solo ni hay
+           fundidos: queda el póster, que es el diagrama terminado. 16:9 en
+           escritorio, 4:5 en teléfono. Los clips se rehacen en videos/ (README). */
         .vid-section { background: var(--color-surface); border-top: 1px solid var(--color-border); }
         .vid-section .container { max-width: 1080px; }
         .vid-oculto { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+        .vid-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+        .vid-now {
+            display: flex; align-items: baseline; gap: 14px; min-width: 0; margin: 0;
+            font-size: clamp(1.35rem, 2.3vw, 1.8rem); font-weight: 700; letter-spacing: -0.015em; line-height: 1.2;
+            transition: opacity 0.3s ease, transform 0.3s cubic-bezier(0.2, 0.7, 0.2, 1);
+        }
+        /* Cambio de capítulo: el título sale hacia arriba y el nuevo entra desde abajo. */
+        .vid-now.is-out { opacity: 0; transform: translateY(-6px); transition-duration: 0.18s; }
+        .vid-now.is-in { opacity: 0; transform: translateY(8px); transition: none; }
+        .vid-now-n { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.5em; font-weight: 600; letter-spacing: 0; color: var(--color-accent); flex: none; }
+        .vid-play {
+            appearance: none; -webkit-appearance: none; cursor: pointer; flex: none;
+            width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
+            background: var(--color-accent); border: 0;
+        }
+        @media (hover: hover) { .vid-play:hover { background: var(--color-accent-dark); } }
+        .vid-play:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+        .vid-play svg { width: 14px; height: 14px; fill: #FFFFFF; }
+        .vid-play path { display: none; }
+        .vid-play[data-estado="play"] .i-play, .vid-play[data-estado="pause"] .i-pause, .vid-play[data-estado="replay"] .i-replay { display: inline; }
+        /* Cada barra es un botón: el trazo mide 3px, el área de toque 26px. */
+        .vid-rail { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 0 10px; margin: 8px 0 12px; }
+        .vid-ch {
+            appearance: none; -webkit-appearance: none; background: none; border: 0; cursor: pointer;
+            display: block; width: 100%; padding: 11px 0 12px;
+        }
+        .vid-ch-track { display: block; height: 3px; border-radius: 3px; background: var(--color-border); overflow: hidden; transition: background-color 0.2s ease; }
+        .vid-ch-fill { display: block; height: 100%; width: 0; background: var(--color-accent); }
+        /* timeupdate llega unas cuatro veces por segundo en Safari; la
+           transición rellena los huecos y la barra avanza parejo. */
+        .vid-ch-fill.is-live { transition: width 0.3s linear; }
+        @media (hover: hover) { .vid-ch:hover .vid-ch-track { background: #D6D3D1; } }
+        .vid-ch:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; border-radius: 4px; }
         .vid-frame { position: relative; border: 1px solid var(--color-border); border-radius: 16px; overflow: hidden; background: #FAFAF9; aspect-ratio: 16 / 9; }
         /* Dos <video> apilados: mientras corre uno, el otro ya descargó el
            capítulo siguiente, así el cambio es un fundido y no un hueco con
@@ -1773,44 +1809,16 @@
         .vid-frame video.is-off { opacity: 0; pointer-events: none; }
         .vid-poster { position: absolute; inset: 0; background: #FAFAF9 center / contain no-repeat; pointer-events: none; transition: opacity 0.4s ease; }
         .vid-poster.is-off { opacity: 0; }
-        .vid-rail { display: grid; grid-template-columns: 40px repeat(4, minmax(0, 1fr)); gap: 0 20px; align-items: start; margin-top: 18px; }
-        .vid-play {
-            appearance: none; -webkit-appearance: none; cursor: pointer;
-            width: 40px; height: 40px; border-radius: 50%; display: grid; place-items: center;
-            background: var(--color-accent); border: 0; margin-top: -8px;
-        }
-        @media (hover: hover) { .vid-play:hover { background: var(--color-accent-dark); } }
-        .vid-play:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
-        .vid-play svg { width: 14px; height: 14px; fill: #FFFFFF; }
-        .vid-play path { display: none; }
-        .vid-play[data-estado="play"] .i-play, .vid-play[data-estado="pause"] .i-pause, .vid-play[data-estado="replay"] .i-replay { display: inline; }
-        .vid-ch {
-            appearance: none; -webkit-appearance: none; background: none; border: 0; padding: 0; cursor: pointer;
-            text-align: left; font-family: inherit; color: var(--color-text-secondary); min-width: 0;
-        }
-        .vid-ch-track { display: block; height: 3px; border-radius: 3px; background: var(--color-border); overflow: hidden; }
-        .vid-ch-fill { display: block; height: 100%; width: 0; background: var(--color-accent); }
-        /* timeupdate llega unas cuatro veces por segundo en Safari; la
-           transición rellena los huecos y la barra avanza parejo. */
-        .vid-ch-fill.is-live { transition: width 0.3s linear; }
-        .vid-ch-l { display: flex; gap: 8px; align-items: baseline; margin-top: 11px; font-size: 0.88rem; font-weight: 600; line-height: 1.35; }
-        .vid-ch-n { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.72rem; color: #78716C; flex: none; }
-        @media (hover: hover) { .vid-ch:hover { color: var(--color-text); } }
-        .vid-ch.is-done .vid-ch-n { color: var(--color-accent); }
-        .vid-ch[aria-pressed="true"] { color: var(--color-text); }
-        .vid-ch[aria-pressed="true"] .vid-ch-n { color: var(--color-accent); }
-        .vid-ch:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 6px; border-radius: 4px; }
-        .vid-now { display: none; }
         .vid-text { margin-top: 22px; font-size: 0.85rem; color: var(--color-text-secondary); }
         .vid-text summary { cursor: pointer; font-weight: 600; color: var(--color-text-secondary); width: fit-content; }
         .vid-text p { margin-top: 8px; line-height: 1.7; max-width: 72ch; }
-        @media (prefers-reduced-motion: reduce) { .vid-frame video, .vid-poster, .vid-ch-fill.is-live { transition: none; } }
+        @media (prefers-reduced-motion: reduce) { .vid-frame video, .vid-poster, .vid-ch-fill.is-live, .vid-now, .vid-ch-track { transition: none; } }
         @media (max-width: 600px) {
             .vid-frame { aspect-ratio: 4 / 5; border-radius: 14px; }
-            .vid-rail { grid-template-columns: 40px repeat(4, minmax(0, 1fr)); gap: 0 8px; }
-            .vid-ch-t { display: none; }
-            .vid-ch-l { margin-top: 8px; }
-            .vid-now { display: block; margin-top: 12px; font-size: 0.95rem; font-weight: 600; color: var(--color-text); }
+            /* Una sola línea hasta 320 px: si el título más largo se partiera,
+               el video bajaría de lugar al cambiar de capítulo. */
+            .vid-now { gap: 10px; font-size: clamp(0.95rem, 4.9vw, 1.35rem); }
+            .vid-rail { gap: 0 6px; margin: 4px 0 10px; }
         }
 
         .map-section {
@@ -2059,21 +2067,23 @@
 <section class="vid-section" id="videos">
     <div class="container">
         <h2 class="vid-oculto" data-i18n="vid.title">Retenciones y reportes al SAT, en video</h2>
+        <div class="vid-head">
+            <h3 class="vid-now" id="vidNow" aria-live="polite"><span class="vid-now-n" id="vidNowN">01</span><span id="vidNowT" data-i18n-js>Cómo te retienen</span></h3>
+            <button type="button" class="vid-play" id="vidPlay" aria-controls="vidPlayer" aria-label="Reproducir" data-i18n-aria="vid.play" data-estado="play">
+                <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path class="i-play" d="M4 2.5v11l9-5.5z"/><path class="i-pause" d="M4 2.5h3v11H4zM9 2.5h3v11H9z"/><path class="i-replay" d="M8 2.5a5.5 5.5 0 1 1-5.2 3.7l1.4.5A4 4 0 1 0 8 4v2L4.8 3.2 8 .5z"/></svg>
+            </button>
+        </div>
+        <div class="vid-rail" role="group" aria-label="Videos" data-i18n-aria="vid.group">
+            <button type="button" class="vid-ch" data-vid="como-te-retienen" aria-pressed="true"><span class="vid-ch-track" aria-hidden="true"><span class="vid-ch-fill"></span></span><span class="vid-oculto">01 <span data-i18n="vid.tab1">Cómo te retienen</span></span></button>
+            <button type="button" class="vid-ch" data-vid="con-rfc-sin-rfc" aria-pressed="false"><span class="vid-ch-track" aria-hidden="true"><span class="vid-ch-fill"></span></span><span class="vid-oculto">02 <span data-i18n="vid.tab2">Con RFC y sin RFC</span></span></button>
+            <button type="button" class="vid-ch" data-vid="que-ve-el-sat" aria-pressed="false"><span class="vid-ch-track" aria-hidden="true"><span class="vid-ch-fill"></span></span><span class="vid-oculto">03 <span data-i18n="vid.tab3">Qué ve el SAT</span></span></button>
+            <button type="button" class="vid-ch" data-vid="pago-definitivo-o-anticipo" aria-pressed="false"><span class="vid-ch-track" aria-hidden="true"><span class="vid-ch-fill"></span></span><span class="vid-oculto">04 <span data-i18n="vid.tab4">Pago definitivo o anticipo</span></span></button>
+        </div>
         <div class="vid-frame" id="vidFrame">
             <video id="vidPlayer" muted playsinline preload="none" aria-describedby="vidText"></video>
             <video id="vidPlayer2" class="is-off" muted playsinline preload="none" aria-hidden="true" tabindex="-1"></video>
             <div class="vid-poster" id="vidPoster" aria-hidden="true"></div>
         </div>
-        <div class="vid-rail" role="group" aria-label="Videos" data-i18n-aria="vid.group">
-            <button type="button" class="vid-play" id="vidPlay" aria-controls="vidPlayer" aria-label="Reproducir" data-i18n-aria="vid.play" data-estado="play">
-                <svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path class="i-play" d="M4 2.5v11l9-5.5z"/><path class="i-pause" d="M4 2.5h3v11H4zM9 2.5h3v11H9z"/><path class="i-replay" d="M8 2.5a5.5 5.5 0 1 1-5.2 3.7l1.4.5A4 4 0 1 0 8 4v2L4.8 3.2 8 .5z"/></svg>
-            </button>
-            <button type="button" class="vid-ch" data-vid="como-te-retienen" aria-pressed="true"><span class="vid-ch-track" aria-hidden="true"><span class="vid-ch-fill"></span></span><span class="vid-ch-l"><span class="vid-ch-n">01</span><span class="vid-ch-t" data-i18n="vid.tab1">Cómo te retienen</span></span></button>
-            <button type="button" class="vid-ch" data-vid="con-rfc-sin-rfc" aria-pressed="false"><span class="vid-ch-track" aria-hidden="true"><span class="vid-ch-fill"></span></span><span class="vid-ch-l"><span class="vid-ch-n">02</span><span class="vid-ch-t" data-i18n="vid.tab2">Con RFC y sin RFC</span></span></button>
-            <button type="button" class="vid-ch" data-vid="que-ve-el-sat" aria-pressed="false"><span class="vid-ch-track" aria-hidden="true"><span class="vid-ch-fill"></span></span><span class="vid-ch-l"><span class="vid-ch-n">03</span><span class="vid-ch-t" data-i18n="vid.tab3">Qué ve el SAT</span></span></button>
-            <button type="button" class="vid-ch" data-vid="pago-definitivo-o-anticipo" aria-pressed="false"><span class="vid-ch-track" aria-hidden="true"><span class="vid-ch-fill"></span></span><span class="vid-ch-l"><span class="vid-ch-n">04</span><span class="vid-ch-t" data-i18n="vid.tab4">Pago definitivo o anticipo</span></span></button>
-        </div>
-        <p class="vid-now" id="vidNow" data-i18n-js>Cómo te retienen</p>
         <details class="vid-text">
             <summary data-i18n="vid.textLabel">Texto del video</summary>
             <p id="vidText" data-i18n-js></p>
@@ -3813,6 +3823,9 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
     var orden = caps.map(function (c) { return c.dataset.vid; });
     var textEl = document.getElementById('vidText');
     var nowEl = document.getElementById('vidNow');
+    var nowN = document.getElementById('vidNowN');
+    var nowT = document.getElementById('vidNowT');
+    var tituloEspera = null;
     var boton = document.getElementById('vidPlay');
     var reduced = window.matchMedia('(prefers-reduced-motion: reduce)');
     var narrow = window.matchMedia('(max-width: 600px)');
@@ -3856,7 +3869,23 @@ document.querySelectorAll('a[href^="#"]').forEach(a => {
         });
         fills.forEach(function (f, j) { if (j !== i) barra(j, j < i ? 100 : 0, false); });
         textEl.textContent = texto('vid.tx' + (i + 1));
-        nowEl.textContent = texto('vid.tab' + (i + 1));
+        titulo('0' + (i + 1), texto('vid.tab' + (i + 1)));
+    }
+    // El titulo sale hacia arriba, cambia y entra desde abajo. Con movimiento
+    // reducido, o si el texto no cambio, se escribe directo.
+    function titulo(n, nombre) {
+        if (nowN.textContent === n && nowT.textContent === nombre) return;
+        clearTimeout(tituloEspera);
+        function poner() { nowN.textContent = n; nowT.textContent = nombre; }
+        if (reduced.matches) { poner(); return; }
+        nowEl.classList.add('is-out');
+        tituloEspera = setTimeout(function () {
+            poner();
+            nowEl.classList.remove('is-out');
+            nowEl.classList.add('is-in');
+            void nowEl.offsetWidth; // aplica el punto de partida antes de animar
+            nowEl.classList.remove('is-in');
+        }, 180);
     }
     function montar(v, j) {
         var base = ruta(j);
