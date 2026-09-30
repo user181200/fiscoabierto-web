@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aprende 3: los elementos de un impuesto</title>
+<link rel="stylesheet" href="lamina.css">
+<style>
+  /* Recurso: vista despiezada. Una venta al centro y sus piezas jaladas hacia
+     afuera con líneas guía: a la izquierda quién y qué, a la derecha cuánto,
+     abajo cuándo y el resultado. */
+  #disc { width: 150px; height: 150px; border-radius: 50%; background: var(--stone); display: grid; place-items: center; }
+  #disc img { width: 104px; }
+  .co { position: absolute; width: 320px; }
+  .co .l { font-size: 17px; font-weight: 600; color: var(--teal); }
+  .co .v { margin-top: 4px; font-size: 25px; font-weight: 600; letter-spacing: -0.4px; line-height: 1.2; }
+  .co .v.num { font-family: Mono, monospace; font-size: 27px; letter-spacing: -0.6px; }
+  .izq { left: 56px; text-align: right; } .der { left: 904px; }
+  #kSuj, #kBase { top: 232px; } #kObj, #kTasa { top: 388px; }
+  #raya { position: absolute; left: 56px; top: 520px; width: 1168px; height: 1.5px; background: var(--line); }
+  #kEpo { position: absolute; left: 56px; top: 548px; width: 540px; }
+  #kEpo .v { font-size: 23px; }
+  #form { position: absolute; left: 640px; top: 548px; width: 584px; text-align: right; }
+  #form .eq { font-family: Mono, monospace; font-weight: 600; font-size: 34px; letter-spacing: -0.8px; }
+  #form .eq b { color: var(--teal); font-weight: 600; }
+  #form .l { font-size: 17px; font-weight: 600; color: var(--ink3); margin-top: 6px; }
+  .m #kSuj, .m #kObj { left: 32px; text-align: left; width: 300px; }
+  .m #kBase, .m #kTasa { left: 388px; width: 300px; }
+  .m #kSuj, .m #kBase { top: 414px; } .m #kObj, .m #kTasa { top: 510px; }
+  .m .co .v { font-size: 23px; } .m .co .v.num { font-size: 25px; }
+  .m #disc { width: 124px; height: 124px; } .m #disc img { width: 86px; }
+  .m #raya { left: 32px; top: 616px; width: 656px; }
+  .m #kEpo { left: 32px; top: 640px; width: 656px; }
+  .m #kEpo .v { font-size: 22px; }
+  .m #form { left: 32px; top: 742px; width: 656px; text-align: left; }
+  .m #form .eq { font-size: 30px; }
+</style>
+</head><body><div id="stage">
+  <div class="brand"><div class="badge">FA</div><div class="word"><b>Fisco</b> Abierto</div></div>
+  <div class="kicker" data-t="kicker"></div>
+  <div class="fig">
+    <div class="cap" id="c1" data-t="c1"></div>
+    <div class="cap" id="c2" data-t="c2"></div>
+    <div class="cap" id="c3" data-t="c3"></div>
+    <div class="cap" id="c4" data-t="c4"></div>
+    <div class="cap" id="c5" data-t="c5"></div>
+    <div class="cap" id="c6" data-t="c6"></div>
+    <svg class="wires" viewBox="0 0 1280 720" aria-hidden="true">
+      <path id="w1" class="soft" d="M 388 268 L 572 304"/>
+      <path id="w2" class="soft" d="M 388 424 L 572 358"/>
+      <path id="w3" class="soft" d="M 892 268 L 708 304"/>
+      <path id="w4" class="soft" d="M 892 424 L 708 358"/>
+    </svg>
+    <div class="c" id="disc"><img src="img/caja.webp" alt=""></div>
+    <div class="c chip light" id="kPrecio"></div>
+    <div class="co izq" id="kSuj"><div class="l" data-t="sujL"></div><div class="v" data-t="sujV"></div></div>
+    <div class="co izq" id="kObj"><div class="l" data-t="objL"></div><div class="v" data-t="objV"></div></div>
+    <div class="co der" id="kBase"><div class="l" data-t="baseL"></div><div class="v num" id="vBase"></div></div>
+    <div class="co der" id="kTasa"><div class="l" data-t="tasaL"></div><div class="v num" id="vTasa"></div></div>
+    <div id="raya"></div>
+    <div class="co" id="kEpo" data-baja="p4"><div class="l" data-t="epoL"></div><div class="v" data-t="epoV"></div></div>
+    <div id="form"><div class="eq" id="eq"></div><div class="l" data-t="formL"></div></div>
+  </div>
+  <div class="end" id="end">
+    <div class="tit" data-t="endH"></div>
+    <div class="src" data-t="endSrc"></div>
+    <div class="disc-legal"><span data-t="legal"></span><div class="verif" data-t="verif"></div></div>
+  </div>
+</div>
+<script src="const.js"></script>
+<script src="motor.js"></script>
+<script>
+const b = K.BASE, iva = b * K.IVA, pct = Math.round(K.IVA * 100) + '%';
+const T = {
+  es: {
+    kicker: 'Aprende · 3 de 6',
+    c1: `Tome una venta de <em>${mx(b)}</em> y el IVA que genera.`,
+    c2: 'El sujeto es quien debe pagar el impuesto. Aquí, usted, porque vende.',
+    c3: 'El objeto es lo que la ley grava. Aquí, vender un bien.',
+    c4: 'La base es la cantidad sobre la que se calcula, y la tasa es el porcentaje que se aplica.',
+    c5: 'La época de pago dice cuándo se paga. El IVA de cada mes, a más tardar el día 17 del siguiente.',
+    c6: `Base por tasa da el impuesto que causa la venta, <em>${mx(iva)}</em>.`,
+    sujL: 'Sujeto', sujV: 'Usted, porque vende',
+    objL: 'Objeto', objV: 'Vender un bien',
+    baseL: 'Base', tasaL: 'Tasa',
+    epoL: 'Época de pago', epoV: 'A más tardar el día 17 del mes siguiente',
+    formL: 'base × tasa = impuesto',
+    endH: 'Sujeto, objeto, base y tasa o tarifa tienen que estar en la ley, y se aplican tal como la ley los escribe.',
+    endSrc: 'Art. 5 CFF · Art. 6 CFF · Arts. 1 y 5-D LIVA · Art. 31, fr. IV CPEUM',
+    legal: K.LEGAL_ES, verif: K.VERIF_ES,
+  },
+  en: {
+    kicker: 'Learn · 3 of 6',
+    c1: `Take a <em>${mx(b)}</em> sale and the VAT it generates.`,
+    c2: 'The taxpayer is who must pay the tax. Here, you, because you sell.',
+    c3: 'The taxable object is what the law taxes. Here, selling goods.',
+    c4: 'The base is the amount it is calculated on, and the rate is the percentage applied.',
+    c5: 'The payment date says when it is paid. Each month’s VAT, by the 17th of the next month.',
+    c6: `Base times rate gives the tax the sale triggers, <em>${mx(iva)}</em>.`,
+    sujL: 'Taxpayer (sujeto)', sujV: 'You, because you sell',
+    objL: 'Object (objeto)', objV: 'Selling goods',
+    baseL: 'Base', tasaL: 'Rate',
+    epoL: 'Payment date', epoV: 'By the 17th of the following month',
+    formL: 'base × rate = tax',
+    endH: 'Taxpayer, object, base and rate or schedule must be in the law, and they apply exactly as the law writes them.',
+    endSrc: 'Federal Tax Code art. 5 and 6 · VAT Law art. 1 and 5-D · Mexican Constitution art. 31, sec. IV',
+    legal: K.LEGAL_EN, verif: K.VERIF_EN,
+  }
+};
+fill(T);
+document.getElementById('kPrecio').textContent = mx(b);
+document.getElementById('vBase').textContent = mx(b);
+document.getElementById('vTasa').textContent = pct;
+document.getElementById('eq').innerHTML = `${mx(b)} × ${pct} = <b>${mx(iva)}</b>`;
+hideIn('m', 'svg.wires');
+
+enter('.brand', 0.1, 0.6); enter('.kicker', 0.2, 0.6);
+enter('#c1', 0.3, 0.7);
+if (M) { place('#disc', 360, 262); place('#kPrecio', 360, 358); } else { place('#disc', 640, 330); place('#kPrecio', 640, 436); }
+enter('#disc', 0.7, 0.7, 12);
+at('#kPrecio', 1.2, 0.5, { o: 0, s: 0.8 }, { o: 1, s: 1 }, 'out');
+
+const pieza = (w, k, t0) => { if (w) draw(w, t0, 0.6); at(k, t0 + 0.4, 0.6, { o: 0, dx: k === '#kSuj' || k === '#kObj' ? -16 : 16 }, { o: 1, dx: 0 }, 'out'); };
+leave('#c1', 3.6, 0.3); enter('#c2', 3.9, 0.6); pieza('#w1', '#kSuj', 4.2);
+leave('#c2', 7.6, 0.3); enter('#c3', 7.9, 0.6); pieza('#w2', '#kObj', 8.2);
+leave('#c3', 11.6, 0.3); enter('#c4', 11.9, 0.6); pieza('#w3', '#kBase', 12.2); pieza('#w4', '#kTasa', 13.4);
+leave('#c4', 17.0, 0.3); enter('#c5', 17.3, 0.6);
+at('#raya', 17.5, 0.7, { o: 1, w: 0 }, { o: 1, w: M ? 656 : 1168 }, 'io');
+enter('#kEpo', 17.9, 0.6, 10);
+leave('#c5', 21.6, 0.3); enter('#c6', 21.9, 0.6);
+enter('#form', 22.3, 0.7, 10);
+
+terminar(25.5);
+</script>
+</body></html>

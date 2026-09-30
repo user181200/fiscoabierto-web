@@ -177,13 +177,24 @@ const ENT = { '&copy;': '©', '&trade;': '™', '&nbsp;': ' ', '&amp;': '&', '&m
 const norm = t => t.replace(/<[^>]+>/g, '').replace(/&[a-z]+;/g, e => ENT[e] || e).replace(/\s+/g, ' ').trim();
 let divergencias = 0, comparados = 0;
 const filas = [];
+// Contenido de un elemento de una linea hasta su propio cierre, contando las
+// etiquetas del mismo nombre anidadas: un <a> dentro de un <p> no lo corta.
+function interior(linea) {
+  const ab = linea.match(/<(\w+)\b[^>]*\sdata-i18n="([\w.]+)"[^>]*>/);
+  if (!ab) return null;
+  const tag = ab[1], desde = ab.index + ab[0].length;
+  const re = new RegExp('<(/?)' + tag + '\\b[^>]*>', 'g'); re.lastIndex = desde;
+  let prof = 1, t;
+  while ((t = re.exec(linea))) { prof += t[1] ? -1 : 1; if (!prof) return [ab[2], linea.slice(desde, t.index)]; }
+  return null;
+}
 for (let i = 0; i < lines.length; i++) {
   if (i >= esStart) break;
-  const m = lines[i].match(/data-i18n="([\w.]+)"[^>]*>(.*?)<\/(?:div|p|span|b|i|a|h\d|button|label|li|strong|dt|dd)>/);
-  if (!m || !(m[1] in dict)) continue;
+  const m = interior(lines[i]);
+  if (!m || !(m[0] in dict)) continue;
   comparados++;
-  const a = norm(m[2]), b = norm(dict[m[1]]);
-  if (a !== b) { divergencias++; filas.push(`| ${m[1]} | ${i + 1} | ${a.slice(0, 90).replace(/\|/g, '/')} | ${b.slice(0, 90).replace(/\|/g, '/')} |`); }
+  const a = norm(m[1]), b = norm(dict[m[0]]);
+  if (a !== b) { divergencias++; filas.push(`| ${m[0]} | ${i + 1} | ${a.slice(0, 90).replace(/\|/g, '/')} | ${b.slice(0, 90).replace(/\|/g, '/')} |`); }
 }
 out.push(`Comparados ${comparados} elementos de una linea; divergencias: ${divergencias}.`);
 if (filas.length) {

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aprende 4: cuándo nace la obligación y quién paga</title>
+<link rel="stylesheet" href="lamina.css">
+<style>
+  /* Recurso: dos meses de calendario. El día de la venta nace la obligación,
+     el mes se cierra y el pago cae el 17 del siguiente. Después, las tres
+     personas que toca una misma venta por plataforma. */
+  .mes { position: absolute; top: 212px; }
+  .mes .nom { font-size: 17px; font-weight: 600; color: var(--ink2); margin-bottom: 12px; }
+  .rej { position: relative; display: grid; grid-template-columns: repeat(7, var(--C)); grid-auto-rows: var(--C); gap: 5px; }
+  .dia { position: relative; border-radius: 7px; background: var(--stone); font-family: Mono, monospace; font-weight: 500;
+    font-size: 12.5px; color: var(--ink3); padding: 5px 0 0 6px; overflow: hidden; }
+  .dia.vacio { background: none; }
+  .dia i { position: absolute; inset: 0; background: var(--teal-l); opacity: 0; }
+  .dia span { position: relative; }
+  .marca { position: absolute; width: var(--C); height: var(--C); border-radius: 7px; font-family: Mono, monospace; font-weight: 600;
+    font-size: 12.5px; padding: 5px 0 0 6px; }
+  #hoy { background: var(--teal); color: #fff; }
+  #cierre { box-shadow: inset 0 0 0 2.5px var(--ink); color: var(--ink); }
+  #pago { box-shadow: inset 0 0 0 3px var(--teal); color: var(--teal-d); background: #fff; }
+  #m1 { left: 56px; --C: 40px; } #m2 { left: 392px; --C: 40px; }
+  #ley { position: absolute; left: 56px; top: 500px; width: 640px; }
+  .ley { display: flex; align-items: center; gap: 12px; font-size: 17px; color: var(--ink2); margin-bottom: 12px; }
+  .ley b { font-family: Mono, monospace; font-weight: 600; color: var(--ink); font-size: 15px; }
+  .ley .sw { width: 18px; height: 18px; border-radius: 5px; flex: none; }
+  .sw1 { background: var(--teal); } .sw2 { box-shadow: inset 0 0 0 2.5px var(--ink); } .sw3 { box-shadow: inset 0 0 0 3px var(--teal); }
+  .rol { position: absolute; left: 760px; width: 464px; height: 124px; border-radius: 12px; background: #fff;
+    box-shadow: inset 0 0 0 1.5px var(--line); padding: 16px 20px 0 20px; }
+  .rol .l { font-size: 15px; font-weight: 600; color: var(--teal); }
+  .rol .t { margin-top: 3px; font-size: 21px; font-weight: 600; letter-spacing: -0.3px; }
+  .rol .s { margin-top: 3px; font-size: 15.5px; color: var(--ink2); line-height: 1.35; padding-right: 110px; }
+  .rol .art { position: absolute; right: 20px; top: 18px; font-size: 13.5px; }
+  #r1 { top: 212px; } #r2 { top: 350px; } #r3 { top: 488px; }
+  .m .mes { top: 204px; }
+  .m #m1 { left: 32px; } .m #m2 { left: 378px; }
+  .m .dia, .m .marca { font-size: 13px; }
+  .m #ley { left: 32px; top: 480px; width: 656px; }
+  .m .ley { font-size: 15px; margin-bottom: 7px; }
+  .m .rol { left: 32px; width: 656px; height: 92px; padding: 12px 18px 0 18px; }
+  .m .rol .t { font-size: 19px; margin-top: 1px; }
+  .m .rol .s { font-size: 14px; margin-top: 2px; padding-right: 0; }
+  .m .rol .art { right: 18px; top: 14px; }
+  .m #r1 { top: 590px; } .m #r2 { top: 692px; } .m #r3 { top: 794px; }
+</style>
+</head><body><div id="stage">
+  <div class="brand"><div class="badge">FA</div><div class="word"><b>Fisco</b> Abierto</div></div>
+  <div class="kicker" data-t="kicker"></div>
+  <div class="fig">
+    <div class="cap" id="c1" data-t="c1"></div>
+    <div class="cap" id="c2" data-t="c2"></div>
+    <div class="cap" id="c3" data-t="c3"></div>
+    <div class="cap" id="c4" data-t="c4"></div>
+    <div class="cap" id="c5" data-t="c5"></div>
+    <div class="mes" id="m1"><div class="nom" data-t="mes1"></div><div class="rej" id="g1"></div></div>
+    <div class="mes" id="m2"><div class="nom" data-t="mes2"></div><div class="rej" id="g2"></div></div>
+    <div id="ley">
+      <div class="ley" id="l1"><span class="sw sw1"></span><b data-t="l1d"></b><span data-t="l1"></span></div>
+      <div class="ley" id="l2"><span class="sw sw2"></span><b data-t="l2d"></b><span data-t="l2"></span></div>
+      <div class="ley" id="l3"><span class="sw sw3"></span><b data-t="l3d"></b><span data-t="l3"></span></div>
+    </div>
+    <div class="rol" id="r1" data-baja="p5"><div class="l" data-t="r1l"></div><div class="t" data-t="r1t"></div><div class="s" data-t="r1s"></div><div class="art" data-t="r1a"></div></div>
+    <div class="rol" id="r2"><div class="l" data-t="r2l"></div><div class="t" data-t="r2t"></div><div class="s" data-t="r2s"></div><div class="art" data-t="r2a"></div></div>
+    <div class="rol" id="r3"><div class="l" data-t="r3l"></div><div class="t" data-t="r3t"></div><div class="s" data-t="r3s"></div><div class="art" data-t="r3a"></div></div>
+  </div>
+  <div class="end" id="end">
+    <div class="tit" data-t="endH"></div>
+    <div class="src" data-t="endSrc"></div>
+    <div class="disc-legal"><span data-t="legal"></span><div class="verif" data-t="verif"></div></div>
+  </div>
+</div>
+<script src="const.js"></script>
+<script src="motor.js"></script>
+<script>
+const T = {
+  es: {
+    kicker: 'Aprende · 4 de 6',
+    c1: 'El día que usted vende, nace la obligación de pagar el impuesto.',
+    c2: 'Al cerrar el mes calcula cuánto debe. Hacer esa cuenta le toca a usted.',
+    c3: 'Paga a más tardar el día 17 del mes siguiente.',
+    c4: 'En una venta por plataforma participan tres personas.',
+    c5: 'Usted causa el impuesto, la plataforma retiene y su cliente paga el IVA en el precio.',
+    mes1: 'Este mes', mes2: 'Mes siguiente',
+    l1d: '12', l1: 'Vende y nace la obligación',
+    l2d: '31', l2: 'Cierra el mes y calcula',
+    l3d: '17', l3: 'Paga',
+    r1l: 'Contribuyente', r1t: 'Usted', r1s: 'Causa el impuesto y calcula cuánto debe.', r1a: 'Art. 6 CFF',
+    r2l: 'Retenedor', r2t: 'La plataforma', r2s: 'Retiene, entera y responde con usted hasta por el monto que debe retener.', r2a: 'Art. 26, fr. I CFF',
+    r3l: 'Traslado', r3t: 'Su cliente', r3s: 'Paga el IVA encima del precio, aunque el contribuyente es usted.', r3a: 'Art. 1 LIVA',
+    endH: 'La obligación nace cuando ocurre lo que la ley grava. Calcularla le toca a usted, y se paga en el plazo que fija la ley.',
+    endSrc: 'Art. 6 CFF · Art. 26, fr. I CFF · Arts. 1 y 5-D LIVA · Art. 106 LISR',
+    legal: K.LEGAL_ES, verif: K.VERIF_ES,
+  },
+  en: {
+    kicker: 'Learn · 4 of 6',
+    c1: 'The day you sell, the obligation to pay the tax is born.',
+    c2: 'When the month closes, you work out what you owe. That calculation is your job.',
+    c3: 'You pay by the 17th of the following month.',
+    c4: 'In a sale through a platform, three parties take part.',
+    c5: 'You trigger the tax, the platform withholds and your customer pays the VAT in the price.',
+    mes1: 'This month', mes2: 'Next month',
+    l1d: '12', l1: 'You sell and the obligation is born',
+    l2d: '31', l2: 'The month closes and you calculate',
+    l3d: '17', l3: 'You pay',
+    r1l: 'Taxpayer', r1t: 'You', r1s: 'You trigger the tax and work out what you owe.', r1a: 'Tax Code art. 6',
+    r2l: 'Withholding agent', r2t: 'The platform', r2s: 'Withholds, pays it in and is jointly liable up to the amount it must withhold.', r2a: 'Tax Code art. 26-I',
+    r3l: 'Pass-through', r3t: 'Your customer', r3s: 'Pays the VAT on top of the price, though you are the taxpayer.', r3a: 'VAT Law art. 1',
+    endH: 'The obligation is born when the taxed event happens. Working it out is your job, and it is paid within the period the law sets.',
+    endSrc: 'Federal Tax Code art. 6 and art. 26, sec. I · VAT Law art. 1 and 5-D · Income Tax Law art. 106',
+    legal: K.LEGAL_EN, verif: K.VERIF_EN,
+  }
+};
+fill(T);
+
+// Mes genérico que empieza en lunes: 31 días; el siguiente arranca en jueves y trae 30.
+const C = 40, G = 5;
+function mes(id, pref, vacios, dias) {
+  const g = document.getElementById(id); let h = '';
+  for (let i = 0; i < vacios; i++) h += '<div class="dia vacio"></div>';
+  for (let d = 1; d <= dias; d++) h += `<div class="dia" id="${pref}${d}"><i></i><span>${d}</span></div>`;
+  g.innerHTML = h;
+  return d => { const k = vacios + d - 1; return [(k % 7) * (C + G), Math.floor(k / 7) * (C + G)]; };
+}
+const p1 = mes('g1', 'a', 0, 31), p2 = mes('g2', 'b', 3, 30);
+function marca(gid, id, xy, n) {
+  const e = document.createElement('div'); e.className = 'marca'; e.id = id; e.textContent = n;
+  e.style.left = xy[0] + 'px'; e.style.top = xy[1] + 'px'; document.getElementById(gid).appendChild(e);
+}
+marca('g1', 'hoy', p1(12), 12); marca('g1', 'cierre', p1(31), 31); marca('g2', 'pago', p2(17), 17);
+
+enter('.brand', 0.1, 0.6); enter('.kicker', 0.2, 0.6);
+enter('#c1', 0.3, 0.7);
+enter('#m1', 0.7, 0.7, 10); enter('#m2', 0.9, 0.7, 10);
+at('#hoy', 1.8, 0.45, { o: 0, s: 0.5 }, { o: 1, s: 1 }, 'out');
+enter('#l1', 2.2, 0.6, 6);
+
+leave('#c1', 4.4, 0.3); enter('#c2', 4.7, 0.6);
+for (let d = 1; d <= 31; d++) at(`#a${d} i`, 5.0 + d * 0.035, 0.3, { o: 0 }, { o: 1 }, 'out');
+at('#cierre', 6.3, 0.45, { o: 0, s: 1.3 }, { o: 1, s: 1 }, 'out');
+enter('#l2', 6.6, 0.6, 6);
+
+leave('#c2', 9.4, 0.3); enter('#c3', 9.7, 0.6);
+for (let d = 1; d <= 16; d++) at(`#b${d} i`, 10.0 + d * 0.04, 0.3, { o: 0 }, { o: 0.55 }, 'out');
+at('#pago', 10.8, 0.45, { o: 0, s: 1.3 }, { o: 1, s: 1 }, 'out');
+enter('#l3', 11.1, 0.6, 6);
+
+leave('#c3', 13.8, 0.3); enter('#c4', 14.1, 0.6);
+enter('#r1', 14.5, 0.6, 12); enter('#r2', 15.4, 0.6, 12); enter('#r3', 16.3, 0.6, 12);
+
+leave('#c4', 19.2, 0.3); enter('#c5', 19.5, 0.6);
+
+terminar(23.5);
+</script>
+</body></html>

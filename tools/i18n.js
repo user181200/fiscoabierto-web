@@ -10,6 +10,7 @@
 //
 // Uso, desde web/:   node tools/i18n.js [archivo]  (1 a 3, solo node)
 //                    node tools/i18n.js --dom      (ademas 4; pide playwright)
+//                    node tools/i18n.js aprende/index.html --dom  (la pagina Aprende y sus laminas)
 // Sale con codigo 1 si hay hallazgos, para poder encadenarlo antes del push.
 const fs = require('fs');
 const path = require('path');
@@ -83,8 +84,11 @@ console.log('2. marcado: ' + keysUsadas.size + ' claves en el HTML, ' + sinClave
 if (!('meta.title' in translations.en)) falla('falta meta.title en EN (document.title)');
 
 // ---- 3. datos del mapa ----------------------------------------------------
+// Solo la página principal tiene mapa; en aprende/index.html no aplica.
+const conMapa = html.includes('id="mapPanel"');
 const st = html.match(/var ST = (\{.*?\});\s*$/m);
-if (!st) falla('no encuentro var ST del mapa');
+if (!conMapa) console.log('3. mapa: no aplica en ' + path.relative(path.join(__dirname, '..'), file));
+else if (!st) falla('no encuentro var ST del mapa');
 else {
   const ST = JSON.parse(st[1]);
   let conNota = 0;
@@ -133,6 +137,34 @@ async function dom() {
     }
   }
   await revisa('carga');
+  if (!conMapa) {
+    // Aprende: sus láminas son páginas aparte con su propio diccionario. Se
+    // abren en EN y se lee todo su texto, visible o no (incluye la tarjeta final).
+    const dir = path.join(path.dirname(file), 'laminas');
+    const laminas = fs.existsSync(dir) ? fs.readdirSync(dir).filter(f => /^p\d+\.html$/.test(f)).sort() : [];
+    for (const f of laminas) {
+      const q = await b.newPage({ viewport: { width: 1280, height: 720 } });
+      q.on('pageerror', e => errores.push(f + ': ' + e.message));
+      await q.goto('file://' + path.join(dir, f) + '?lang=en&modo=video');
+      await q.waitForTimeout(300);
+      const tx = await q.evaluate(() => {
+        const out = []; const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+        let n; while (n = w.nextNode()) {
+          const t = n.textContent.replace(/\s+/g, ' ').trim(); if (!t) continue;
+          const el = n.parentElement; if (['SCRIPT', 'STYLE'].includes(el.tagName)) continue;
+          if (el.closest('[lang="es"]') && el.closest('[lang="es"]') !== document.documentElement) continue;
+          out.push(t);
+        }
+        return out;
+      });
+      tx.forEach(t => { vistos.add(t); if (ESPANOL.test(t)) falla(f + ': "' + t.slice(0, 90) + '"'); });
+      await q.close();
+    }
+    errores.forEach(e => falla('error de pagina: ' + e));
+    console.log('4. dom: ' + vistos.size + ' textos distintos leidos en EN, ' + laminas.length + ' laminas');
+    await b.close();
+    return;
+  }
   // El nombre del estado y el nombre de la ley (f) se citan en espanol por
   // contrato; se quitan antes de buscar marcas de espanol en el panel.
   const ST = JSON.parse(st[1]);

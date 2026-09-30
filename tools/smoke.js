@@ -35,7 +35,7 @@ const doc = {
   getElementById: () => el('trust-chain'),
   querySelector: () => el(), querySelectorAll: () => [el(),el(),el(),el(),el(),el()],
   createElement: () => el(), createElementNS: () => el(),
-  addEventListener(){}, fonts: { ready: { then(){} } }
+  addEventListener(){}, dispatchEvent(){}, fonts: { ready: { then(){} } }
 };
 const win = {
   innerHeight: 900, innerWidth: 1440, scrollY: 0, devicePixelRatio: 2,

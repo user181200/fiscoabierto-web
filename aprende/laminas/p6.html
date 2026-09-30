@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aprende 6: los dos sentidos de derechos</title>
+<link rel="stylesheet" href="lamina.css">
+<style>
+  /* Recurso: una entrada de diccionario. La palabra tiene dos acepciones;
+     la segunda se abre en ejemplos y al final las flechas se invierten
+     respecto de las obligaciones. */
+  #voz { position: absolute; left: 56px; top: 196px; width: 580px; }
+  #voz .w { font-family: Serif4, serif; font-weight: 600; font-size: 58px; letter-spacing: -1px; line-height: 1; }
+  #voz .g { margin-left: 14px; font-size: 16px; font-weight: 500; color: var(--ink3); }
+  .acep { position: absolute; left: 56px; width: 580px; font-family: Serif4, serif; font-size: 22px; line-height: 1.45; padding-left: 36px; }
+  .acep .num { position: absolute; left: 0; top: 0; font-family: Serif4, serif; font-weight: 600; color: var(--teal); }
+  .acep .art { display: block; margin-top: 6px; font-size: 14px; }
+  #a1 { top: 284px; } #a2 { top: 416px; }
+  #a2 .txt { background-image: linear-gradient(var(--teal-l), var(--teal-l)); background-repeat: no-repeat;
+    background-position: 0 92%; background-size: calc(var(--p, 0) * 100%) 42%; }
+  #lista { position: absolute; left: 700px; top: 200px; width: 524px; }
+  .der { display: grid; grid-template-columns: 64px 1fr; column-gap: 12px; padding: 12px 0; border-top: 1.5px solid var(--line); }
+  .der .fr { font-family: Mono, monospace; font-weight: 600; font-size: 14px; color: var(--teal); padding-top: 4px; white-space: nowrap; }
+  .der .t { font-size: 18.5px; font-weight: 600; letter-spacing: -0.2px; line-height: 1.3; }
+  .der .s { grid-column: 2; margin-top: 2px; font-size: 15px; color: var(--ink2); }
+  #pro { margin-top: 6px; padding-top: 12px; border-top: 1.5px solid var(--line); font-size: 15px; color: var(--ink2); line-height: 1.4; }
+  #pro b { color: var(--ink); font-weight: 600; }
+  .dir { position: absolute; top: 578px; width: 544px; height: 80px; }
+  #dirA { left: 56px; } #dirB { left: 680px; }
+  .dir .p { position: absolute; top: 0; padding: 8px 15px; border-radius: 999px; font-size: 17px; font-weight: 600; white-space: nowrap; }
+  .dir .yo { left: 0; background: #fff; box-shadow: inset 0 0 0 1.5px var(--line); }
+  .dir .sat { right: 0; background: #fff; box-shadow: inset 0 0 0 1.5px var(--line); }
+  .dir .rot { position: absolute; top: 50px; left: 0; width: 100%; text-align: center; font-size: 16px; font-weight: 600; }
+  #dirA .rot { color: var(--ink2); } #dirB .rot { color: var(--teal); }
+  svg.wires path.oblig { stroke: var(--ink3); stroke-width: 2; }
+  .m #voz { left: 32px; top: 196px; width: 656px; }
+  .m #voz .w { font-size: 50px; }
+  .m .acep { left: 32px; width: 656px; font-size: 20px; padding-left: 30px; }
+  .m #a1 { top: 268px; } .m #a2 { top: 378px; }
+  .m #lista { left: 32px; top: 474px; width: 656px; }
+  .m .der { grid-template-columns: 64px 1fr; padding: 7px 0; }
+  .m .der .t { font-size: 16.5px; }
+  .m .der .s { display: none; }
+  .m #pro { font-size: 14px; padding-top: 8px; }
+  .m .dir { width: 656px; height: 70px; }
+  .m #dirA { left: 32px; top: 752px; } .m #dirB { left: 32px; top: 824px; }
+  .m .dir .rot { top: 0; font-size: 14px; }
+  .m .dir .p { top: 24px; font-size: 15px; padding: 6px 13px; }
+</style>
+</head><body><div id="stage">
+  <div class="brand"><div class="badge">FA</div><div class="word"><b>Fisco</b> Abierto</div></div>
+  <div class="kicker" data-t="kicker"></div>
+  <div class="fig">
+    <div class="cap" id="c1" data-t="c1"></div>
+    <div class="cap" id="c2" data-t="c2"></div>
+    <div class="cap" id="c3" data-t="c3"></div>
+    <div class="cap" id="c4" data-t="c4"></div>
+    <div class="cap" id="c5" data-t="c5"></div>
+    <div id="voz"><span class="w" lang="es">derechos</span><span class="g" data-t="gloss"></span></div>
+    <div class="acep" id="a1" data-baja="p2"><span class="num">1.</span><span data-t="a1"></span><span class="art" data-t="a1r"></span></div>
+    <div class="acep" id="a2"><span class="num">2.</span><span class="txt" data-t="a2"></span><span class="art" data-t="a2r"></span></div>
+    <div id="lista">
+      <div class="der" id="d1"><div class="fr" data-t="f1"></div><div class="t" data-t="d1"></div></div>
+      <div class="der" id="d2"><div class="fr" data-t="f2"></div><div class="t" data-t="d2"></div><div class="s" data-t="d2s"></div></div>
+      <div class="der" id="d3"><div class="fr" data-t="f3"></div><div class="t" data-t="d3"></div></div>
+      <div class="der" id="d4"><div class="fr" data-t="f4"></div><div class="t" data-t="d4"></div></div>
+      <div id="pro" data-t="pro"></div>
+    </div>
+    <svg class="wires" viewBox="0 0 1280 720" aria-hidden="true">
+      <defs>
+        <marker id="pg" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L8 5 L1 9" fill="none" stroke="#78716C" stroke-width="1.6"/></marker>
+        <marker id="pt" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L8 5 L1 9" fill="none" stroke="#0F766E" stroke-width="1.6"/></marker>
+      </defs>
+      <path id="wA" class="oblig" marker-end="url(#pg)"/>
+      <path id="wB" marker-end="url(#pt)"/>
+    </svg>
+    <div class="dir" id="dirA"><span class="p yo" data-t="yo"></span><span class="p sat">SAT</span><span class="rot" data-t="rotA"></span></div>
+    <div class="dir" id="dirB"><span class="p yo" data-t="yo"></span><span class="p sat">SAT</span><span class="rot" data-t="rotB"></span></div>
+  </div>
+  <div class="end" id="end">
+    <div class="tit" data-t="endH"></div>
+    <div class="src" data-t="endSrc"></div>
+    <div class="disc-legal"><span data-t="legal"></span><div class="verif" data-t="verif"></div></div>
+  </div>
+</div>
+<script src="const.js"></script>
+<script src="motor.js"></script>
+<script>
+const T = {
+  es: {
+    kicker: 'Aprende · 6 de 6',
+    c1: 'En materia fiscal, la palabra <em>derechos</em> tiene dos sentidos.',
+    c2: 'El primero es una contribución. La paga cuando el Estado le da un servicio, como el pasaporte.',
+    c3: 'El segundo son sus derechos como contribuyente, lo que la autoridad le debe a usted.',
+    c4: 'Por ejemplo, que le informe, que le devuelva lo que procede y que lo escuche.',
+    c5: 'Las obligaciones van de usted al SAT. Los derechos del contribuyente, del SAT a usted.',
+    gloss: 'sustantivo plural',
+    a1: 'Contribución que se paga por usar un bien público o por recibir un servicio del Estado, como el pasaporte.',
+    a1r: 'Art. 2, fr. IV CFF · Ley Federal de Derechos',
+    a2: 'Lo que la autoridad fiscal debe respetarle y darle como contribuyente.',
+    a2r: 'Ley Federal de los Derechos del Contribuyente, art. 2',
+    f1: 'fr. I', d1: 'Ser informado y asistido para cumplir',
+    f2: 'fr. II', d2: 'Obtener las devoluciones que procedan', d2s: 'En 40 días desde la solicitud completa (art. 22 CFF)',
+    f3: 'fr. VI', d3: 'No entregar documentos que la autoridad ya tiene',
+    f4: 'fr. XI', d4: 'Ser oído antes de que le determinen un crédito fiscal',
+    pro: '<b>Prodecon</b> lo asesora, lo representa ante el SAT y recibe sus quejas (art. 5 de su Ley Orgánica).',
+    yo: 'Usted', rotA: 'Obligaciones', rotB: 'Derechos del contribuyente',
+    endH: 'Un derecho puede ser algo que usted paga o algo que le deben. Los del contribuyente van en sentido contrario a las obligaciones.',
+    endSrc: 'Art. 2, fr. IV CFF · Art. 20 LFD · Art. 2 LFDC · Art. 22 CFF · Art. 5 LOPDC',
+    legal: K.LEGAL_ES, verif: K.VERIF_ES,
+  },
+  en: {
+    kicker: 'Learn · 6 of 6',
+    c1: 'In Mexican tax law, the word <em>derechos</em> has two meanings.',
+    c2: 'The first is a contribution. You pay it when the State provides you a service, such as a passport.',
+    c3: 'The second is your rights as a taxpayer, what the tax authority owes you.',
+    c4: 'For example, to inform you, to refund what is due and to hear you out.',
+    c5: 'Obligations run from you to the SAT. Taxpayer rights run from the SAT to you.',
+    gloss: 'plural noun',
+    a1: 'A contribution you pay for using public property or receiving a State service, such as a passport. In English, a fee.',
+    a1r: 'Tax Code art. 2, sec. IV · Federal Fees Law',
+    a2: 'What the tax authority must respect and provide you as a taxpayer. In English, rights.',
+    a2r: 'Federal Taxpayer Rights Law, art. 2',
+    f1: 'sec. I', d1: 'To be informed and assisted in complying',
+    f2: 'sec. II', d2: 'To obtain the refunds that apply', d2s: 'Within 40 days of a complete request (Tax Code art. 22)',
+    f3: 'sec. VI', d3: 'Not to hand over documents the authority already has',
+    f4: 'sec. XI', d4: 'To be heard before a tax debt is assessed',
+    pro: '<b>Prodecon</b> advises you, represents you before the SAT and takes your complaints (art. 5 of its Organic Law).',
+    yo: 'You', rotA: 'Obligations', rotB: 'Taxpayer rights',
+    endH: 'A derecho can be something you pay or something you are owed. Taxpayer rights run opposite to obligations.',
+    endSrc: 'Tax Code art. 2, sec. IV and art. 22 · Federal Fees Law art. 20 · Taxpayer Rights Law art. 2 · Prodecon Organic Law art. 5',
+    legal: K.LEGAL_EN, verif: K.VERIF_EN,
+  }
+};
+fill(T);
+
+// Flechas entre Tú y SAT, medidas sobre las fichas ya pintadas.
+function flecha(dirId, wId, haciaSat) {
+  const dir = document.getElementById(dirId), fig = document.querySelector('.fig').getBoundingClientRect();
+  const tu = dir.querySelector('.yo').getBoundingClientRect(), sat = dir.querySelector('.sat').getBoundingClientRect();
+  const y = tu.top + tu.height / 2 - fig.top, x0 = tu.right - fig.left + 10, x1 = sat.left - fig.left - 10;
+  document.getElementById(wId).setAttribute('d', haciaSat ? `M ${x0} ${y} L ${x1 - 3} ${y}` : `M ${x1} ${y} L ${x0 + 3} ${y}`);
+}
+
+document.fonts.ready.then(() => {
+  flecha('dirA', 'wA', true); flecha('dirB', 'wB', false);
+
+  enter('.brand', 0.1, 0.6); enter('.kicker', 0.2, 0.6);
+  enter('#c1', 0.3, 0.7);
+  enter('#voz', 0.7, 0.8, 10);
+  leave('#c1', 3.6, 0.3); enter('#c2', 3.9, 0.6); enter('#a1', 4.2, 0.7, 10);
+  leave('#c2', 8.6, 0.3); enter('#c3', 8.9, 0.6); enter('#a2', 9.2, 0.7, 10); sweep('#a2 .txt', 9.9, 1.2);
+  leave('#c3', 12.8, 0.3); enter('#c4', 13.1, 0.6);
+  enter('#d1', 13.5, 0.5, 8); enter('#d2', 14.1, 0.5, 8); enter('#d3', 14.7, 0.5, 8); enter('#d4', 15.3, 0.5, 8); enter('#pro', 16.0, 0.6, 6);
+  leave('#c4', 18.6, 0.3); enter('#c5', 18.9, 0.6);
+  enter('#dirA', 19.2, 0.5, 6); draw('#wA', 19.6, 0.7);
+  enter('#dirB', 20.4, 0.5, 6); draw('#wB', 20.8, 0.7);
+  terminar(24.5);
+});
+</script>
+</body></html>

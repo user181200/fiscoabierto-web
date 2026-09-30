@@ -22,6 +22,8 @@ rotulo `<!-- ... -->` que lo antecede, y un bloque vacio cuenta como FALLA
 daba 0 lineas y un OK vacio). Con un `.js` como argumento corre ese script
 suelto; con un `.html`, hace el recorrido sobre ese archivo.
 
+Sobre `aprende/index.html` corre sus cuatro scripts (idioma, nav, escalera y láminas). Los scripts se hablan por `window.faIdioma`, no por variables sueltas, porque el stub corre cada uno por separado.
+
 El stub es deliberadamente tonto: si un script empieza a usar una API del DOM
 que no está simulada, se agrega al stub. Un fallo por API faltante se distingue
 de uno real por el mensaje (TypeError sobre un método del stub contra
@@ -43,6 +45,8 @@ Arranca con la fecha de verificación de cada bloque (`data-verificado` en
 banda, calculadora y mapa; el sitio la muestra como "Verificado contra la ley
 el ...") y marca VENCIDO el que pase de 90 días: ese es el selector de la
 rutina de mantenimiento, no la memoria de nadie.
+
+La comparación toma el contenido de cada elemento hasta su propio cierre, contando las etiquetas anidadas del mismo nombre; antes se cortaba en el primer cierre de cualquier etiqueta, y un `<a>` dentro de un `<p>` daba divergencias falsas. Con `node tools/cifras.js aprende/index.html` hace lo mismo sobre la página Aprende.
 
 No valida contra la ley: enumera. Es la lista de trabajo cuando cambia una
 norma (Paquete Económico, LIF, RMF) y el contrato de lo que un monitor tiene
@@ -75,6 +79,8 @@ Uso, desde `web/`:
 
     node tools/i18n.js          # piezas 1 a 3, solo node
     node tools/i18n.js --dom    # además la 4; pide playwright instalado
+
+Con `node tools/i18n.js aprende/index.html --dom` revisa la página Aprende: el paso 3 no aplica (no tiene mapa) y el 4 abre en EN la página y cada una de sus seis láminas, que tienen su propio diccionario.
 
 Sale con código 1 si hay hallazgos. Los nombres de las leyes estatales (`f`)
 se citan en español en los dos idiomas por contrato: son el documento que el
@@ -123,3 +129,24 @@ es `style="width:..."` en las dos barras de la calculadora: es estado
 inicial que el JS reescribe, no estilo. Primera corrida (10 sep 2026): 53
 errores (38 botones sin `type`, 11 estilos en línea, iframe sin `title` y con
 atributos obsoletos); ahora 0.
+
+## usted.js
+
+Busca tuteo en el texto en español. Desde el 30 de septiembre de 2026 Fisco
+Abierto habla de usted (decisión de José): "su", "le", "lo" e imperativos como
+"Consulte". El chequeo lee lo que el lector ve o lo que se indexa: nodos de
+texto, los atributos `title`, `alt`, `aria-label`, `content` y `placeholder`, y
+los literales de cadena de los `<script>`. Marca pronombres y posesivos (tú, tu,
+tus, te, ti, contigo, tuyo) y una lista de verbos en segunda persona que el
+sitio usó. El inglés no dispara nada.
+
+Uso, desde `web/`:
+
+    node tools/usted.js                        # index.html, aprende/index.html, láminas y const.js
+    node tools/usted.js ../videos/v1.html ../newsletters/02-retencion-por-venta.md
+
+Acepta `.html`, `.md` y `.js`. Sale con código 1 si encuentra algo. Primera
+corrida sobre el sitio convertido (30 sep 2026): sin tuteo. Una clase o una
+variable que se llame como una marca (`.tu`, `tuyo`) también dispara; se
+renombra, porque el chequeo no distingue código de texto dentro de un literal.
+El medidor de la newsletter (`medir_estilo.py`) trae la misma lista.

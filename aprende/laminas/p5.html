@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aprende 5: obligaciones del contribuyente</title>
+<link rel="stylesheet" href="lamina.css">
+<style>
+  /* Recurso: una cadena. Las obligaciones formales son los pasos que llevan
+     al pago, y el SAT puede revisar la cadena completa de regreso. */
+  .nodo { position: absolute; border-radius: 14px; background: #fff; box-shadow: inset 0 0 0 1.5px var(--line); padding: 16px 18px; }
+  .nodo .v { font-size: 15px; font-weight: 600; color: var(--ink3); }
+  .nodo .t { margin-top: 6px; font-size: 20px; font-weight: 600; letter-spacing: -0.3px; line-height: 1.2; }
+  .nodo .art { position: absolute; left: 18px; bottom: 14px; font-size: 13.5px; }
+  #n5 { background: var(--teal); box-shadow: none; color: #fff; }
+  #n5 .v { color: var(--teal-l); } #n5 .art { color: var(--teal-l); }
+  #n5 .t { font-size: 26px; }
+  .llave { position: absolute; height: 12px; border: 2px solid var(--ink3); border-bottom: 0; border-radius: 6px 6px 0 0; }
+  .llave span { position: absolute; left: 0; bottom: 20px; font-size: 16px; font-weight: 600; color: var(--ink2); white-space: nowrap; }
+  #lk5 { border-color: var(--teal); } #lk5 span { color: var(--teal); }
+  #tol { position: absolute; text-align: center; }
+  #tol .v { font-size: 15px; font-weight: 600; color: var(--ink3); }
+  #tol .t { margin-top: 3px; font-size: 20px; font-weight: 600; letter-spacing: -0.3px; }
+  #tol .art { margin-top: 4px; }
+  svg.wires path.flecha { stroke: var(--ink3); stroke-width: 2; }
+  svg.wires path.arco { stroke: var(--teal); stroke-width: 2; }
+  .m .nodo { padding: 12px 16px; }
+  .m .nodo .t { margin-top: 3px; font-size: 20px; }
+  .m .nodo .art { left: auto; right: 16px; bottom: auto; top: 13px; }
+  .m #n5 .t { font-size: 24px; }
+  .m .llave { display: none; }
+  .m #tol { text-align: left; }
+</style>
+</head><body><div id="stage">
+  <div class="brand"><div class="badge">FA</div><div class="word"><b>Fisco</b> Abierto</div></div>
+  <div class="kicker" data-t="kicker"></div>
+  <div class="fig">
+    <div class="cap" id="c1" data-t="c1"></div>
+    <div class="cap" id="c2" data-t="c2"></div>
+    <div class="cap" id="c3" data-t="c3"></div>
+    <div class="cap" id="c4" data-t="c4"></div>
+    <div class="cap" id="c5" data-t="c5"></div>
+    <div class="cap" id="c6" data-t="c6"></div>
+    <svg class="wires" viewBox="0 0 1280 720" aria-hidden="true">
+      <defs>
+        <marker id="pg" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L8 5 L1 9" fill="none" stroke="#78716C" stroke-width="1.6"/></marker>
+        <marker id="pt" viewBox="0 0 10 10" refX="7" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M1 1 L8 5 L1 9" fill="none" stroke="#0F766E" stroke-width="1.6"/></marker>
+      </defs>
+      <path id="f1" class="flecha" marker-end="url(#pg)"/>
+      <path id="f2" class="flecha" marker-end="url(#pg)"/>
+      <path id="f3" class="flecha" marker-end="url(#pg)"/>
+      <path id="f4" class="flecha" marker-end="url(#pg)"/>
+      <path id="arc" class="arco" marker-end="url(#pt)"/>
+    </svg>
+    <div class="nodo" id="n1"><div class="v" data-t="v1"></div><div class="t" data-t="t1"></div><div class="art" data-t="a1"></div></div>
+    <div class="nodo" id="n2"><div class="v" data-t="v2"></div><div class="t" data-t="t2"></div><div class="art" data-t="a2"></div></div>
+    <div class="nodo" id="n3"><div class="v" data-t="v3"></div><div class="t" data-t="t3"></div><div class="art" data-t="a3"></div></div>
+    <div class="nodo" id="n4"><div class="v" data-t="v4"></div><div class="t" data-t="t4"></div><div class="art" data-t="a4"></div></div>
+    <div class="nodo" id="n5"><div class="v" data-t="v5"></div><div class="t" data-t="t5"></div><div class="art" data-t="a5"></div></div>
+    <div class="llave" id="lk1"><span data-t="formales"></span></div>
+    <div class="llave" id="lk5"><span data-t="sustantiva"></span></div>
+    <div id="tol"><div class="v" data-t="tolV"></div><div class="t" data-t="tolT"></div><div class="art" data-t="a6"></div></div>
+  </div>
+  <div class="end" id="end">
+    <div class="tit" data-t="endH"></div>
+    <div class="src" data-t="endSrc"></div>
+    <div class="disc-legal"><span data-t="legal"></span><div class="verif" data-t="verif"></div></div>
+  </div>
+</div>
+<script src="const.js"></script>
+<script src="motor.js"></script>
+<script>
+const T = {
+  es: {
+    kicker: 'Aprende · 5 de 6',
+    c1: 'Pagar es solo una de sus obligaciones fiscales.',
+    c2: 'Antes del pago van otras. Se inscribe en el RFC y emite sus facturas.',
+    c3: 'Lleva su contabilidad y presenta sus declaraciones.',
+    c4: 'Al final paga. A esa se le llama obligación sustantiva; a las demás, formales.',
+    c5: 'Y debe permitir que el SAT revise la cadena completa.',
+    c6: 'Cada una cuenta sola. No inscribirse en el RFC cuando debe ya es infracción.',
+    v1: 'Hacer', t1: 'Inscribirse en el RFC',
+    v2: 'Hacer', t2: 'Emitir sus facturas',
+    v3: 'Hacer', t3: 'Llevar contabilidad',
+    v4: 'Hacer', t4: 'Presentar declaraciones',
+    v5: 'Dar', t5: 'Pagar',
+    formales: 'Obligaciones formales', sustantiva: 'Obligación sustantiva',
+    tolV: 'Tolerar', tolT: 'Que el SAT revise',
+    a1: 'Art. 27 CFF', a2: 'Art. 29 CFF', a3: 'Art. 28 CFF', a4: 'Art. 31 CFF', a5: 'Art. 6 CFF', a6: 'Art. 42 CFF',
+    endH: 'Pagar es la obligación sustantiva. Las formales se cumplen aparte, y incumplir una es infracción por sí misma.',
+    endSrc: 'Arts. 6, 27, 28, 29, 31 y 42 CFF · Art. 79, fr. I CFF',
+    legal: K.LEGAL_ES, verif: K.VERIF_ES,
+  },
+  en: {
+    kicker: 'Learn · 5 of 6',
+    c1: 'Paying is only one of your tax obligations.',
+    c2: 'Others come before the payment. You register with the RFC and issue your invoices.',
+    c3: 'You keep your accounting records and file your returns.',
+    c4: 'Then you pay. That one is called substantive; the rest are formal.',
+    c5: 'And you must allow the SAT to review the whole chain.',
+    c6: 'Each one stands on its own. Not registering with the RFC when you must is already an infraction.',
+    v1: 'Do', t1: 'Register with the RFC',
+    v2: 'Do', t2: 'Issue your invoices',
+    v3: 'Do', t3: 'Keep accounting records',
+    v4: 'Do', t4: 'File returns',
+    v5: 'Give', t5: 'Pay',
+    formales: 'Formal obligations', sustantiva: 'Substantive obligation',
+    tolV: 'Allow', tolT: 'The SAT to review',
+    a1: 'Tax Code art. 27', a2: 'Tax Code art. 29', a3: 'Tax Code art. 28', a4: 'Tax Code art. 31', a5: 'Tax Code art. 6', a6: 'Tax Code art. 42',
+    endH: 'Paying is the substantive obligation. Formal ones are met separately, and breaching one is an infraction in itself.',
+    endSrc: 'Federal Tax Code art. 6, 27, 28, 29, 31 and 42 · art. 79, sec. I',
+    legal: K.LEGAL_EN, verif: K.VERIF_EN,
+  }
+};
+fill(T);
+// En teléfono no hay llaves: cada nodo dice si es formal o sustantiva.
+if (M) {
+  const f = LANG === 'en' ? ['Formal · do', 'Substantive · give'] : ['Formal · hacer', 'Sustantiva · dar'];
+  for (let i = 1; i <= 4; i++) document.querySelector(`#n${i} .v`).textContent = f[0];
+  document.querySelector('#n5 .v').textContent = f[1];
+}
+
+// Geometría: cinco nodos en fila (escritorio) o en columna (teléfono).
+const N = [];
+if (M) { for (let i = 0; i < 5; i++) N.push({ x: 32, y: 214 + i * 104, w: 540, h: 82 }); }
+else { for (let i = 0; i < 5; i++) N.push({ x: 56 + i * 243, y: 290, w: 196, h: 128 }); }
+N.forEach((n, i) => { const e = document.getElementById('n' + (i + 1)); e.style.left = n.x + 'px'; e.style.top = n.y + 'px'; e.style.width = n.w + 'px'; e.style.height = n.h + 'px'; });
+const d = (id, v) => document.getElementById(id).setAttribute('d', v);
+for (let i = 0; i < 4; i++) {
+  const a = N[i], b = N[i + 1];
+  if (M) d('f' + (i + 1), `M ${a.x + 60} ${a.y + a.h + 5} L ${a.x + 60} ${b.y - 7}`);
+  else d('f' + (i + 1), `M ${a.x + a.w + 7} ${a.y + a.h / 2} L ${b.x - 9} ${b.y + b.h / 2}`);
+}
+if (M) {
+  const a = N[4], b = N[0], x = a.x + a.w;
+  d('arc', `M ${x + 6} ${a.y + a.h / 2} C ${x + 110} ${a.y + a.h / 2} ${x + 110} ${b.y + b.h / 2} ${x + 9} ${b.y + b.h / 2}`);
+  pos('tol', [], [32, 752]);
+} else {
+  const a = N[4], b = N[0], y = a.y + a.h;
+  d('arc', `M ${a.x + a.w / 2} ${y + 6} C ${a.x + a.w / 2} ${y + 150} ${b.x + b.w / 2} ${y + 150} ${b.x + b.w / 2} ${y + 9}`);
+  const tol = document.getElementById('tol'); tol.style.left = '440px'; tol.style.width = '400px'; tol.style.top = (y + 124) + 'px';
+  const l1 = document.getElementById('lk1'), l5 = document.getElementById('lk5');
+  l1.style.left = N[0].x + 'px'; l1.style.width = (N[3].x + N[3].w - N[0].x) + 'px'; l1.style.top = (N[0].y - 22) + 'px';
+  l5.style.left = N[4].x + 'px'; l5.style.width = N[4].w + 'px'; l5.style.top = (N[0].y - 22) + 'px';
+}
+
+enter('.brand', 0.1, 0.6); enter('.kicker', 0.2, 0.6);
+enter('#c1', 0.3, 0.7);
+enter('#n5', 0.8, 0.7, 10);
+
+leave('#c1', 3.6, 0.3); enter('#c2', 3.9, 0.6);
+enter('#n1', 4.3, 0.6, 10); draw('#f1', 4.9, 0.5); enter('#n2', 5.3, 0.6, 10);
+leave('#c2', 8.6, 0.3); enter('#c3', 8.9, 0.6);
+draw('#f2', 9.2, 0.5); enter('#n3', 9.6, 0.6, 10); draw('#f3', 10.2, 0.5); enter('#n4', 10.6, 0.6, 10);
+leave('#c3', 13.0, 0.3); enter('#c4', 13.3, 0.6);
+draw('#f4', 13.6, 0.5);
+at('#n5', 14.1, 0.35, { s: 1 }, { s: 1.05 }, 'out'); at('#n5', 14.45, 0.35, { s: 1.05 }, { s: 1 }, 'io');
+enter('#lk1', 14.6, 0.6, 6); enter('#lk5', 15.0, 0.6, 6);
+leave('#c4', 18.4, 0.3); enter('#c5', 18.7, 0.6);
+draw('#arc', 19.0, 1.2); enter('#tol', 19.9, 0.6, 8);
+leave('#c5', 23.0, 0.3); enter('#c6', 23.3, 0.6);
+
+terminar(27.5);
+</script>
+</body></html>

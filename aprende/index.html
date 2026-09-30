@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aprende | Fisco Abierto</title>
+    <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+    <meta name="description" content="Principios básicos de los impuestos en México, en seis pasos con animaciones: qué es una contribución, qué es un impuesto, cuándo nace la obligación, obligaciones y derechos del contribuyente.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #FAFAF9;
+            --color-surface: #FFFFFF;
+            --color-text: #1C1917;
+            --color-text-secondary: #57534E;
+            --color-text-muted: #78716C;
+            --color-accent: #0F766E;
+            --color-accent-light: #CCFBF1;
+            --color-accent-dark: #0D5E58;
+            --color-border: #E7E5E4;
+            --mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-padding-top: 90px; }
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--color-bg);
+            color: var(--color-text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+        }
+        .container { max-width: 1240px; margin: 0 auto; padding: 0 24px; }
+
+        /* NAV: el mismo del sitio. Aquí el botón de Diagnóstico se ve siempre,
+           porque esta página no tiene el botón del hero. */
+        nav#topnav {
+            background: var(--color-surface);
+            border-bottom: 1px solid var(--color-border);
+            padding: 16px 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            transition: padding 0.25s ease;
+        }
+        nav#topnav .container { display: flex; justify-content: space-between; align-items: center; max-width: 1560px; }
+        nav#topnav.shrunk { padding: 8px 0; }
+        .logo { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; }
+        .logo-badge { height: 32px; width: auto; flex-shrink: 0; }
+        .logo-word { display: inline-flex; gap: 0.18em; white-space: nowrap; overflow: hidden; max-width: 240px; font-size: 1.05rem; font-weight: 700; letter-spacing: -0.01em; }
+        .logo-word-a { color: var(--color-accent); }
+        .logo-word-b { color: var(--color-text); }
+        .nav-right { display: inline-flex; align-items: center; gap: 14px; }
+        .nav-links { display: flex; gap: 24px; }
+        .nav-links a { text-decoration: none; color: var(--color-text-secondary); font-size: 0.9rem; font-weight: 500; transition: color 0.2s; }
+        .nav-links a[aria-current="page"] { color: var(--color-text); font-weight: 600; }
+        @media (hover: hover) { .nav-links a:hover { color: var(--color-accent); } }
+        .nav-cta { background: var(--color-text); color: #FFFFFF; text-decoration: none; font-size: 0.88rem; font-weight: 600; padding: 9px 18px; border-radius: 999px; white-space: nowrap; transition: background-color 0.2s; }
+        @media (hover: hover) { .nav-cta:hover { background: var(--color-accent); } }
+        .lang-switch { display: inline-flex; border: 1px solid var(--color-border); border-radius: 8px; overflow: hidden; background: var(--color-bg); flex-shrink: 0; }
+        .lang-btn { appearance: none; -webkit-appearance: none; background: none; border: none; font-family: inherit; font-size: 0.85rem; font-weight: 700; letter-spacing: 0.06em; color: var(--color-text-secondary); padding: 8px 15px; cursor: pointer; transition: background-color 0.2s, color 0.2s; }
+        .lang-btn + .lang-btn { border-left: 1px solid var(--color-border); }
+        @media (hover: hover) { .lang-btn:hover { color: var(--color-accent); } }
+        .lang-btn.active { background: var(--color-accent); color: #FFFFFF; }
+        .lang-btn:focus-visible, .nav-links a:focus-visible, .nav-cta:focus-visible, .logo:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+        @media (prefers-reduced-motion: reduce) { nav#topnav, .nav-links a, .nav-cta, .lang-btn { transition: none; } }
+
+        /* ENCABEZADO */
+        .ap-head { padding: 64px 0 40px; border-bottom: 1px solid var(--color-border); }
+        .ap-head h1 { font-size: 2.3rem; font-weight: 800; letter-spacing: -0.025em; line-height: 1.15; max-width: 22ch; }
+        .ap-head p { margin-top: 16px; font-size: 1.05rem; color: var(--color-text-secondary); line-height: 1.65; max-width: 60ch; }
+
+        /* CUERPO: escalera fija a la izquierda y peldaños a la derecha. */
+        .ap-body { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 48px; align-items: start; }
+
+        /* La escalera: la sangría de cada peldaño es su profundidad. Cada uno
+           se explica con las piezas del de abajo; el 5 y el 6 comparten nivel
+           porque son las dos caras de la misma relación. */
+        .ap-escalera { position: sticky; top: 96px; padding: 40px 0; }
+        .ap-escalera ol { list-style: none; }
+        .ap-escalera li { position: relative; padding-left: calc(var(--nivel) * 16px); }
+        .ap-escalera a {
+            display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: baseline;
+            padding: 7px 0 7px 12px; border-left: 2px solid var(--color-border);
+            color: var(--color-text-secondary); text-decoration: none; font-size: 0.86rem; line-height: 1.35;
+            transition: color 0.2s, border-color 0.2s;
+        }
+        .ap-escalera .n { font-family: var(--mono); font-size: 0.76rem; font-weight: 600; color: var(--color-text-muted); }
+        .ap-escalera a[aria-current="step"] { color: var(--color-text); border-left-color: var(--color-accent); font-weight: 600; }
+        .ap-escalera a[aria-current="step"] .n { color: var(--color-accent); }
+        @media (hover: hover) { .ap-escalera a:hover { color: var(--color-accent); } }
+        .ap-escalera a:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+        .ap-p { padding: 56px 0; border-bottom: 1px solid var(--color-border); }
+        .ap-p:last-child { border-bottom: 0; }
+        .ap-p h2 { display: flex; align-items: baseline; gap: 14px; font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; line-height: 1.25; }
+        .ap-p h2 .n { font-family: var(--mono); font-size: 0.95rem; font-weight: 600; color: var(--color-accent); flex: none; }
+
+        /* Lámina en vivo: la misma fuente que el video descargable. */
+        .ap-lamina { margin: 26px 0 0; }
+        .ap-marco { position: relative; aspect-ratio: 16 / 9; border: 1px solid var(--color-border); border-radius: 16px; overflow: hidden; background: #FAFAF9; }
+        .ap-marco iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; display: block; }
+        .ap-ctl { display: flex; align-items: center; gap: 14px; margin-top: 12px; }
+        .ap-play {
+            appearance: none; -webkit-appearance: none; cursor: pointer; flex: none;
+            width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center;
+            background: var(--color-accent); border: 0;
+        }
+        @media (hover: hover) { .ap-play:hover { background: var(--color-accent-dark); } }
+        .ap-play:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 3px; }
+        .ap-play svg { width: 12px; height: 12px; fill: #FFFFFF; }
+        .ap-play path { display: none; }
+        .ap-play[data-estado="play"] .i-play, .ap-play[data-estado="pause"] .i-pause, .ap-play[data-estado="replay"] .i-replay { display: inline; }
+        .ap-track { flex: 1; height: 3px; border-radius: 3px; background: var(--color-border); overflow: hidden; }
+        .ap-fill { display: block; height: 100%; width: 0; background: var(--color-accent); }
+        .ap-dl { flex: none; font-size: 0.8rem; font-weight: 500; color: var(--color-text-secondary); text-decoration: underline; text-underline-offset: 3px; }
+        @media (hover: hover) { .ap-dl:hover { color: var(--color-accent); } }
+        .ap-dl:focus-visible { outline: 2px solid var(--color-accent); outline-offset: 2px; }
+
+        .ap-texto { margin-top: 30px; max-width: 66ch; }
+        .ap-texto p, .ap-texto li { font-size: 1.02rem; line-height: 1.75; color: #292524; }
+        .ap-texto p + p, .ap-texto ul + p, .ap-texto p + ul { margin-top: 16px; }
+        .ap-texto ul { padding-left: 1.2em; }
+        .ap-texto li + li { margin-top: 6px; }
+        .ap-texto a { color: var(--color-accent-dark); text-underline-offset: 3px; }
+        .ap-texto q { quotes: '«' '»'; }
+
+        .blk-foot { margin-top: 26px; padding-top: 14px; border-top: 1px solid var(--color-border); font-family: var(--mono); font-size: 0.7rem; color: var(--color-text-muted); line-height: 1.7; max-width: 66ch; }
+        .blk-foot a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
+        @media (hover: hover) { .blk-foot a:hover { color: var(--color-accent); } }
+        .verif { margin-top: 10px; font-family: var(--mono); font-size: 0.66rem; color: var(--color-text-muted); line-height: 1.7; }
+        .verif:empty { display: none; }
+        .verif-date { white-space: nowrap; }
+
+        footer { padding: 40px 0; border-top: 1px solid var(--color-border); text-align: center; }
+        .footer-fine { max-width: 64ch; margin: 0 auto; font-size: 0.78rem; color: var(--color-text-secondary); line-height: 1.7; }
+        .footer-copy { margin-top: 18px; font-size: 0.74rem; color: var(--color-text-muted); line-height: 1.8; }
+        .footer-copy .sep { margin: 0 8px; opacity: 0.6; }
+        .footer-mark { white-space: nowrap; }
+        footer .verif { margin-top: 14px; }
+
+        @media (max-width: 1000px) {
+            .ap-body { grid-template-columns: minmax(0, 1fr); gap: 0; }
+            .ap-escalera { position: static; padding: 28px 0 8px; border-bottom: 1px solid var(--color-border); }
+        }
+        @media (max-width: 600px) {
+            nav#topnav { padding: 9px 0; }
+            nav#topnav .container { flex-wrap: wrap; row-gap: 7px; }
+            .logo { gap: 7px; }
+            .logo-badge { height: 27px; }
+            .logo-word { font-size: 0.92rem; max-width: 200px; }
+            .nav-right { gap: 8px; }
+            .nav-cta { padding: 6px 12px; font-size: 0.78rem; }
+            .nav-links { gap: 14px; order: 3; flex-basis: 100%; justify-content: center; }
+            .nav-links a { font-size: 0.82rem; }
+            .lang-btn { padding: 5px 9px; font-size: 0.76rem; }
+            .ap-head { padding: 40px 0 28px; }
+            .ap-head h1 { font-size: 1.7rem; }
+            .ap-head p { font-size: 0.98rem; }
+            .ap-p { padding: 40px 0; }
+            .ap-p h2 { font-size: 1.3rem; gap: 10px; }
+            .ap-marco { aspect-ratio: 4 / 5; border-radius: 14px; }
+            .ap-texto p, .ap-texto li { font-size: 0.98rem; }
+            .footer-copy .sep { display: none; }
+            .footer-mark { display: block; }
+        }
+        /* Prosa justificada (30 sep 2026, José), igual que en la página
+           principal: el texto corrido bajo cada lámina y la entradilla. */
+        .ap-head p, .ap-texto p, .ap-texto li, .footer-fine {
+            text-align: justify;
+            -webkit-hyphens: auto;
+            hyphens: auto;
+        }
+        .footer-fine { text-align-last: center; }
+        @media (prefers-reduced-motion: reduce) { .ap-escalera a { transition: none; } }
+    </style>
+</head>
+<body>
+
+<nav id="topnav" aria-label="Principal" data-i18n-aria="nav.main">
+    <div class="container">
+        <a href="../" class="logo" aria-label="Fisco Abierto" data-con-idioma="../">
+            <svg class="logo-badge" viewBox="0 0 36 36" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                <rect x="0" y="2" width="32" height="32" rx="7" fill="#0F766E"/>
+                <text x="16" y="23.5" font-family="Inter, system-ui, sans-serif" font-size="15" font-weight="800" fill="#FFFFFF" text-anchor="middle" letter-spacing="-0.5">FA</text>
+            </svg>
+            <span class="logo-word" aria-hidden="true"><span class="logo-word-a">Fisco</span><span class="logo-word-b">Abierto</span></span>
+        </a>
+        <div class="nav-links">
+            <a href="./" aria-current="page" data-i18n="nav.learn">Aprende</a>
+            <a href="../#faq" data-con-idioma="../" data-ancla="#faq" data-i18n="nav.faq">FAQ</a>
+            <a href="../#newsletter" data-con-idioma="../" data-ancla="#newsletter" data-i18n="nav.newsletter">Newsletter</a>
+        </div>
+        <div class="nav-right">
+            <a href="../#diagnostico" class="nav-cta" data-con-idioma="../" data-ancla="#diagnostico" data-i18n="nav.diagnostic">Diagnóstico</a>
+            <div class="lang-switch" role="group" aria-label="Idioma / Language">
+                <button type="button" class="lang-btn" data-lang="es" lang="es" aria-pressed="true">ES</button>
+                <button type="button" class="lang-btn" data-lang="en" lang="en" aria-pressed="false">EN</button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<main>
+<header class="ap-head">
+    <div class="container">
+        <h1 data-i18n="ap.title">Principios básicos de los impuestos en México</h1>
+        <p data-i18n="ap.lead">Seis pasos, de la Constitución a sus derechos como contribuyente. Cada paso toma una pieza del anterior y la abre en sus partes, así que se leen en orden.</p>
+    </div>
+</header>
+
+<div class="container ap-body">
+    <nav class="ap-escalera" aria-label="Pasos" data-i18n-aria="ap.steps">
+        <ol>
+            <li style="--nivel: 0"><a href="#p1"><span class="n">1</span><span data-i18n="p1.nav">El deber de contribuir</span></a></li>
+            <li style="--nivel: 1"><a href="#p2"><span class="n">2</span><span data-i18n="p2.nav">Las cuatro contribuciones</span></a></li>
+            <li style="--nivel: 2"><a href="#p3"><span class="n">3</span><span data-i18n="p3.nav">Los elementos de un impuesto</span></a></li>
+            <li style="--nivel: 3"><a href="#p4"><span class="n">4</span><span data-i18n="p4.nav">Cuándo nace la obligación y quién paga</span></a></li>
+            <li style="--nivel: 4"><a href="#p5"><span class="n">5</span><span data-i18n="p5.nav">Obligaciones del contribuyente</span></a></li>
+            <li style="--nivel: 4"><a href="#p6"><span class="n">6</span><span data-i18n="p6.nav">Los dos sentidos de «derechos»</span></a></li>
+        </ol>
+    </nav>
+
+    <div class="ap-pasos">
+<!-- PASO 1 -->
+<section class="ap-p" id="p1" aria-labelledby="p1t">
+    <h2 id="p1t"><span class="n">1</span><span data-i18n="p1.title">El deber de contribuir</span></h2>
+    <figure class="ap-lamina" data-lamina="p1" data-video="deber-de-contribuir">
+        <div class="ap-marco"><iframe title="Animación: el deber de contribuir" data-i18n-title="p1.frame" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+        <figcaption class="ap-ctl">
+            <button type="button" class="ap-play" aria-label="Reproducir" data-i18n-aria="ap.play" data-estado="play"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path class="i-play" d="M4 2.5v11l9-5.5z"/><path class="i-pause" d="M4 2.5h3v11H4zM9 2.5h3v11H9z"/><path class="i-replay" d="M8 2.5a5.5 5.5 0 1 1-5.2 3.7l1.4.5A4 4 0 1 0 8 4v2L4.8 3.2 8 .5z"/></svg></button>
+            <span class="ap-track" aria-hidden="true"><span class="ap-fill"></span></span>
+            <a class="ap-dl" href="videos/deber-de-contribuir-es.mp4" download data-i18n="ap.download">Descargar video</a>
+        </figcaption>
+    </figure>
+    <div class="ap-texto">
+        <p data-i18n="p1.a">Suponga que vende por Mercado Libre y que la plataforma le retiene una parte de cada venta. Detrás de esa retención hay una cadena de reglas, y la primera está en la Constitución. Su artículo 31 enumera las obligaciones de los mexicanos, y la fracción IV dice que una de ellas es contribuir para los gastos públicos <q>de la manera proporcional y equitativa que dispongan las leyes</q>.</p>
+        <p data-i18n="p1.b">Esa fracción contiene cuatro ideas. La primera es el destino. Lo que usted paga cubre el gasto público. Por eso una contribución solo puede asignarse a un gasto específico mediante una ley (art. 1 CFF). La segunda es quién cobra. La Federación, los estados, la Ciudad de México y los municipios tienen cada uno sus contribuciones. Eso explica que pueda pagar impuestos federales al SAT y, además, uno estatal, como el impuesto sobre hospedaje.</p>
+        <p data-i18n="p1.c">La tercera es cuánto. La Suprema Corte ha interpretado que proporcional significa que cada quien paga según su capacidad económica, y que equitativo significa que quienes están en la misma situación reciben el mismo trato. La cuarta es la legalidad. Solo paga lo que establece una ley. Y ninguna autoridad puede cobrarle algo que la ley no prevé.</p>
+    </div>
+    <p class="blk-foot" data-i18n="p1.src">Art. 31, fr. IV <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CPEUM.pdf" target="_blank" rel="noopener noreferrer">CPEUM</a> · Art. 1 <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf" target="_blank" rel="noopener noreferrer">CFF</a> · SCJN, jurisprudencia P./J. 10/2003 (proporcionalidad) y P./J. 41/97 (equidad)</p>
+</section>
+
+<!-- PASO 2 -->
+<section class="ap-p" id="p2" aria-labelledby="p2t">
+    <h2 id="p2t"><span class="n">2</span><span data-i18n="p2.title">Las cuatro contribuciones</span></h2>
+    <figure class="ap-lamina" data-lamina="p2" data-video="contribuciones">
+        <div class="ap-marco"><iframe title="Animación: las cuatro contribuciones" data-i18n-title="p2.frame" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+        <figcaption class="ap-ctl">
+            <button type="button" class="ap-play" aria-label="Reproducir" data-i18n-aria="ap.play" data-estado="play"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path class="i-play" d="M4 2.5v11l9-5.5z"/><path class="i-pause" d="M4 2.5h3v11H4zM9 2.5h3v11H9z"/><path class="i-replay" d="M8 2.5a5.5 5.5 0 1 1-5.2 3.7l1.4.5A4 4 0 1 0 8 4v2L4.8 3.2 8 .5z"/></svg></button>
+            <span class="ap-track" aria-hidden="true"><span class="ap-fill"></span></span>
+            <a class="ap-dl" href="videos/contribuciones-es.mp4" download data-i18n="ap.download">Descargar video</a>
+        </figcaption>
+    </figure>
+    <div class="ap-texto">
+        <p data-i18n="p2.a">Todo lo que la ley lo obliga a pagar al Estado se llama contribución. El Código Fiscal de la Federación las divide en cuatro clases, y tres de ellas se definen por lo que las origina (art. 2 CFF).</p>
+        <p data-i18n="p2.b">Las aportaciones de seguridad social las paga quien la ley sustituye por el Estado en obligaciones de seguridad social, o quien se beneficia de manera especial de esos servicios. El caso más común son las cuotas obrero-patronales al IMSS. Las contribuciones de mejoras las paga quien se beneficia de manera directa por una obra pública. Los derechos se pagan por usar o aprovechar un bien del dominio público de la Nación, o por recibir un servicio que el Estado presta en sus funciones de derecho público. Por ejemplo, cuando tramita su pasaporte paga un derecho (art. 20 LFD).</p>
+        <p data-i18n="p2.c">El impuesto se define de otra forma. La ley dice que son impuestos las contribuciones que debe pagar por estar en la situación jurídica o de hecho que la propia ley prevé, y que son distintas de las otras tres. Por eso un impuesto no se paga a cambio de un servicio concreto. Paga ISR porque obtuvo un ingreso, y causa IVA porque vendió, aunque en ese momento no reciba nada en particular del Estado.</p>
+        <p data-i18n="p2.d">Dos cosas quedan fuera de las cuatro clases. Los recargos, las sanciones, los gastos de ejecución y la indemnización por cheques no pagados son accesorios de las contribuciones y siguen su misma naturaleza (art. 2, último párrafo CFF). También quedan fuera los aprovechamientos y los productos, que no son contribuciones. Los primeros son otros ingresos que el Estado recibe por funciones de derecho público, y los segundos son lo que cobra por servicios o bienes en funciones de derecho privado (art. 3 CFF).</p>
+    </div>
+    <p class="blk-foot" data-i18n="p2.src">Arts. 2 y 3 <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf" target="_blank" rel="noopener noreferrer">CFF</a> · Art. 20 <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LFD.pdf" target="_blank" rel="noopener noreferrer">LFD</a></p>
+</section>
+
+<!-- PASO 3 -->
+<section class="ap-p" id="p3" aria-labelledby="p3t">
+    <h2 id="p3t"><span class="n">3</span><span data-i18n="p3.title">Los elementos de un impuesto</span></h2>
+    <figure class="ap-lamina" data-lamina="p3" data-video="elementos-del-impuesto">
+        <div class="ap-marco"><iframe title="Animación: los elementos de un impuesto" data-i18n-title="p3.frame" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+        <figcaption class="ap-ctl">
+            <button type="button" class="ap-play" aria-label="Reproducir" data-i18n-aria="ap.play" data-estado="play"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path class="i-play" d="M4 2.5v11l9-5.5z"/><path class="i-pause" d="M4 2.5h3v11H4zM9 2.5h3v11H9z"/><path class="i-replay" d="M8 2.5a5.5 5.5 0 1 1-5.2 3.7l1.4.5A4 4 0 1 0 8 4v2L4.8 3.2 8 .5z"/></svg></button>
+            <span class="ap-track" aria-hidden="true"><span class="ap-fill"></span></span>
+            <a class="ap-dl" href="videos/elementos-del-impuesto-es.mp4" download data-i18n="ap.download">Descargar video</a>
+        </figcaption>
+    </figure>
+    <div class="ap-texto">
+        <p data-i18n="p3.a">Tome la venta de un producto en $1,000. Esa venta causa IVA, y para saber cuánto necesita cinco datos. Los cuatro primeros los nombra la ley, que dice que las normas que se refieren al sujeto, al objeto, a la base y a la tasa o tarifa establecen cargas a los particulares (art. 5 CFF). El quinto es la época de pago.</p>
+        <p data-i18n="p3.b">El sujeto es la persona que debe pagar el impuesto. En el IVA es quien vende el bien o presta el servicio, así que aquí es usted. El objeto es el hecho que la ley grava. La Ley del IVA grava cuatro actos, que son vender bienes, prestar servicios independientes, dar bienes en uso o goce temporal e importar bienes o servicios, y su venta es el primero (art. 1 LIVA).</p>
+        <p data-i18n="p3.c">La base es la cantidad sobre la que se calcula el impuesto, en este caso los $1,000 del precio. La tasa es el porcentaje que se aplica a la base, y la tasa general del IVA es 16%. Cuando en lugar de un porcentaje fijo la ley usa una tabla que cambia según cuánto gana, como en el ISR anual de las personas físicas, se habla de tarifa. Base por tasa da $160, que es el IVA que causa la venta.</p>
+        <p data-i18n="p3.d">La época de pago dice cuándo entrega el impuesto. El IVA se calcula por mes y se paga a más tardar el día 17 del mes siguiente (art. 5-D LIVA).</p>
+        <p data-i18n="p3.e">Que estos elementos estén en la ley tiene una consecuencia práctica. Las normas que los fijan se aplican de manera estricta (art. 5 CFF). Eso quiere decir que no pueden extenderse por analogía a casos que la ley no prevé. Es la legalidad del primer paso, convertida en una regla para aplicar la ley.</p>
+    </div>
+    <p class="blk-foot" data-i18n="p3.src">Art. 5 <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf" target="_blank" rel="noopener noreferrer">CFF</a> · Arts. 1 y 5-D <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LIVA.pdf" target="_blank" rel="noopener noreferrer">LIVA</a></p>
+</section>
+
+<!-- PASO 4 -->
+<section class="ap-p" id="p4" aria-labelledby="p4t">
+    <h2 id="p4t"><span class="n">4</span><span data-i18n="p4.title">Cuándo nace la obligación y quién paga</span></h2>
+    <figure class="ap-lamina" data-lamina="p4" data-video="nace-la-obligacion">
+        <div class="ap-marco"><iframe title="Animación: cuándo nace la obligación y quién paga" data-i18n-title="p4.frame" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+        <figcaption class="ap-ctl">
+            <button type="button" class="ap-play" aria-label="Reproducir" data-i18n-aria="ap.play" data-estado="play"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path class="i-play" d="M4 2.5v11l9-5.5z"/><path class="i-pause" d="M4 2.5h3v11H4zM9 2.5h3v11H9z"/><path class="i-replay" d="M8 2.5a5.5 5.5 0 1 1-5.2 3.7l1.4.5A4 4 0 1 0 8 4v2L4.8 3.2 8 .5z"/></svg></button>
+            <span class="ap-track" aria-hidden="true"><span class="ap-fill"></span></span>
+            <a class="ap-dl" href="videos/nace-la-obligacion-es.mp4" download data-i18n="ap.download">Descargar video</a>
+        </figcaption>
+    </figure>
+    <div class="ap-texto">
+        <p data-i18n="p4.a">Digamos que el día 12 vende ese producto de $1,000. En ese momento nace su obligación de pagar el IVA, aunque todavía no lo pague. Las contribuciones se causan conforme ocurren las situaciones que prevén las leyes vigentes en ese momento (art. 6 CFF), y causar un impuesto quiere decir que la obligación ya existe.</p>
+        <p data-i18n="p4.b">Después alguien tiene que calcular cuánto debe, y la ley dice que eso le corresponde al contribuyente, salvo que una norma diga otra cosa (art. 6 CFF). Entonces, al cerrar el mes, suma sus ventas, calcula el impuesto y lo paga a más tardar el día 17 del mes siguiente. Así lo fijan el art. 5-D LIVA para el IVA y el art. 106 LISR para los pagos provisionales de ISR.</p>
+        <p data-i18n="p4.c">Una venta por plataforma agrega dos personas. La plataforma es retenedora, porque se queda con una parte del impuesto antes de depositarle y la entrega al SAT por usted. Además, la ley la hace responder junto con usted hasta por el monto que debe retener (art. 26, fr. I CFF). En cambio, su cliente no es contribuyente del IVA de su venta. Usted se lo traslada, es decir, se lo cobra encima del precio, pero el contribuyente sigue siendo usted (art. 1 LIVA).</p>
+        <p data-i18n="p4.d">Cuánto retiene cada plataforma, y si esa retención cierra su cuenta o solo la adelanta, lo explican <a href="../#calculadora" data-con-idioma="../" data-ancla="#calculadora">la calculadora</a> y <a href="../#videos" data-con-idioma="../" data-ancla="#videos">los videos</a> de la página principal.</p>
+    </div>
+    <p class="blk-foot" data-i18n="p4.src">Arts. 6 y 26, fr. I <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf" target="_blank" rel="noopener noreferrer">CFF</a> · Arts. 1 y 5-D <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LIVA.pdf" target="_blank" rel="noopener noreferrer">LIVA</a> · Art. 106 <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LISR.pdf" target="_blank" rel="noopener noreferrer">LISR</a></p>
+</section>
+
+<!-- PASO 5 -->
+<section class="ap-p" id="p5" aria-labelledby="p5t">
+    <h2 id="p5t"><span class="n">5</span><span data-i18n="p5.title">Obligaciones del contribuyente</span></h2>
+    <figure class="ap-lamina" data-lamina="p5" data-video="obligaciones">
+        <div class="ap-marco"><iframe title="Animación: obligaciones del contribuyente" data-i18n-title="p5.frame" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+        <figcaption class="ap-ctl">
+            <button type="button" class="ap-play" aria-label="Reproducir" data-i18n-aria="ap.play" data-estado="play"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path class="i-play" d="M4 2.5v11l9-5.5z"/><path class="i-pause" d="M4 2.5h3v11H4zM9 2.5h3v11H9z"/><path class="i-replay" d="M8 2.5a5.5 5.5 0 1 1-5.2 3.7l1.4.5A4 4 0 1 0 8 4v2L4.8 3.2 8 .5z"/></svg></button>
+            <span class="ap-track" aria-hidden="true"><span class="ap-fill"></span></span>
+            <a class="ap-dl" href="videos/obligaciones-es.mp4" download data-i18n="ap.download">Descargar video</a>
+        </figcaption>
+    </figure>
+    <div class="ap-texto">
+        <p data-i18n="p5.a">Pagar es la obligación que todos tienen en mente, pero no es la única. El derecho fiscal distingue la obligación de pagar, que se llama sustantiva, de las obligaciones formales, que son lo que la ley le pide hacer para que el pago se pueda calcular y comprobar.</p>
+        <p data-i18n="p5.b">Para quien vende en línea, las formales más comunes son cuatro.</p>
+        <ul>
+            <li data-i18n="p5.l1">Inscribirse en el Registro Federal de Contribuyentes, el RFC, cuando la ley lo obliga (art. 27 CFF).</li>
+            <li data-i18n="p5.l2">Emitir sus facturas electrónicas, que el SAT llama CFDI, cuando la ley exige un comprobante (art. 29 CFF).</li>
+            <li data-i18n="p5.l3">Llevar contabilidad si está obligado a ello (art. 28 CFF).</li>
+            <li data-i18n="p5.l4">Presentar sus declaraciones en los medios electrónicos que señala el SAT (art. 31 CFF).</li>
+        </ul>
+        <p data-i18n="p5.c">La doctrina clasifica estas obligaciones por su verbo. Pagar es dar. Inscribirse, facturar, llevar contabilidad y declarar son obligaciones de hacer. Y permitir que la autoridad revise su cumplimiento es tolerar, porque el SAT tiene facultades para comprobar que cumplió (art. 42 CFF).</p>
+        <p data-i18n="p5.d">La distinción importa porque cada obligación se cumple por separado. Si la ley lo obliga a inscribirse en el RFC y no lo hace, eso ya es una infracción (art. 79, fr. I CFF), aunque el impuesto se haya pagado por otra vía, como la retención de una plataforma.</p>
+    </div>
+    <p class="blk-foot" data-i18n="p5.src">Arts. 27, 28, 29, 31, 42 y 79, fr. I <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf" target="_blank" rel="noopener noreferrer">CFF</a></p>
+</section>
+
+<!-- PASO 6 -->
+<section class="ap-p" id="p6" aria-labelledby="p6t">
+    <h2 id="p6t"><span class="n">6</span><span data-i18n="p6.title">Los dos sentidos de «derechos»</span></h2>
+    <figure class="ap-lamina" data-lamina="p6" data-video="derechos">
+        <div class="ap-marco"><iframe title="Animación: los dos sentidos de derechos" data-i18n-title="p6.frame" loading="lazy" tabindex="-1" aria-hidden="true"></iframe></div>
+        <figcaption class="ap-ctl">
+            <button type="button" class="ap-play" aria-label="Reproducir" data-i18n-aria="ap.play" data-estado="play"><svg viewBox="0 0 16 16" aria-hidden="true" focusable="false"><path class="i-play" d="M4 2.5v11l9-5.5z"/><path class="i-pause" d="M4 2.5h3v11H4zM9 2.5h3v11H9z"/><path class="i-replay" d="M8 2.5a5.5 5.5 0 1 1-5.2 3.7l1.4.5A4 4 0 1 0 8 4v2L4.8 3.2 8 .5z"/></svg></button>
+            <span class="ap-track" aria-hidden="true"><span class="ap-fill"></span></span>
+            <a class="ap-dl" href="videos/derechos-es.mp4" download data-i18n="ap.download">Descargar video</a>
+        </figcaption>
+    </figure>
+    <div class="ap-texto">
+        <p data-i18n="p6.a">En materia fiscal, la palabra derechos tiene dos sentidos, y conviene separarlos. En el primero, un derecho es una contribución. Es la cuarta clase del segundo paso, la que usted paga por usar un bien público o por recibir un servicio del Estado, como el pasaporte (art. 2, fr. IV CFF y art. 20 LFD).</p>
+        <p data-i18n="p6.b">En el segundo sentido, los derechos son lo que la autoridad fiscal le debe a usted. La Ley Federal de los Derechos del Contribuyente enumera catorce en su artículo 2. Entre ellos están el derecho a ser informado y asistido para cumplir sus obligaciones, a obtener las devoluciones que procedan, a no entregar documentos que la autoridad ya tiene y a ser oído antes de que le determinen un crédito fiscal.</p>
+        <p data-i18n="p6.c">La devolución es el más concreto. La autoridad devuelve lo que se pagó indebidamente y lo que proceda conforme a las leyes fiscales, y cuando usted la solicita con todos los datos debe hacerlo dentro de los 40 días siguientes. Si el impuesto se lo retuvieron, la devolución se hace a usted, que es a quien se lo retuvieron (art. 22 CFF).</p>
+        <p data-i18n="p6.d">Si considera que la autoridad no respetó alguno de estos derechos, la Procuraduría de la Defensa del Contribuyente, Prodecon, puede asesorarlo, representarlo ante la autoridad y recibir su queja (art. 5 de su Ley Orgánica).</p>
+        <p data-i18n="p6.e">Esto completa la relación del paso anterior. Las obligaciones van de usted al fisco, y los derechos del contribuyente van del fisco a usted.</p>
+    </div>
+    <p class="blk-foot" data-i18n="p6.src">Arts. 2, fr. IV y 22 <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf" target="_blank" rel="noopener noreferrer">CFF</a> · Art. 20 <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LFD.pdf" target="_blank" rel="noopener noreferrer">LFD</a> · Art. 2 <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LFDC.pdf" target="_blank" rel="noopener noreferrer">LFDC</a> · Art. 5 <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LOPDC.pdf" target="_blank" rel="noopener noreferrer">LOPDC</a></p>
+</section>
+    </div>
+</div>
+</main>
+
+<footer>
+    <div class="container">
+        <p class="footer-fine" data-i18n="footer.disclaimer">Fisco Abierto es una herramienta informativa. No constituye asesoría fiscal, legal ni contable. Consulte a un profesional antes de tomar decisiones sobre su situación fiscal.</p>
+        <p class="verif" data-verificado="2026-09-30" data-i18n-js></p>
+        <p class="footer-copy">
+            <span data-i18n="footer.copy">© MMXXVI Fisco Abierto™. Hecho en México.</span><span class="sep">&middot;</span><span class="footer-mark" data-i18n="footer.mark">Marca en trámite ante el IMPI, expediente 3592372</span>
+        </p>
+    </div>
+</footer>
+
+<!-- IDIOMA -->
+<script>
+// ==================== IDIOMA ====================
+// Mismo contrato que index.html: el HTML trae el español como respaldo y
+// este diccionario lo reescribe al cambiar de idioma.
+let currentLanguage = 'es';
+
+const translations = {
+    es: {
+        'meta.title': 'Aprende | Fisco Abierto',
+        'nav.main': 'Principal',
+        'nav.learn': 'Aprende',
+        'nav.faq': 'FAQ',
+        'nav.newsletter': 'Newsletter',
+        'nav.diagnostic': 'Diagnóstico',
+        'verif.line': 'Verificado contra la ley el {fecha}',
+        'ap.title': 'Principios básicos de los impuestos en México',
+        'ap.lead': 'Seis pasos, de la Constitución a sus derechos como contribuyente. Cada paso toma una pieza del anterior y la abre en sus partes, así que se leen en orden.',
+        'ap.steps': 'Pasos',
+        'ap.download': 'Descargar video',
+        'ap.play': 'Reproducir',
+        'ap.pause': 'Pausa',
+        'ap.replay': 'Repetir',
+        'p1.nav': 'El deber de contribuir',
+        'p1.title': 'El deber de contribuir',
+        'p1.frame': 'Animación: el deber de contribuir',
+        'p1.a': 'Suponga que vende por Mercado Libre y que la plataforma le retiene una parte de cada venta. Detrás de esa retención hay una cadena de reglas, y la primera está en la Constitución. Su artículo 31 enumera las obligaciones de los mexicanos, y la fracción IV dice que una de ellas es contribuir para los gastos públicos <q>de la manera proporcional y equitativa que dispongan las leyes</q>.',
+        'p1.b': 'Esa fracción contiene cuatro ideas. La primera es el destino. Lo que usted paga cubre el gasto público. Por eso una contribución solo puede asignarse a un gasto específico mediante una ley (art. 1 CFF). La segunda es quién cobra. La Federación, los estados, la Ciudad de México y los municipios tienen cada uno sus contribuciones. Eso explica que pueda pagar impuestos federales al SAT y, además, uno estatal, como el impuesto sobre hospedaje.',
+        'p1.c': 'La tercera es cuánto. La Suprema Corte ha interpretado que proporcional significa que cada quien paga según su capacidad económica, y que equitativo significa que quienes están en la misma situación reciben el mismo trato. La cuarta es la legalidad. Solo paga lo que establece una ley. Y ninguna autoridad puede cobrarle algo que la ley no prevé.',
+        'p1.src': 'Art. 31, fr. IV <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CPEUM.pdf" target="_blank" rel="noopener noreferrer">CPEUM</a> · Art. 1 <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf" target="_blank" rel="noopener noreferrer">CFF</a> · SCJN, jurisprudencia P./J. 10/2003 (proporcionalidad) y P./J. 41/97 (equidad)',
+        'p2.nav': 'Las cuatro contribuciones',
+        'p2.title': 'Las cuatro contribuciones',
+        'p2.frame': 'Animación: las cuatro contribuciones',
+        'p2.a': 'Todo lo que la ley lo obliga a pagar al Estado se llama contribución. El Código Fiscal de la Federación las divide en cuatro clases, y tres de ellas se definen por lo que las origina (art. 2 CFF).',
+        'p2.b': 'Las aportaciones de seguridad social las paga quien la ley sustituye por el Estado en obligaciones de seguridad social, o quien se beneficia de manera especial de esos servicios. El caso más común son las cuotas obrero-patronales al IMSS. Las contribuciones de mejoras las paga quien se beneficia de manera directa por una obra pública. Los derechos se pagan por usar o aprovechar un bien del dominio público de la Nación, o por recibir un servicio que el Estado presta en sus funciones de derecho público. Por ejemplo, cuando tramita su pasaporte paga un derecho (art. 20 LFD).',
+        'p2.c': 'El impuesto se define de otra forma. La ley dice que son impuestos las contribuciones que debe pagar por estar en la situación jurídica o de hecho que la propia ley prevé, y que son distintas de las otras tres. Por eso un impuesto no se paga a cambio de un servicio concreto. Paga ISR porque obtuvo un ingreso, y causa IVA porque vendió, aunque en ese momento no reciba nada en particular del Estado.',
+        'p2.d': 'Dos cosas quedan fuera de las cuatro clases. Los recargos, las sanciones, los gastos de ejecución y la indemnización por cheques no pagados son accesorios de las contribuciones y siguen su misma naturaleza (art. 2, último párrafo CFF). También quedan fuera los aprovechamientos y los productos, que no son contribuciones. Los primeros son otros ingresos que el Estado recibe por funciones de derecho público, y los segundos son lo que cobra por servicios o bienes en funciones de derecho privado (art. 3 CFF).',
+        'p2.src': 'Arts. 2 y 3 <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf" target="_blank" rel="noopener noreferrer">CFF</a> · Art. 20 <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LFD.pdf" target="_blank" rel="noopener noreferrer">LFD</a>',
+        'p3.nav': 'Los elementos de un impuesto',
+        'p3.title': 'Los elementos de un impuesto',
+        'p3.frame': 'Animación: los elementos de un impuesto',
+        'p3.a': 'Tome la venta de un producto en $1,000. Esa venta causa IVA, y para saber cuánto necesita cinco datos. Los cuatro primeros los nombra la ley, que dice que las normas que se refieren al sujeto, al objeto, a la base y a la tasa o tarifa establecen cargas a los particulares (art. 5 CFF). El quinto es la época de pago.',
+        'p3.b': 'El sujeto es la persona que debe pagar el impuesto. En el IVA es quien vende el bien o presta el servicio, así que aquí es usted. El objeto es el hecho que la ley grava. La Ley del IVA grava cuatro actos, que son vender bienes, prestar servicios independientes, dar bienes en uso o goce temporal e importar bienes o servicios, y su venta es el primero (art. 1 LIVA).',
+        'p3.c': 'La base es la cantidad sobre la que se calcula el impuesto, en este caso los $1,000 del precio. La tasa es el porcentaje que se aplica a la base, y la tasa general del IVA es 16%. Cuando en lugar de un porcentaje fijo la ley usa una tabla que cambia según cuánto gana, como en el ISR anual de las personas físicas, se habla de tarifa. Base por tasa da $160, que es el IVA que causa la venta.',
+        'p3.d': 'La época de pago dice cuándo entrega el impuesto. El IVA se calcula por mes y se paga a más tardar el día 17 del mes siguiente (art. 5-D LIVA).',
+        'p3.e': 'Que estos elementos estén en la ley tiene una consecuencia práctica. Las normas que los fijan se aplican de manera estricta (art. 5 CFF). Eso quiere decir que no pueden extenderse por analogía a casos que la ley no prevé. Es la legalidad del primer paso, convertida en una regla para aplicar la ley.',
+        'p3.src': 'Art. 5 <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf" target="_blank" rel="noopener noreferrer">CFF</a> · Arts. 1 y 5-D <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LIVA.pdf" target="_blank" rel="noopener noreferrer">LIVA</a>',
+        'p4.nav': 'Cuándo nace la obligación y quién paga',
+        'p4.title': 'Cuándo nace la obligación y quién paga',
+        'p4.frame': 'Animación: cuándo nace la obligación y quién paga',
+        'p4.a': 'Digamos que el día 12 vende ese producto de $1,000. En ese momento nace su obligación de pagar el IVA, aunque todavía no lo pague. Las contribuciones se causan conforme ocurren las situaciones que prevén las leyes vigentes en ese momento (art. 6 CFF), y causar un impuesto quiere decir que la obligación ya existe.',
+        'p4.b': 'Después alguien tiene que calcular cuánto debe, y la ley dice que eso le corresponde al contribuyente, salvo que una norma diga otra cosa (art. 6 CFF). Entonces, al cerrar el mes, suma sus ventas, calcula el impuesto y lo paga a más tardar el día 17 del mes siguiente. Así lo fijan el art. 5-D LIVA para el IVA y el art. 106 LISR para los pagos provisionales de ISR.',
+        'p4.c': 'Una venta por plataforma agrega dos personas. La plataforma es retenedora, porque se queda con una parte del impuesto antes de depositarle y la entrega al SAT por usted. Además, la ley la hace responder junto con usted hasta por el monto que debe retener (art. 26, fr. I CFF). En cambio, su cliente no es contribuyente del IVA de su venta. Usted se lo traslada, es decir, se lo cobra encima del precio, pero el contribuyente sigue siendo usted (art. 1 LIVA).',
+        'p4.d': 'Cuánto retiene cada plataforma, y si esa retención cierra su cuenta o solo la adelanta, lo explican <a href="../#calculadora" data-con-idioma="../" data-ancla="#calculadora">la calculadora</a> y <a href="../#videos" data-con-idioma="../" data-ancla="#videos">los videos</a> de la página principal.',
+        'p4.src': 'Arts. 6 y 26, fr. I <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf" target="_blank" rel="noopener noreferrer">CFF</a> · Arts. 1 y 5-D <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LIVA.pdf" target="_blank" rel="noopener noreferrer">LIVA</a> · Art. 106 <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LISR.pdf" target="_blank" rel="noopener noreferrer">LISR</a>',
+        'p5.nav': 'Obligaciones del contribuyente',
+        'p5.title': 'Obligaciones del contribuyente',
+        'p5.frame': 'Animación: obligaciones del contribuyente',
+        'p5.a': 'Pagar es la obligación que todos tienen en mente, pero no es la única. El derecho fiscal distingue la obligación de pagar, que se llama sustantiva, de las obligaciones formales, que son lo que la ley le pide hacer para que el pago se pueda calcular y comprobar.',
+        'p5.b': 'Para quien vende en línea, las formales más comunes son cuatro.',
+        'p5.l1': 'Inscribirse en el Registro Federal de Contribuyentes, el RFC, cuando la ley lo obliga (art. 27 CFF).',
+        'p5.l2': 'Emitir sus facturas electrónicas, que el SAT llama CFDI, cuando la ley exige un comprobante (art. 29 CFF).',
+        'p5.l3': 'Llevar contabilidad si está obligado a ello (art. 28 CFF).',
+        'p5.l4': 'Presentar sus declaraciones en los medios electrónicos que señala el SAT (art. 31 CFF).',
+        'p5.c': 'La doctrina clasifica estas obligaciones por su verbo. Pagar es dar. Inscribirse, facturar, llevar contabilidad y declarar son obligaciones de hacer. Y permitir que la autoridad revise su cumplimiento es tolerar, porque el SAT tiene facultades para comprobar que cumplió (art. 42 CFF).',
+        'p5.d': 'La distinción importa porque cada obligación se cumple por separado. Si la ley lo obliga a inscribirse en el RFC y no lo hace, eso ya es una infracción (art. 79, fr. I CFF), aunque el impuesto se haya pagado por otra vía, como la retención de una plataforma.',
+        'p5.src': 'Arts. 27, 28, 29, 31, 42 y 79, fr. I <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf" target="_blank" rel="noopener noreferrer">CFF</a>',
+        'p6.nav': 'Los dos sentidos de «derechos»',
+        'p6.title': 'Los dos sentidos de «derechos»',
+        'p6.frame': 'Animación: los dos sentidos de derechos',
+        'p6.a': 'En materia fiscal, la palabra derechos tiene dos sentidos, y conviene separarlos. En el primero, un derecho es una contribución. Es la cuarta clase del segundo paso, la que usted paga por usar un bien público o por recibir un servicio del Estado, como el pasaporte (art. 2, fr. IV CFF y art. 20 LFD).',
+        'p6.b': 'En el segundo sentido, los derechos son lo que la autoridad fiscal le debe a usted. La Ley Federal de los Derechos del Contribuyente enumera catorce en su artículo 2. Entre ellos están el derecho a ser informado y asistido para cumplir sus obligaciones, a obtener las devoluciones que procedan, a no entregar documentos que la autoridad ya tiene y a ser oído antes de que le determinen un crédito fiscal.',
+        'p6.c': 'La devolución es el más concreto. La autoridad devuelve lo que se pagó indebidamente y lo que proceda conforme a las leyes fiscales, y cuando usted la solicita con todos los datos debe hacerlo dentro de los 40 días siguientes. Si el impuesto se lo retuvieron, la devolución se hace a usted, que es a quien se lo retuvieron (art. 22 CFF).',
+        'p6.d': 'Si considera que la autoridad no respetó alguno de estos derechos, la Procuraduría de la Defensa del Contribuyente, Prodecon, puede asesorarlo, representarlo ante la autoridad y recibir su queja (art. 5 de su Ley Orgánica).',
+        'p6.e': 'Esto completa la relación del paso anterior. Las obligaciones van de usted al fisco, y los derechos del contribuyente van del fisco a usted.',
+        'p6.src': 'Arts. 2, fr. IV y 22 <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf" target="_blank" rel="noopener noreferrer">CFF</a> · Art. 20 <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LFD.pdf" target="_blank" rel="noopener noreferrer">LFD</a> · Art. 2 <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LFDC.pdf" target="_blank" rel="noopener noreferrer">LFDC</a> · Art. 5 <a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LOPDC.pdf" target="_blank" rel="noopener noreferrer">LOPDC</a>',
+        'footer.disclaimer': 'Fisco Abierto es una herramienta informativa. No constituye asesoría fiscal, legal ni contable. Consulte a un profesional antes de tomar decisiones sobre su situación fiscal.',
+        'footer.copy': '© MMXXVI Fisco Abierto™. Hecho en México.',
+        'footer.mark': 'Marca en trámite ante el IMPI, expediente 3592372',
+    },
+    en: {
+        'meta.title': 'Learn | Fisco Abierto',
+        'nav.main': 'Main',
+        'nav.learn': 'Learn',
+        'nav.faq': 'FAQ',
+        'nav.newsletter': 'Newsletter',
+        'nav.diagnostic': 'Diagnostic',
+        'verif.line': 'Checked against the law on {fecha}',
+        'ap.title': 'Basic principles of taxation in Mexico',
+        'ap.lead': 'Six steps, from the Constitution to your rights as a taxpayer. Each step takes one piece of the previous one and breaks it into its parts, so they read in order.',
+        'ap.steps': 'Steps',
+        'ap.download': 'Download video',
+        'ap.play': 'Play',
+        'ap.pause': 'Pause',
+        'ap.replay': 'Replay',
+        'p1.nav': 'The duty to contribute',
+        'p1.title': 'The duty to contribute',
+        'p1.frame': 'Animation: the duty to contribute',
+        'p1.a': 'Say you sell on Mercado Libre and the platform withholds part of every sale. Behind that withholding sits a chain of rules, and the first one is in the Constitution. Its article 31 lists the obligations of Mexicans, and section IV says one of them is to contribute to public expenditure <q>in the proportional and equitable manner provided by law</q>.',
+        'p1.b': 'That section holds four ideas. The first is purpose. What you pay covers public expenditure, which is why a contribution can only be earmarked for a specific expense by law (Federal Tax Code art. 1). The second is who collects. The Federation, the states, Mexico City and the municipalities each have their own contributions, so you can pay federal taxes to the SAT and, on top of that, a state tax such as the lodging tax.',
+        'p1.c': 'The third is how much. The Supreme Court has read proportional to mean that each person pays according to their economic capacity, and equitable to mean that people in the same situation get the same treatment. The fourth is legality. You only pay what a law establishes, and no authority can charge you something the law does not provide for.',
+        'p1.src': 'Constitution art. 31, sec. IV (<a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CPEUM.pdf" target="_blank" rel="noopener noreferrer">CPEUM</a>) · Federal Tax Code art. 1 (<a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf" target="_blank" rel="noopener noreferrer">CFF</a>) · Supreme Court case law P./J. 10/2003 (proportionality) and P./J. 41/97 (equity)',
+        'p2.nav': 'The four contributions',
+        'p2.title': 'The four contributions',
+        'p2.frame': 'Animation: the four contributions',
+        'p2.a': 'Everything the law requires you to pay the State is called a contribution. The Federal Tax Code splits contributions into four kinds, and three of them are defined by what gives rise to them (art. 2).',
+        'p2.b': 'Social security contributions are paid by whoever the law has the State stand in for in social security duties, or by whoever benefits in a special way from those services. The most common case is employer and worker dues to the IMSS. Improvement contributions are paid by whoever benefits directly from a public work. Fees, called derechos, are paid for using or exploiting public property of the Nation, or for receiving a service the State provides in its public-law functions. When you get a passport, for example, you pay a fee (Federal Fees Law art. 20).',
+        'p2.c': 'Taxes are defined differently. The law says taxes are the contributions you must pay for being in the legal or factual situation the law itself describes, and that are different from the other three. That is why a tax is not paid in exchange for a specific service. You pay income tax (ISR) because you earned income, and you owe VAT (IVA) because you sold something, even though you receive nothing in particular from the State at that moment.',
+        'p2.d': 'Two things fall outside the four kinds. Surcharges, penalties, collection costs and the indemnity for bounced checks are accessories of contributions and share their nature (art. 2, last paragraph). Aprovechamientos and productos are not contributions. The first are other revenue the State receives in its public-law functions, and the second are what it charges for services or goods in its private-law functions (art. 3).',
+        'p2.src': 'Federal Tax Code art. 2 and 3 (<a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf" target="_blank" rel="noopener noreferrer">CFF</a>) · Federal Fees Law art. 20 (<a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LFD.pdf" target="_blank" rel="noopener noreferrer">LFD</a>)',
+        'p3.nav': 'The elements of a tax',
+        'p3.title': 'The elements of a tax',
+        'p3.frame': 'Animation: the elements of a tax',
+        'p3.a': 'Take the sale of a product for $1,000. That sale triggers VAT, and to know how much you need five pieces of information. The law names the first four when it says that rules on the taxpayer, the object, the base and the rate or schedule impose burdens on individuals (Federal Tax Code art. 5). The fifth is the payment date.',
+        'p3.b': 'The taxpayer, or sujeto, is the person who must pay the tax. For VAT it is whoever sells the goods or provides the service, so here it is you. The object, or objeto, is the event the law taxes. The VAT Law taxes four acts, which are selling goods, providing independent services, granting the temporary use of goods and importing goods or services, and your sale is the first one (VAT Law art. 1).',
+        'p3.c': 'The base is the amount the tax is calculated on, in this case the $1,000 price. The rate is the percentage applied to the base, and the general VAT rate is 16%. When the law uses a table that changes with how much you earn instead of a flat percentage, as in the annual income tax for individuals, it is called a schedule. Base times rate gives $160, which is the VAT the sale triggers.',
+        'p3.d': 'The payment date says when you hand the tax over. VAT is calculated by month and paid by the 17th of the following month (VAT Law art. 5-D).',
+        'p3.e': 'Having these elements in the law has a practical consequence. The rules that set them are applied strictly, so they cannot be stretched by analogy to cases the law does not cover (Federal Tax Code art. 5). It is the legality of the first step, turned into a rule for applying the law.',
+        'p3.src': 'Federal Tax Code art. 5 (<a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf" target="_blank" rel="noopener noreferrer">CFF</a>) · VAT Law art. 1 and 5-D (<a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LIVA.pdf" target="_blank" rel="noopener noreferrer">LIVA</a>)',
+        'p4.nav': 'When the obligation arises and who pays',
+        'p4.title': 'When the obligation arises and who pays',
+        'p4.frame': 'Animation: when the obligation arises and who pays',
+        'p4.a': 'Let’s say you sell that $1,000 product on the 12th. At that moment your obligation to pay the VAT is born, even though you have not paid it yet. Contributions are triggered as the situations described by the laws in force at that time take place (Federal Tax Code art. 6), and triggering a tax means the obligation already exists.',
+        'p4.b': 'Then someone has to work out how much you owe, and the law says that falls on the taxpayer unless a rule says otherwise (Federal Tax Code art. 6). When the month closes you add up your sales, calculate the tax and pay it by the 17th of the following month. VAT Law art. 5-D sets that date for VAT, and Income Tax Law art. 106 for provisional income tax payments.',
+        'p4.c': 'A sale through a platform adds two parties. The platform is a withholding agent, because it keeps part of the tax before paying you and hands it to the SAT on your behalf. The law also makes it jointly liable with you up to the amount it must withhold (Federal Tax Code art. 26, sec. I). Your customer, on the other hand, is not the taxpayer for the VAT on your sale. You pass it on, meaning you charge it on top of the price, but the taxpayer is still you (VAT Law art. 1).',
+        'p4.d': 'How much each platform withholds, and whether that withholding settles your tax or only pays it in advance, is covered by <a href="../#calculadora" data-con-idioma="../" data-ancla="#calculadora">the calculator</a> and <a href="../#videos" data-con-idioma="../" data-ancla="#videos">the videos</a> on the home page.',
+        'p4.src': 'Federal Tax Code art. 6 and 26, sec. I (<a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf" target="_blank" rel="noopener noreferrer">CFF</a>) · VAT Law art. 1 and 5-D (<a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LIVA.pdf" target="_blank" rel="noopener noreferrer">LIVA</a>) · Income Tax Law art. 106 (<a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LISR.pdf" target="_blank" rel="noopener noreferrer">LISR</a>)',
+        'p5.nav': 'Taxpayer obligations',
+        'p5.title': 'Taxpayer obligations',
+        'p5.frame': 'Animation: taxpayer obligations',
+        'p5.a': 'Paying is the obligation everyone has in mind, but it is not the only one. Tax law separates the obligation to pay, called substantive, from formal obligations, which are what the law asks you to do so the payment can be calculated and checked.',
+        'p5.b': 'For people who sell online, the most common formal obligations are four.',
+        'p5.l1': 'Registering with the Federal Taxpayer Registry, the RFC, when the law requires it (Federal Tax Code art. 27).',
+        'p5.l2': 'Issuing your electronic invoices, which the SAT calls CFDI, when the law requires a receipt (art. 29).',
+        'p5.l3': 'Keeping accounting records if you are required to (art. 28).',
+        'p5.l4': 'Filing your returns through the electronic channels the SAT sets (art. 31).',
+        'p5.c': 'Legal scholarship classifies these obligations by their verb. Paying is giving. Registering, invoicing, keeping records and filing are obligations to do. And letting the authority review your compliance is allowing, because the SAT has powers to check that you complied (art. 42).',
+        'p5.d': 'The distinction matters because each obligation is met separately. If the law requires you to register with the RFC and you do not, that is already an infraction (art. 79, sec. I), even if the tax was paid some other way, such as a platform’s withholding.',
+        'p5.src': 'Federal Tax Code art. 27, 28, 29, 31, 42 and 79, sec. I (<a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf" target="_blank" rel="noopener noreferrer">CFF</a>)',
+        'p6.nav': 'The two meanings of derechos',
+        'p6.title': 'The two meanings of derechos',
+        'p6.frame': 'Animation: the two meanings of derechos',
+        'p6.a': 'In Mexican tax law the word derechos has two meanings, and it helps to keep them apart. In the first, a derecho is a contribution. It is the fourth kind from step two, the one you pay for using public property or receiving a State service, such as a passport (Federal Tax Code art. 2, sec. IV and Federal Fees Law art. 20). In English it is usually called a fee.',
+        'p6.b': 'In the second meaning, derechos are what the tax authority owes you, your rights as a taxpayer. The Federal Taxpayer Rights Law lists fourteen in its article 2. They include the right to be informed and assisted in meeting your obligations, to obtain the refunds that apply, not to hand over documents the authority already has, and to be heard before a tax debt is assessed.',
+        'p6.c': 'The refund is the most concrete one. The authority refunds what was paid in error and what is due under the tax laws, and when you request it with complete information it must do so within the following 40 days. If the tax was withheld from you, the refund goes to you, since you are the one it was withheld from (Federal Tax Code art. 22).',
+        'p6.d': 'If you believe the authority did not respect one of these rights, the Taxpayer Advocate’s Office, Prodecon, can advise you, represent you before the authority and take your complaint (art. 5 of its Organic Law).',
+        'p6.e': 'This completes the relationship from the previous step. Obligations run from you to the tax authority, and taxpayer rights run from the tax authority to you.',
+        'p6.src': 'Federal Tax Code art. 2, sec. IV and art. 22 (<a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/CFF.pdf" target="_blank" rel="noopener noreferrer">CFF</a>) · Federal Fees Law art. 20 (<a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LFD.pdf" target="_blank" rel="noopener noreferrer">LFD</a>) · Taxpayer Rights Law art. 2 (<a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LFDC.pdf" target="_blank" rel="noopener noreferrer">LFDC</a>) · Prodecon Organic Law art. 5 (<a href="https://www.diputados.gob.mx/LeyesBiblio/pdf/LOPDC.pdf" target="_blank" rel="noopener noreferrer">LOPDC</a>)',
+        'footer.disclaimer': 'Fisco Abierto is an informational tool about Mexican tax law. It does not constitute tax, legal, or accounting advice. Consult a professional before making decisions about your tax situation.',
+        'footer.copy': '© MMXXVI Fisco Abierto™. Made in Mexico.',
+        'footer.mark': 'Trademark application pending before IMPI, file 3592372',
+    }
+};
+
+function t(key) {
+    var d = translations[currentLanguage];
+    return (d && key in d) ? d[key] : translations.es[key];
+}
+
+function fechaCorta(iso) {
+    var MESES = { es: ['ene','feb','mar','abr','may','jun','jul','ago','sep','oct','nov','dic'],
+                  en: ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'] };
+    var p = iso.split('-');
+    return p[2] + '-' + MESES[currentLanguage][+p[1] - 1] + '-' + p[0];
+}
+
+// Los enlaces al sitio llevan el idioma activo, para que el cambio de página
+// no lo pierda: la página principal lo resuelve primero por ?lang=.
+function enlacesConIdioma() {
+    document.querySelectorAll('a[data-con-idioma]').forEach(function (a) {
+        a.setAttribute('href', a.dataset.conIdioma + '?lang=' + currentLanguage + (a.dataset.ancla || ''));
+    });
+}
+
+function setLanguage(lang) {
+    if (lang !== 'es' && lang !== 'en') return;
+    currentLanguage = lang;
+    document.documentElement.lang = lang;
+    document.title = t('meta.title');
+    document.querySelectorAll('[data-i18n-aria]').forEach(function (el) { el.setAttribute('aria-label', t(el.dataset.i18nAria)); });
+    document.querySelectorAll('[data-i18n-title]').forEach(function (el) { el.setAttribute('title', t(el.dataset.i18nTitle)); });
+    document.querySelectorAll('[data-verificado]').forEach(function (el) {
+        el.innerHTML = t('verif.line').replace('{fecha}', '<span class="verif-date">' + fechaCorta(el.dataset.verificado) + '</span>');
+    });
+    // El contenido es del propio sitio; innerHTML conserva enlaces, citas y marcas.
+    document.querySelectorAll('[data-i18n]').forEach(function (el) { el.innerHTML = t(el.dataset.i18n); });
+    enlacesConIdioma();
+    document.dispatchEvent(new CustomEvent('idioma'));
+}
+
+function updateLangToggle() {
+    document.querySelectorAll('.lang-switch .lang-btn').forEach(function (btn) {
+        var activo = btn.dataset.lang === currentLanguage;
+        btn.classList.toggle('active', activo);
+        btn.setAttribute('aria-pressed', activo ? 'true' : 'false');
+    });
+}
+
+document.querySelectorAll('.lang-switch .lang-btn').forEach(function (btn) {
+    btn.addEventListener('click', function () { setLanguage(btn.dataset.lang); updateLangToggle(); });
+});
+
+// Contrato con los otros scripts de la página: leen el idioma por aquí.
+window.faIdioma = { t: t, actual: function () { return currentLanguage; } };
+
+// Precedencia: ?lang= > idioma del navegador > español. Igual que la página principal.
+(function () {
+    var pedido = new URLSearchParams(window.location.search).get('lang');
+    if (pedido === 'es' || pedido === 'en') setLanguage(pedido);
+    else setLanguage((navigator.language || 'es').toLowerCase().indexOf('en') === 0 ? 'en' : 'es');
+    updateLangToggle();
+})();
+</script>
+
+<!-- NAV COMPACTO -->
+<script>
+(function () {
+    var nav = document.getElementById('topnav');
+    function alScroll() { nav.classList.toggle('shrunk', window.scrollY > 24); }
+    window.addEventListener('scroll', alScroll, { passive: true });
+    alScroll();
+})();
+</script>
+
+<!-- ESCALERA: marca el paso que se está leyendo -->
+<script>
+(function () {
+    var enlaces = {};
+    document.querySelectorAll('.ap-escalera a').forEach(function (a) { enlaces[(a.getAttribute('href') || '').slice(1)] = a; });
+    if (!('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (entradas) {
+        entradas.forEach(function (e) {
+            if (!e.isIntersecting) return;
+            Object.keys(enlaces).forEach(function (id) { enlaces[id].removeAttribute('aria-current'); });
+            if (enlaces[e.target.id]) enlaces[e.target.id].setAttribute('aria-current', 'step');
+        });
+    }, { rootMargin: '-35% 0px -60% 0px' });
+    document.querySelectorAll('.ap-p').forEach(function (s) { io.observe(s); });
+})();
+</script>
+
+<!-- LÁMINAS EN VIVO -->
+<script>
+// Cada lámina es una página de laminas/ en un iframe. La página no la dibuja:
+// le manda órdenes (play, pausa, final) y escucha su avance por postMessage.
+// La misma página, con ?modo=video, es la que render.js pasa a MP4.
+(function () {
+    var I = window.faIdioma;
+    var movil = window.matchMedia('(max-width: 600px)');
+    var reducido = window.matchMedia('(prefers-reduced-motion: reduce)');
+    var laminas = Array.prototype.map.call(document.querySelectorAll('.ap-lamina'), function (fig) {
+        return {
+            fig: fig, id: fig.dataset.lamina, video: fig.dataset.video,
+            frame: fig.querySelector('iframe'), boton: fig.querySelector('.ap-play'),
+            barra: fig.querySelector('.ap-fill'), descarga: fig.querySelector('.ap-dl'),
+            src: '', lista: false, vista: false, corre: false, fin: false, jugada: false, pausaScroll: false
+        };
+    });
+
+    function manda(l, orden) { if (l.lista && l.frame.contentWindow) l.frame.contentWindow.postMessage({ faControl: orden }, '*'); }
+    function boton(l, estado) {
+        l.boton.dataset.estado = estado;
+        l.boton.setAttribute('aria-label', I.t(estado === 'pause' ? 'ap.pause' : estado === 'replay' ? 'ap.replay' : 'ap.play'));
+    }
+    function cargar(l) {
+        var src = 'laminas/' + l.id + '.html?lang=' + I.actual() + (movil.matches ? '&fmt=m' : '');
+        l.descarga.setAttribute('href', 'videos/' + l.video + '-' + I.actual() + (movil.matches ? '-m' : '') + '.mp4');
+        boton(l, l.corre ? 'pause' : l.fin ? 'replay' : 'play');
+        if (src === l.src) return;
+        l.src = src; l.lista = false; l.frame.setAttribute('src', src);
+    }
+    function play(l) { l.jugada = true; l.pausaScroll = false; manda(l, 'play'); }
+
+    window.addEventListener('message', function (e) {
+        var d = e.data; if (!d || !d.faLamina) return;
+        var l = laminas.filter(function (x) { return x.frame.contentWindow === e.source; })[0];
+        if (!l) return;
+        if (d.tipo === 'listo') {
+            l.lista = true;
+            // Recién cargada: con movimiento reducido o si ya se vio (cambio de
+            // idioma o de formato), queda en el diagrama completo.
+            if (reducido.matches || (l.jugada && !l.corre)) manda(l, 'final');
+            else if (l.corre || l.vista) play(l);
+        } else if (d.tipo === 't') {
+            l.barra.style.width = (100 * d.t / d.fin) + '%';
+        } else if (d.tipo === 'estado' || d.tipo === 'fin') {
+            l.corre = d.corre; l.fin = d.tipo === 'fin';
+            if (l.fin) l.barra.style.width = '100%';
+            boton(l, l.corre ? 'pause' : l.fin ? 'replay' : 'play');
+        } else if (d.tipo === 'baja') {
+            var destino = document.getElementById(d.a);
+            if (destino) destino.scrollIntoView({ behavior: reducido.matches ? 'auto' : 'smooth' });
+        }
+    });
+
+    laminas.forEach(function (l) {
+        l.boton.addEventListener('click', function () {
+            if (l.corre) { l.pausaScroll = false; manda(l, 'pausa'); } else play(l);
+        });
+        cargar(l);
+    });
+
+    // Arranca sola la primera vez que entra en pantalla; se pausa al salir y
+    // sigue al volver. Con movimiento reducido no arranca sola.
+    if ('IntersectionObserver' in window) {
+        var io = new IntersectionObserver(function (entradas) {
+            entradas.forEach(function (e) {
+                var l = laminas.filter(function (x) { return x.fig === e.target; })[0];
+                l.vista = e.isIntersecting;
+                if (reducido.matches) return;
+                if (l.vista && (!l.jugada || l.pausaScroll)) play(l);
+                else if (!l.vista && l.corre) { l.pausaScroll = true; manda(l, 'pausa'); }
+            });
+        }, { threshold: 0.55 });
+        laminas.forEach(function (l) { io.observe(l.fig); });
+    }
+
+    document.addEventListener('idioma', function () { laminas.forEach(cargar); });
+    movil.addEventListener('change', function () { laminas.forEach(cargar); });
+})();
+</script>
+</body>
+</html>

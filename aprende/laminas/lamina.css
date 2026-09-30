@@ -1,0 +1,81 @@
+/* Estilo común de las láminas de /aprende. Mismos tokens que los videos del
+   sitio (videos/base.css): fondo #FAFAF9, texto #1C1917, secundario #57534E,
+   acento #0F766E, acento claro #CCFBF1, menta #5EEAD4, borde #E7E5E4. */
+@font-face { font-family: Inter; font-weight: 400; src: url(fuentes/inter-latin-400-normal.woff2); }
+@font-face { font-family: Inter; font-weight: 500; src: url(fuentes/inter-latin-500-normal.woff2); }
+@font-face { font-family: Inter; font-weight: 600; src: url(fuentes/inter-latin-600-normal.woff2); }
+@font-face { font-family: Inter; font-weight: 700; src: url(fuentes/inter-latin-700-normal.woff2); }
+@font-face { font-family: Serif4; font-weight: 400; src: url(fuentes/source-serif-4-latin-400-normal.woff2); }
+@font-face { font-family: Serif4; font-weight: 600; src: url(fuentes/source-serif-4-latin-600-normal.woff2); }
+@font-face { font-family: Mono; font-weight: 500; src: url(fuentes/jetbrains-mono-latin-500-normal.woff2); }
+@font-face { font-family: Mono; font-weight: 600; src: url(fuentes/jetbrains-mono-latin-600-normal.woff2); }
+
+:root {
+  --bg: #FAFAF9; --ink: #1C1917; --ink2: #57534E; --ink3: #78716C;
+  --teal: #0F766E; --teal-d: #0D5E58; --teal-l: #CCFBF1; --mint: #5EEAD4;
+  --line: #E7E5E4; --stone: #F0EEEB; --stone2: #E7E3DE; --warn: #B45309; --warn-l: #FEF3C7;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { width: 1280px; height: 720px; overflow: hidden; background: var(--bg); }
+body { font-family: Inter, sans-serif; color: var(--ink); -webkit-font-smoothing: antialiased; }
+#stage { position: relative; width: 1280px; height: 720px; overflow: hidden; }
+
+/* Marca y encabezado: solo en el video, que viaja solo. */
+.brand { position: absolute; left: 56px; top: 40px; display: flex; align-items: center; gap: 10px; }
+.brand .badge { width: 28px; height: 28px; border-radius: 7px; background: var(--teal); color: #fff;
+  font-weight: 700; font-size: 12.5px; display: grid; place-items: center; letter-spacing: -0.3px; }
+.brand .word { font-weight: 700; font-size: 17px; letter-spacing: -0.2px; }
+.brand .word b { color: var(--teal); font-weight: 700; }
+.kicker { position: absolute; right: 56px; top: 46px; font-size: 14px; color: var(--ink3); font-weight: 500; letter-spacing: 0.2px; }
+
+/* Narración: una línea por paso, se cruzan con fundido. */
+.cap { position: absolute; left: 56px; top: 100px; width: 1100px; font-size: 30px; line-height: 1.25;
+  font-weight: 600; letter-spacing: -0.5px; color: var(--ink); }
+.cap em { font-style: normal; color: var(--teal); }
+
+.c { position: absolute; left: 0; top: 0; will-change: transform, opacity; }
+.chip { display: inline-block; padding: 8px 15px; border-radius: 999px; background: var(--teal); color: #fff; white-space: nowrap;
+  font-family: Mono, monospace; font-weight: 600; font-size: 18px; letter-spacing: -0.2px; }
+.chip.light { background: #fff; color: var(--teal-d); box-shadow: inset 0 0 0 1.5px var(--teal); }
+.art { font-family: Mono, monospace; font-weight: 500; font-size: 14px; color: var(--teal-d); letter-spacing: -0.1px; }
+
+svg.wires { position: absolute; left: 0; top: 0; width: 1280px; height: 720px; overflow: visible; pointer-events: none; }
+svg.wires path { fill: none; stroke: var(--teal); stroke-width: 2.5; stroke-linecap: round; }
+svg.wires path.soft { stroke: #99D5CD; stroke-width: 2; }
+
+/* Cierre del video, con fuentes y aviso legal. */
+.end { position: absolute; left: 56px; top: 150px; width: 1168px; }
+.end .tit { font-size: 30px; font-weight: 600; letter-spacing: -0.4px; line-height: 1.25; max-width: 1000px; }
+.end .src { margin-top: 26px; font-family: Mono, monospace; font-size: 16px; color: var(--teal-d); line-height: 1.6; max-width: 1000px; }
+.end .disc-legal { position: absolute; top: 380px; left: 0; width: 980px; font-size: 13.5px; color: var(--ink3); line-height: 1.5; }
+.end .verif { margin-top: 10px; font-size: 13.5px; color: var(--ink3); }
+
+/* Formato 4:5 para teléfono: 720x900 lógico. */
+html.m, html.m body, html.m #stage { width: 720px; height: 900px; }
+html.m svg.wires { width: 720px; height: 900px; }
+.m .brand { left: 32px; top: 30px; }
+.m .kicker { display: none; }
+.m .cap { left: 32px; top: 88px; width: 656px; font-size: 28px; }
+.m .end { left: 32px; top: 190px; width: 656px; }
+.m .end .tit { font-size: 26px; }
+.m .end .src { font-size: 14.5px; margin-top: 22px; }
+.m .end .disc-legal { position: static; margin-top: 40px; width: auto; }
+
+/* En vivo la lámina vive dentro de la página, que ya trae marca, título,
+   fuentes y aviso legal. Se escala a su marco desde la esquina. */
+html.modo-vivo, html.modo-vivo body { width: 100%; height: 100%; }
+.modo-vivo #stage { transform-origin: 0 0; }
+.modo-vivo .brand, .modo-vivo .kicker, .modo-vivo .end { display: none; }
+.modo-vivo [data-baja] { cursor: pointer; }
+
+/* Todo lo que se dibuja cuelga de .fig. En vivo no hay marca arriba, así que
+   el diagrama sube para no dejar un hueco entre la narración y el dibujo. */
+/* Alto cero: sin caja propia, revisar.js no la cuenta como algo que se sale
+   del lienzo cuando sube en vivo. El ancho sí se conserva, porque de él toman
+   su ancho los bloques absolutos que no fijan uno. */
+.fig { position: absolute; left: 0; top: 0; width: 100%; height: 0; }
+.modo-vivo .fig { top: -32px; }
+.modo-vivo.m .fig { top: -40px; }
+/* La narración va dentro de .fig: 84 menos 32 la deja a 52 px del borde en
+   escritorio, y 84 menos 40 a 44 px en teléfono. */
+.modo-vivo .cap { top: 84px; }

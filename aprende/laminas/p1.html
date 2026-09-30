@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aprende 1: el deber de contribuir</title>
+<link rel="stylesheet" href="lamina.css">
+<style>
+  /* Recurso: el texto literal de la fracción IV. Cuatro fragmentos se
+     subrayan uno por uno y cada uno deja su principio abajo. */
+  #cuerpo { position: absolute; left: 56px; top: 222px; width: 1168px; }
+  #q { font-family: Serif4, serif; font-size: 35px; line-height: 1.52; color: var(--ink); letter-spacing: -0.2px; }
+  #q .art { font-size: 17px; margin-right: 10px; vertical-align: 3px; }
+  #q .gap { color: var(--ink3); }
+  .frag { background-image: linear-gradient(var(--teal-l), var(--teal-l)); background-repeat: no-repeat;
+    background-position: 0 90%; background-size: calc(var(--p, 0) * 100%) 44%; }
+  .n { display: inline-block; width: 22px; height: 22px; border-radius: 50%; background: var(--teal); color: #fff;
+    font-family: Mono, monospace; font-weight: 600; font-size: 13px; line-height: 22px; text-align: center;
+    vertical-align: 14px; margin-left: 3px; }
+  #trad { margin-top: 14px; font-size: 15px; color: var(--ink3); }
+  #notas { margin-top: 40px; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 28px; }
+  .nota { border-top: 2px solid var(--line); padding-top: 16px; }
+  .nota .q { display: flex; align-items: center; gap: 10px; font-size: 17px; color: var(--ink3); font-weight: 500; }
+  .nota .q .n { vertical-align: 0; margin: 0; flex: none; }
+  .nota .t { margin-top: 10px; font-size: 23px; font-weight: 600; letter-spacing: -0.3px; line-height: 1.22; }
+  .m #cuerpo { left: 32px; top: 200px; width: 656px; }
+  .m #q { font-size: 31px; line-height: 1.52; }
+  .m #q .art { font-size: 15px; }
+  .m .n { width: 21px; height: 21px; line-height: 21px; font-size: 12px; vertical-align: 13px; }
+  .m #notas { margin-top: 44px; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 34px 24px; }
+  .m .nota { padding-top: 12px; }
+  .m .nota .t { font-size: 22px; margin-top: 8px; }
+</style>
+</head><body><div id="stage">
+  <div class="brand"><div class="badge">FA</div><div class="word"><b>Fisco</b> Abierto</div></div>
+  <div class="kicker" data-t="kicker"></div>
+  <div class="fig">
+    <div class="cap" id="c1" data-t="c1"></div>
+    <div class="cap" id="c2" data-t="c2"></div>
+    <div class="cap" id="c3" data-t="c3"></div>
+    <div class="cap" id="c4" data-t="c4"></div>
+    <div class="cap" id="c5" data-t="c5"></div>
+    <div id="cuerpo">
+    <p id="q" data-t="q"></p>
+    <div id="trad" data-t="trad"></div>
+    <div id="notas">
+      <div class="nota" id="k1"><div class="q"><span class="n">1</span><span data-t="k1q"></span></div><div class="t" data-t="k1t"></div></div>
+      <div class="nota" id="k2"><div class="q"><span class="n">2</span><span data-t="k2q"></span></div><div class="t" data-t="k2t"></div></div>
+      <div class="nota" id="k3"><div class="q"><span class="n">3</span><span data-t="k3q"></span></div><div class="t" data-t="k3t"></div></div>
+      <div class="nota" id="k4"><div class="q"><span class="n">4</span><span data-t="k4q"></span></div><div class="t" data-t="k4t"></div></div>
+    </div>
+    </div>
+  </div>
+  <div class="end" id="end">
+    <div class="tit" data-t="endH"></div>
+    <div class="src" data-t="endSrc"></div>
+    <div class="disc-legal"><span data-t="legal"></span><div class="verif" data-t="verif"></div></div>
+  </div>
+</div>
+<script src="const.js"></script>
+<script src="motor.js"></script>
+<script>
+const f = (i, s) => `<span class="frag" id="f${i}">${s}</span><span class="n" id="n${i}">${i}</span>`;
+const T = {
+  es: {
+    kicker: 'Aprende · 1 de 6',
+    c1: 'Todo empieza en una fracción de la Constitución.',
+    c2: 'Usted paga para cubrir el <em>gasto público</em>.',
+    c3: 'Cobran la Federación, su estado y su municipio.',
+    c4: 'Cada quien paga según su capacidad, con trato igual entre iguales.',
+    c5: 'Y solo lo que establezca una ley. Las demás reglas fiscales se apoyan en estas cuatro ideas.',
+    q: `<span class="art">Art. 31</span>Son obligaciones de los mexicanos: <span class="gap">[…]</span> IV. ${f(1, 'Contribuir para los gastos públicos')}, ${f(2, 'así de la Federación, como de los Estados, de la Ciudad de México y del Municipio en que residan')}, de la manera ${f(3, 'proporcional y equitativa')} ${f(4, 'que dispongan las leyes')}.`,
+    trad: 'Constitución Política de los Estados Unidos Mexicanos',
+    k1q: 'Para qué', k1t: 'Destino al gasto público',
+    k2q: 'Quién cobra', k2t: 'Tres órdenes de gobierno',
+    k3q: 'Cuánto', k3t: 'Proporcionalidad y equidad',
+    k4q: 'Con qué fundamento', k4t: 'Legalidad',
+    endH: 'La obligación de pagar contribuciones está en la Constitución, y solo una ley puede concretarla.',
+    endSrc: 'Art. 31, fr. IV CPEUM · Art. 1 CFF · SCJN, P./J. 10/2003 (proporcionalidad) y P./J. 41/97 (equidad)',
+    legal: K.LEGAL_ES, verif: K.VERIF_ES,
+  },
+  en: {
+    kicker: 'Learn · 1 of 6',
+    c1: 'It all starts with one clause of the Constitution.',
+    c2: 'You pay to fund <em>public expenditure</em>.',
+    c3: 'The Federation, your state and your municipality each collect.',
+    c4: 'Each person pays according to their capacity, with equal treatment for equals.',
+    c5: 'And only what a law establishes. Every other tax rule rests on these four ideas.',
+    q: `<span class="art">Art. 31</span>The obligations of Mexicans are: <span class="gap">[…]</span> IV. ${f(1, 'To contribute to public expenditure')}, ${f(2, 'of the Federation as well as of the States, Mexico City and the Municipality where they reside')}, in the ${f(3, 'proportional and equitable')} manner ${f(4, 'provided by law')}.`,
+    trad: 'Mexican Constitution, unofficial translation',
+    k1q: 'What for', k1t: 'Public expenditure',
+    k2q: 'Who collects', k2t: 'Three levels of government',
+    k3q: 'How much', k3t: 'Proportionality and equity',
+    k4q: 'On what basis', k4t: 'Legality',
+    endH: 'The duty to pay taxes comes from the Constitution, and only a law can give it shape.',
+    endSrc: 'Mexican Constitution art. 31, sec. IV · Federal Tax Code art. 1 · Supreme Court case law P./J. 10/2003 (proportionality) and P./J. 41/97 (equity)',
+    legal: K.LEGAL_EN, verif: K.VERIF_EN,
+  }
+};
+fill(T);
+
+enter('.brand', 0.1, 0.6); enter('.kicker', 0.2, 0.6);
+enter('#c1', 0.3, 0.7);
+enter('#q', 0.7, 0.9, 10); enter('#trad', 1.2, 0.6, 6);
+
+const paso = (i, t0, dur, cap, prev) => {
+  if (prev) leave(prev, t0 - 0.3, 0.3);
+  enter(cap, t0, 0.6);
+  sweep('#f' + i, t0 + 0.3, dur);
+  at('#n' + i, t0 + 0.3 + dur, 0.35, { o: 0, s: 0.4 }, { o: 1, s: 1 }, 'out');
+  enter('#k' + i, t0 + 0.5 + dur, 0.6, 10);
+};
+paso(1, 3.6, 1.0, '#c2', '#c1');
+paso(2, 8.0, 1.6, '#c3', '#c2');
+paso(3, 12.9, 0.8, '#c4', '#c3');
+paso(4, 17.3, 0.8, '#c5', '#c4');
+
+terminar(22.5);
+</script>
+</body></html>

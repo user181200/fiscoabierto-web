@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="es"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aprende 2: las cuatro contribuciones</title>
+<link rel="stylesheet" href="lamina.css">
+<style>
+  /* Recurso: la fracción I define el impuesto por exclusión ("distintas de las
+     señaladas en las fracciones II, III y IV"). El conjunto de contribuciones
+     aparece entero, las otras tres clases se recortan de él y lo que queda
+     es el impuesto. */
+  #todo { position: absolute; left: 56px; top: 200px; width: 1168px; height: 462px; border-radius: 18px; background: var(--stone); }
+  #todoL { position: absolute; left: 80px; top: 218px; font-size: 17px; font-weight: 600; color: var(--ink2); }
+  #todoL .art { margin-left: 8px; }
+  .clase { position: absolute; left: 812px; width: 392px; height: 122px; border-radius: 12px; background: #fff;
+    box-shadow: inset 0 0 0 1.5px var(--line); padding: 16px 20px; }
+  .clase .fr { font-family: Mono, monospace; font-weight: 600; font-size: 14px; color: var(--teal); }
+  .clase .t { margin-top: 5px; font-size: 20px; font-weight: 600; letter-spacing: -0.3px; line-height: 1.2; }
+  .clase .s { margin-top: 5px; font-size: 15.5px; color: var(--ink2); line-height: 1.35; }
+  #k2 { top: 232px; } #k3 { top: 366px; } #k4 { top: 500px; }
+  #imp { position: absolute; left: 76px; top: 256px; width: 712px; height: 386px; border-radius: 14px; background: var(--teal);
+    color: #fff; padding: 30px 34px; }
+  #imp .fr { font-family: Mono, monospace; font-weight: 600; font-size: 14px; color: var(--teal-l); }
+  #imp .t { margin-top: 8px; font-size: 52px; font-weight: 700; letter-spacing: -1.4px; line-height: 1.05; }
+  #imp .s { margin-top: 14px; font-size: 20px; line-height: 1.4; max-width: 560px; color: #E6FFFA; }
+  #imp .ej { position: absolute; left: 34px; bottom: 30px; display: flex; gap: 10px; }
+  #imp .ej span { font-family: Mono, monospace; font-weight: 600; font-size: 17px; padding: 7px 14px; border-radius: 999px;
+    background: rgba(255, 255, 255, 0.14); color: #fff; }
+  #imp .ir { position: absolute; right: 30px; bottom: 34px; font-size: 15px; font-weight: 600; color: #fff; display: none; }
+  .modo-vivo #imp .ir { display: block; }
+  .m #todo { left: 32px; top: 196px; width: 656px; height: 676px; }
+  .m #todoL { left: 52px; top: 214px; }
+  .m .clase { left: 48px; width: 624px; height: 102px; padding: 12px 18px; }
+  .m .clase .t { font-size: 19px; margin-top: 3px; }
+  .m .clase .s { font-size: 14px; margin-top: 3px; }
+  .m #k2 { top: 530px; } .m #k3 { top: 642px; } .m #k4 { top: 754px; }
+  .m #imp { left: 48px; top: 248px; width: 624px; height: 266px; padding: 22px 26px; }
+  .m #imp .t { font-size: 42px; }
+  .m #imp .s { font-size: 17px; margin-top: 10px; }
+  .m #imp .ej { left: 26px; bottom: 22px; }
+  .m #imp .ej span { font-size: 15px; padding: 6px 12px; }
+  .m #imp .ir { right: 24px; bottom: 26px; font-size: 14px; }
+</style>
+</head><body><div id="stage">
+  <div class="brand"><div class="badge">FA</div><div class="word"><b>Fisco</b> Abierto</div></div>
+  <div class="kicker" data-t="kicker"></div>
+  <div class="fig">
+    <div class="cap" id="c1" data-t="c1"></div>
+    <div class="cap" id="c2" data-t="c2"></div>
+    <div class="cap" id="c3" data-t="c3"></div>
+    <div class="cap" id="c4" data-t="c4"></div>
+    <div class="cap" id="c5" data-t="c5"></div>
+    <div id="todo"></div>
+    <div id="todoL"><span data-t="todo"></span><span class="art" data-t="todoA"></span></div>
+    <div class="clase" id="k2"><div class="fr" data-t="frII"></div><div class="t" data-t="k2t"></div><div class="s" data-t="k2s"></div></div>
+    <div class="clase" id="k3"><div class="fr" data-t="frIII"></div><div class="t" data-t="k3t"></div><div class="s" data-t="k3s"></div></div>
+    <div class="clase" id="k4"><div class="fr" data-t="frIV"></div><div class="t" data-t="k4t"></div><div class="s" data-t="k4s"></div></div>
+    <div id="imp" data-baja="p3">
+      <div class="fr" data-t="frI"></div>
+      <div class="t" id="impT" data-t="impT"></div>
+      <div class="s" id="impS" data-t="impS"></div>
+      <div class="ej" id="impE"><span data-t="ej1"></span><span data-t="ej2"></span></div>
+      <div class="ir" data-t="ir"></div>
+    </div>
+  </div>
+  <div class="end" id="end">
+    <div class="tit" data-t="endH"></div>
+    <div class="src" data-t="endSrc"></div>
+    <div class="disc-legal"><span data-t="legal"></span><div class="verif" data-t="verif"></div></div>
+  </div>
+</div>
+<script src="const.js"></script>
+<script src="motor.js"></script>
+<script>
+const T = {
+  es: {
+    kicker: 'Aprende · 2 de 6',
+    c1: 'Lo que usted paga al Estado por ley se llama contribución, y hay cuatro clases.',
+    c2: 'Las aportaciones de seguridad social, como las cuotas al IMSS.',
+    c3: 'Las contribuciones de mejoras, cuando una obra pública lo beneficia de forma directa.',
+    c4: 'Los derechos, cuando usa un bien público o recibe un servicio del Estado.',
+    c5: 'Lo que queda son los <em>impuestos</em>. La ley los define por exclusión.',
+    todo: 'Contribuciones', todoA: 'art. 2 CFF', frI: 'fr. I', frII: 'fr. II', frIII: 'fr. III', frIV: 'fr. IV',
+    k2t: 'Aportaciones de seguridad social', k2s: 'Cuotas obrero-patronales al IMSS',
+    k3t: 'Contribuciones de mejoras', k3s: 'Una obra pública que lo beneficia de manera directa',
+    k4t: 'Derechos', k4s: 'Por usar un bien público o recibir un servicio del Estado, como el pasaporte',
+    impT: 'Impuestos',
+    impS: 'Las contribuciones distintas de las otras tres. Las paga por estar en la situación que prevé la ley.',
+    ej1: 'ISR', ej2: 'IVA', ir: 'Cómo está hecho uno →',
+    endH: 'Hay cuatro clases de contribuciones. Tres se definen por lo que las origina; el impuesto, por exclusión.',
+    endSrc: 'Art. 2, fr. I a IV CFF · Art. 20 LFD (pasaporte)',
+    legal: K.LEGAL_ES, verif: K.VERIF_ES,
+  },
+  en: {
+    kicker: 'Learn · 2 of 6',
+    c1: 'What you pay the State by law is a contribution, and there are four kinds.',
+    c2: 'Social security contributions, such as IMSS dues.',
+    c3: 'Improvement contributions, when a public work benefits you directly.',
+    c4: 'Fees, when you use public property or receive a State service.',
+    c5: 'What remains are <em>taxes</em>. The law defines them by exclusion.',
+    todo: 'Contributions', todoA: 'Tax Code art. 2', frI: 'sec. I', frII: 'sec. II', frIII: 'sec. III', frIV: 'sec. IV',
+    k2t: 'Social security contributions', k2s: 'Employer and worker dues to the IMSS',
+    k3t: 'Improvement contributions', k3s: 'A public work that benefits you directly',
+    k4t: 'Fees (derechos)', k4s: 'For using public property or receiving a State service, such as a passport',
+    impT: 'Taxes',
+    impS: 'Contributions other than the other three. You pay them for being in the situation the law describes.',
+    ej1: 'ISR (income tax)', ej2: 'IVA (VAT)', ir: 'How one is built →',
+    endH: 'There are four kinds of contributions. Three are defined by what gives rise to them; taxes, by exclusion.',
+    endSrc: 'Federal Tax Code art. 2, sec. I to IV · Federal Fees Law art. 20 (passport)',
+    legal: K.LEGAL_EN, verif: K.VERIF_EN,
+  }
+};
+fill(T);
+
+enter('.brand', 0.1, 0.6); enter('.kicker', 0.2, 0.6);
+enter('#c1', 0.3, 0.7);
+enter('#todo', 0.8, 0.8, 10); enter('#todoL', 1.2, 0.6, 6);
+
+const recorta = (id, cap, prev, t0) => {
+  leave(prev, t0 - 0.3, 0.3); enter(cap, t0, 0.6);
+  at(id, t0 + 0.3, 0.7, { o: 0, dx: 36 }, { o: 1, dx: 0 }, 'out');
+};
+recorta('#k2', '#c2', '#c1', 4.2);
+recorta('#k3', '#c3', '#c2', 8.0);
+recorta('#k4', '#c4', '#c3', 12.2);
+
+leave('#c4', 16.0, 0.3); enter('#c5', 16.3, 0.6);
+at('#imp', 16.6, 0.8, { o: 0, s: 0.97 }, { o: 1, s: 1 }, 'out');
+enter('#impT', 17.0, 0.6, 8); enter('#impS', 17.4, 0.6, 8); enter('#impE', 17.9, 0.6, 6);
+enter('#imp .ir', 18.4, 0.6, 4);
+
+terminar(21.5);
+</script>
+</body></html>
