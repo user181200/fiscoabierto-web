@@ -79,7 +79,9 @@
            porque son las dos caras de la misma relación. */
         .ap-escalera { position: sticky; top: 96px; padding: 40px 0; }
         .ap-escalera ol { list-style: none; }
-        .ap-escalera li { position: relative; padding-left: calc(var(--nivel) * 16px); }
+        .ap-escalera li { position: relative; padding-left: calc(var(--nivel, 0) * 16px); }
+        .ap-escalera li[data-nivel="1"] { --nivel: 1; } .ap-escalera li[data-nivel="2"] { --nivel: 2; }
+        .ap-escalera li[data-nivel="3"] { --nivel: 3; } .ap-escalera li[data-nivel="4"] { --nivel: 4; }
         .ap-escalera a {
             display: grid; grid-template-columns: 22px 1fr; gap: 8px; align-items: baseline;
             padding: 7px 0 7px 12px; border-left: 2px solid var(--color-border);
@@ -213,12 +215,12 @@
 <div class="container ap-body">
     <nav class="ap-escalera" aria-label="Pasos" data-i18n-aria="ap.steps">
         <ol>
-            <li style="--nivel: 0"><a href="#p1"><span class="n">1</span><span data-i18n="p1.nav">El deber de contribuir</span></a></li>
-            <li style="--nivel: 1"><a href="#p2"><span class="n">2</span><span data-i18n="p2.nav">Las cuatro contribuciones</span></a></li>
-            <li style="--nivel: 2"><a href="#p3"><span class="n">3</span><span data-i18n="p3.nav">Los elementos de un impuesto</span></a></li>
-            <li style="--nivel: 3"><a href="#p4"><span class="n">4</span><span data-i18n="p4.nav">Cuándo nace la obligación y quién paga</span></a></li>
-            <li style="--nivel: 4"><a href="#p5"><span class="n">5</span><span data-i18n="p5.nav">Obligaciones del contribuyente</span></a></li>
-            <li style="--nivel: 4"><a href="#p6"><span class="n">6</span><span data-i18n="p6.nav">Los dos sentidos de «derechos»</span></a></li>
+            <li data-nivel="0"><a href="#p1"><span class="n">1</span><span data-i18n="p1.nav">El deber de contribuir</span></a></li>
+            <li data-nivel="1"><a href="#p2"><span class="n">2</span><span data-i18n="p2.nav">Las cuatro contribuciones</span></a></li>
+            <li data-nivel="2"><a href="#p3"><span class="n">3</span><span data-i18n="p3.nav">Los elementos de un impuesto</span></a></li>
+            <li data-nivel="3"><a href="#p4"><span class="n">4</span><span data-i18n="p4.nav">Cuándo nace la obligación y quién paga</span></a></li>
+            <li data-nivel="4"><a href="#p5"><span class="n">5</span><span data-i18n="p5.nav">Obligaciones del contribuyente</span></a></li>
+            <li data-nivel="4"><a href="#p6"><span class="n">6</span><span data-i18n="p6.nav">Los dos sentidos de «derechos»</span></a></li>
         </ol>
     </nav>
 
@@ -609,6 +611,12 @@ window.faIdioma = { t: t, actual: function () { return currentLanguage; } };
 // Cada lámina es una página de laminas/ en un iframe. La página no la dibuja:
 // le manda órdenes (play, pausa, final) y escucha su avance por postMessage.
 // La misma página, con ?modo=video, es la que render.js pasa a MP4.
+//
+// El iframe tiene carga diferida, así que la lámina puede entrar en pantalla
+// antes de estar lista para recibir órdenes. Por eso la página separa lo que
+// quiere (quiere) de lo que la lámina confirma (corre, jugada): una orden de
+// reproducir que llega antes de tiempo queda pendiente y se entrega en 'listo'.
+// Una lámina solo cuenta como vista cuando ella misma avisa que arrancó.
 (function () {
     var I = window.faIdioma;
     var movil = window.matchMedia('(max-width: 600px)');
@@ -618,23 +626,26 @@ window.faIdioma = { t: t, actual: function () { return currentLanguage; } };
             fig: fig, id: fig.dataset.lamina, video: fig.dataset.video,
             frame: fig.querySelector('iframe'), boton: fig.querySelector('.ap-play'),
             barra: fig.querySelector('.ap-fill'), descarga: fig.querySelector('.ap-dl'),
-            src: '', lista: false, vista: false, corre: false, fin: false, jugada: false, pausaScroll: false
+            src: '', lista: false, vista: false, quiere: false, corre: false, fin: false, jugada: false, pausaScroll: false
         };
     });
 
     function manda(l, orden) { if (l.lista && l.frame.contentWindow) l.frame.contentWindow.postMessage({ faControl: orden }, '*'); }
-    function boton(l, estado) {
+    // Repetir solo después de verla correr. El diagrama completo sin haberla
+    // visto (movimiento reducido) muestra Reproducir, como un póster.
+    function pinta(l) {
+        var estado = l.quiere ? 'pause' : (l.fin && l.jugada) ? 'replay' : 'play';
         l.boton.dataset.estado = estado;
         l.boton.setAttribute('aria-label', I.t(estado === 'pause' ? 'ap.pause' : estado === 'replay' ? 'ap.replay' : 'ap.play'));
     }
+    function play(l) { l.quiere = true; l.pausaScroll = false; manda(l, 'play'); pinta(l); }
+    function pausa(l, porScroll) { l.quiere = false; l.pausaScroll = porScroll; manda(l, 'pausa'); pinta(l); }
     function cargar(l) {
         var src = 'laminas/' + l.id + '.html?lang=' + I.actual() + (movil.matches ? '&fmt=m' : '');
         l.descarga.setAttribute('href', 'videos/' + l.video + '-' + I.actual() + (movil.matches ? '-m' : '') + '.mp4');
-        boton(l, l.corre ? 'pause' : l.fin ? 'replay' : 'play');
-        if (src === l.src) return;
-        l.src = src; l.lista = false; l.frame.setAttribute('src', src);
+        if (src !== l.src) { l.src = src; l.lista = false; l.corre = false; l.frame.setAttribute('src', src); }
+        pinta(l);
     }
-    function play(l) { l.jugada = true; l.pausaScroll = false; manda(l, 'play'); }
 
     window.addEventListener('message', function (e) {
         var d = e.data; if (!d || !d.faLamina) return;
@@ -642,26 +653,30 @@ window.faIdioma = { t: t, actual: function () { return currentLanguage; } };
         if (!l) return;
         if (d.tipo === 'listo') {
             l.lista = true;
-            // Recién cargada: con movimiento reducido o si ya se vio (cambio de
-            // idioma o de formato), queda en el diagrama completo.
-            if (reducido.matches || (l.jugada && !l.corre)) manda(l, 'final');
-            else if (l.corre || l.vista) play(l);
-        } else if (d.tipo === 't') {
-            l.barra.style.width = (100 * d.t / d.fin) + '%';
-        } else if (d.tipo === 'estado' || d.tipo === 'fin') {
-            l.corre = d.corre; l.fin = d.tipo === 'fin';
-            if (l.fin) l.barra.style.width = '100%';
-            boton(l, l.corre ? 'pause' : l.fin ? 'replay' : 'play');
+            // Recién cargada: si había una orden pendiente, arranca. Si no, con
+            // movimiento reducido o si ya se vio (cambio de idioma o de
+            // formato), queda en el diagrama completo.
+            if (l.quiere) manda(l, 'play');
+            else if (reducido.matches || l.jugada) manda(l, 'final');
         } else if (d.tipo === 'baja') {
             var destino = document.getElementById(d.a);
             if (destino) destino.scrollIntoView({ behavior: reducido.matches ? 'auto' : 'smooth' });
+        } else if (!l.lista) {
+            // Avance de un documento que se está yendo o de la lámina antes de
+            // decir 'listo': la página decide en 'listo', no aquí.
+            return;
+        } else if (d.tipo === 't') {
+            l.barra.style.width = (100 * d.t / d.fin) + '%';
+        } else if (d.tipo === 'estado' || d.tipo === 'fin') {
+            l.corre = d.corre; l.quiere = d.corre; l.fin = d.tipo === 'fin';
+            if (d.corre) l.jugada = true;
+            if (l.fin) l.barra.style.width = l.jugada ? '100%' : '0';
+            pinta(l);
         }
     });
 
     laminas.forEach(function (l) {
-        l.boton.addEventListener('click', function () {
-            if (l.corre) { l.pausaScroll = false; manda(l, 'pausa'); } else play(l);
-        });
+        l.boton.addEventListener('click', function () { if (l.quiere) pausa(l, false); else play(l); });
         cargar(l);
     });
 
@@ -673,8 +688,8 @@ window.faIdioma = { t: t, actual: function () { return currentLanguage; } };
                 var l = laminas.filter(function (x) { return x.fig === e.target; })[0];
                 l.vista = e.isIntersecting;
                 if (reducido.matches) return;
-                if (l.vista && (!l.jugada || l.pausaScroll)) play(l);
-                else if (!l.vista && l.corre) { l.pausaScroll = true; manda(l, 'pausa'); }
+                if (l.vista && !l.quiere && (!l.jugada || l.pausaScroll)) play(l);
+                else if (!l.vista && l.quiere) pausa(l, true);
             });
         }, { threshold: 0.55 });
         laminas.forEach(function (l) { io.observe(l.fig); });

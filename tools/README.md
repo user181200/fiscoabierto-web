@@ -130,6 +130,10 @@ inicial que el JS reescribe, no estilo. Primera corrida (10 sep 2026): 53
 errores (38 botones sin `type`, 11 estilos en línea, iframe sin `title` y con
 atributos obsoletos); ahora 0.
 
+También `html-validate aprende/index.html`. Primera corrida (30 sep 2026, s19):
+6 errores, el nivel de la escalera en `style="--nivel: N"`; pasó a
+`data-nivel` y ahora da 0.
+
 ## usted.js
 
 Busca tuteo en el texto en español. Desde el 30 de septiembre de 2026 Fisco
@@ -150,3 +154,28 @@ corrida sobre el sitio convertido (30 sep 2026): sin tuteo. Una clase o una
 variable que se llame como una marca (`.tu`, `tuyo`) también dispara; se
 renombra, porque el chequeo no distingue código de texto dentro de un literal.
 El medidor de la newsletter (`medir_estilo.py`) trae la misma lista.
+
+## laminas.js
+
+Prueba los controles de las láminas en vivo de `/aprende` en Chromium con
+Playwright: que cada lámina arranque sola al entrar en pantalla, se pause al
+salir y siga al volver, termine en Repetir, respete la pausa hecha con el
+botón y el cambio de idioma, y que con movimiento reducido quede en el
+diagrama completo con Reproducir.
+
+Existe por el error 19 del CTX. La página daba una lámina por vista en cuanto
+pedía reproducirla, aunque el iframe, que tiene carga diferida, todavía no
+pudiera recibir la orden; al llegar, la lámina saltaba al final. Chromium pide
+esos iframes mucho antes de que entren en pantalla y lo escondía. Safari los
+pide al entrar, y en el teléfono y la Mac de José salían todas terminadas. Por
+eso la prueba sirve cada lámina cuando su marco ya está en pantalla, 400 ms
+después, como WebKit. Sobre el código anterior al arreglo da 10 FALLAS.
+
+Uso, desde `web/`, en la nube de Claude (la Mac no tiene Playwright):
+
+    node tools/laminas.js            # carga estilo WebKit
+    node tools/laminas.js --rapido   # carga normal de Chromium
+
+Levanta su propio servidor sobre `web/`. Tarda unos tres minutos y sale con
+código 1 si algo falla. Correrlo antes de cualquier push que toque el script
+LÁMINAS EN VIVO de `aprende/index.html` o el modo en vivo de `laminas/motor.js`.
